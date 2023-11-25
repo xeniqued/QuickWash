@@ -67,6 +67,6 @@ public abstract class Person {
 
     /**To string method to display values of each instance data */
     public String toString(){
-        return accesslvl + " " + name.get(0) + " " + name.get(1) + " " + username + " " + password + "\n";
+        return accesslvl + " " + name.get(0) + " " + name.get(1) + " " + username + " " + password;
     }
 }

@@ -80,5 +80,11 @@ public class Machine {
     public void setMaintenanceRequest(boolean maintenancerequest){
         this.maintenancerequest = maintenancerequest;
     }
+
+
+    /**To string method to display values of each instance data */
+    public String toString(){
+        return machineid + " " + machinetype + " " + usecount + " " + dailyusecount + " " + String.valueOf(maintenancerequest);
+    }
 }
 
