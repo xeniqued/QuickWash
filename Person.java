@@ -28,8 +28,9 @@ public abstract class Person {
     
 
     /**Accessor Methods */
-    public AccessLevel getAccessLevel(){
-        return accesslvl;
+    //Returns accesslvl as a string using .name()
+    public String getAccessLevel(){
+        return accesslvl.name();
     }
     
     public String getUsername(){
@@ -47,8 +48,8 @@ public abstract class Person {
 
 
     /**Mutator Methods */
-    public void setAccessLevel(AccessLevel accesslvl){
-        this.accesslvl = accesslvl; 
+    public void setAccessLevel(String accesslvl){
+        this.accesslvl = AccessLevel.valueOf(accesslvl); 
     }
 
     public void setName(String firstname, String lastname){
@@ -67,6 +68,6 @@ public abstract class Person {
 
     /**To string method to display values of each instance data */
     public String toString(){
-        return accesslvl + " " + name.get(0) + " " + name.get(1) + " " + username + " " + password;
+        return accesslvl.name() + " " + name.get(0) + " " + name.get(1) + " " + username + " " + password;
     }
 }
