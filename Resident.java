@@ -39,7 +39,7 @@ public class Resident extends Person {
     }
 
     
-    /**To string method to display values of each instance data */
+    /**To string method to display values of instance data */
     @Override
     public String toString(){
         return super.toString() + " " + idnum + " " + email;
