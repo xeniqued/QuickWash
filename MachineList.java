@@ -31,7 +31,7 @@ public class MachineList {
         return "";
     }
 
-    //We will use the ArrayClasses default toString() method
+    //The MachineList class uses the ArrayList class' default toString() method
     //It should return the elements in the format: [1, 2, 3]
     //For extra information on this visit this website: https://www.programiz.com/java-programming/library/arraylist/tostring
 }
