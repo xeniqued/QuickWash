@@ -1,3 +1,4 @@
+//This class needs to be fleshed out
 public class Staff extends Person{
 
     public Staff(){
