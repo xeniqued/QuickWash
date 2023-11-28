@@ -6,7 +6,7 @@ public class Appointment {
     private int numcycles;
     private Resident resident;
     //This formatter can convert from a String object to a LocalDateTime object
-    private final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     public Appointment(){
         
@@ -27,6 +27,7 @@ public class Appointment {
 
     /**Accessor Methods */
     //This formats the LocalDateTime datetime object into a String of format dd-MM-yyyy HH:MM eg. 05-12-2023 14:20
+    //made static so that it can be called without an instance of the Appointment class existing
     public String getDateTime(){
         String dt = datetime.format(format);
         return dt;
@@ -40,7 +41,7 @@ public class Appointment {
         return resident;
     }
 
-    public DateTimeFormatter getFormat(){
+    public static DateTimeFormatter getFormat(){
         return format;
     }
 
