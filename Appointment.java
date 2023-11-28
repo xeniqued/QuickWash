@@ -1,26 +1,24 @@
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 
-//for now the appointment class uses Strings for date and time, I'll implement the Java date and time objects at a later date
-//if you need to use them for your part just @ me in the group and I'll fix it
 public class Appointment {
-    private String date;
-    private String time;
+    private LocalDateTime datetime;
     private int numcycles;
     private Resident resident;
+    //This formatter can convert from a String object to a LocalDateTime object
+    private final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     public Appointment(){
         
-        date = "";
-        time = "";
+        datetime = LocalDateTime.of(2000, 01, 01, 00, 00);
         numcycles = 0;
         resident = new Resident();
 
     }
 
-    public Appointment(String date, String time, int numcycles, Resident resident){
+    public Appointment(int year, int month, int day, int hour, int minute, int numcycles, Resident resident){
         
-        this.date = date;
-        this.time = time;
+        this.datetime = LocalDateTime.of(year, month, day, hour, minute);
         this.numcycles = numcycles;
         this.resident = resident;
 
@@ -28,12 +26,10 @@ public class Appointment {
 
 
     /**Accessor Methods */
-    public String getDate(){
-        return date;
-    }
-
-    public String getTime(){
-        return time;
+    //This formats the LocalDateTime datetime object into a String of format dd-MM-yyyy HH:MM eg. 05-12-2023 14:20
+    public String getDateTime(){
+        String dt = datetime.format(format);
+        return dt;
     }
 
     public int getNumCycles(){
@@ -44,16 +40,13 @@ public class Appointment {
         return resident;
     }
 
+    public DateTimeFormatter getFormat(){
+        return format;
+    }
+
 
     /**Mutator Methods */
-    public void setDate(String date){
-        this.date = date;
-    }
-
-    public void setTime(String time){
-        this.time = time;
-    }
-
+    //There is no mutator for the datetime object because LocalDateTime objects are immutable, to change an appointments date/time then a new appointment object needs to be created
     public void setNumCycles(int numcycles){
         this.numcycles = numcycles;
     }
