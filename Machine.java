@@ -1,6 +1,6 @@
 public class Machine {
     private String machineid;
-    private String machinetype;
+    private MachineType machinetype;
     private int usecount;
     private int dailyusecount;
     private boolean maintenancerequest;
@@ -8,14 +8,14 @@ public class Machine {
     public Machine(){
 
         machineid = "";
-        machinetype = "";
+        machinetype = MachineType.Washer;
         usecount = 0;
         dailyusecount = 0;
         maintenancerequest = false;
 
     }
 
-    public Machine(String machineid, String machinetype, int usecount, int dailyusecount, boolean maintenancerequest){
+    public Machine(String machineid, MachineType machinetype, int usecount, int dailyusecount, boolean maintenancerequest){
 
         this.machineid = machineid;
         this.machinetype = machinetype;
@@ -32,7 +32,7 @@ public class Machine {
     }
 
     public String getMachineType(){
-        return machinetype;
+        return machinetype.name();
     }
 
     public int getUseCount(){
@@ -55,7 +55,7 @@ public class Machine {
     }
 
     public void setMachineType(String machinetype){
-        this.machinetype = machinetype;
+        this.machinetype = MachineType.valueOf(machinetype);
     }
 
     public void setUseCount(int usecount){
@@ -84,7 +84,7 @@ public class Machine {
 
     /**To string method to display values of each instance data */
     public String toString(){
-        return machineid + " " + machinetype + " " + usecount + " " + dailyusecount + " " + String.valueOf(maintenancerequest);
+        return machineid + " " + machinetype.name() + " " + usecount + " " + dailyusecount + " " + String.valueOf(maintenancerequest);
     }
 }
 
