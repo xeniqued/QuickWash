@@ -16,7 +16,7 @@ public class Manager extends Person{
         Staff staff = new Staff(accesslvl, firstname, lastname, username, password);
 
         //more functionality needs to be added before this method can be finished
-        //The addToPersonList function needs to be created in the LoginGUI class, as well as an abstract allUsers arraylist
+        //The addToPersonList function needs to be created, as well as a static allUsers arraylist
         //addToPersonList(staff);
     }
 }
