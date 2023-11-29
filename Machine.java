@@ -15,10 +15,10 @@ public class Machine {
 
     }
 
-    public Machine(String machineid, MachineType machinetype, int usecount, int dailyusecount, boolean maintenancerequest){
+    public Machine(String machineid, String machinetype, int usecount, int dailyusecount, boolean maintenancerequest){
 
         this.machineid = machineid;
-        this.machinetype = machinetype;
+        this.machinetype = MachineType.valueOf(machinetype);
         this.usecount = usecount;
         this.dailyusecount = dailyusecount;
         this.maintenancerequest = maintenancerequest;
