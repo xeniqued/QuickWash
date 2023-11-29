@@ -55,4 +55,9 @@ public class Appointment {
     public void setResident(Resident resident){
         this.resident = resident;
     }
+
+    /**To string method to display values of each instance data */
+    public String toString(){
+        return "Date&Time: " + datetime.format(format) + ", " + "Number_Of_Cycles: " + numcycles + ", " + resident.toString();
+    }
 }
