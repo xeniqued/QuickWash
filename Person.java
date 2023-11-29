@@ -16,9 +16,9 @@ public abstract class Person {
 
     }
 
-    public Person(AccessLevel accesslvl, String firstname, String lastname,  String username, String password) {
+    public Person(String accesslvl, String firstname, String lastname,  String username, String password) {
 
-        this.accesslvl = accesslvl;
+        this.accesslvl = AccessLevel.valueOf(accesslvl);
         name.add(firstname);
         name.add(lastname);
         this.username = username;
@@ -68,6 +68,6 @@ public abstract class Person {
 
     /**To string method to display values of each instance data */
     public String toString(){
-        return accesslvl.name() + " " + name.get(0) + " " + name.get(1) + " " + username + " " + password;
+        return "AccessLevel: " + accesslvl.name() + ", " + "First_Name: " + name.get(0) + ", " + "Last_Name: " + name.get(1) + ", " + "Username: " + username + ", " + "Password: " + password;
     }
 }

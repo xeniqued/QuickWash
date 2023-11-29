@@ -10,7 +10,7 @@ public class Resident extends Person {
         
     }
 
-    public Resident(AccessLevel accesslvl, String firstname, String lastname,  String username, String password, int idnum, String email){
+    public Resident(String accesslvl, String firstname, String lastname,  String username, String password, int idnum, String email){
 
         super(accesslvl, firstname, lastname, username, password);
         this.idnum = idnum;
@@ -42,7 +42,7 @@ public class Resident extends Person {
     /**To string method to display values of instance data */
     @Override
     public String toString(){
-        return super.toString() + " " + idnum + " " + email;
+        return super.toString() + ", " + "ID_Number: " + idnum + ", " + "Email: " + email;
     }
 
 }
