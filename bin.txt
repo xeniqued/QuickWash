@@ -1,0 +1,82 @@
+//Washer Image
+		ImageIcon washer_img = new ImageIcon(getClass().getResource("washer.png"));
+        washerImgLabel = new JLabel(washer_img);
+        washerImgLabel.setBounds(0, 0, 100, 100);
+        machineReportPanel.add(washerImgLabel);
+
+        //Washers Label
+        washer1= new JLabel("Washer 1: ");
+        machineReportPanel.add(washerImgLabel);
+        machineReportPanel.add(washer1);
+
+        washer2= new JLabel("Washer 2: ");
+        machineReportPanel.add(washerImgLabel);
+        machineReportPanel.add(washer2);
+
+        washer3= new JLabel("Washer 3: ");
+        machineReportPanel.add(washerImgLabel);
+        machineReportPanel.add(washer3);
+
+        washer4= new JLabel("Washer 4: ");
+        machineReportPanel.add(washerImgLabel);
+        machineReportPanel.add(washer4);
+
+        washer5= new JLabel("Washer 5: ");
+        machineReportPanel.add(washerImgLabel);
+        machineReportPanel.add(washer5);
+
+        //Dryer Image
+        ImageIcon dryer_img = new ImageIcon(getClass().getResource("washer.png"));
+        dryerImgLabel = new JLabel(dryer_img);
+        dryerImgLabel.setBounds(0, 0, 100, 100);
+        machineReportPanel.add(dryerImgLabel);
+
+        private JLabel washerImgLabel;
+    private JLabel dryerImgLabel;
+
+
+    private JLabel washer1;
+    private JLabel washer2;
+    private JLabel washer3;
+    private JLabel washer4;
+    private JLabel washer5;
+
+    private JLabel dryer1;
+    private JLabel dryer2;
+    private JLabel dryer3;
+    private JLabel dryer4;
+    private JLabel dryer5;
+
+    private JLabel washer1Counter;
+    private JLabel washer2Counter;
+    private JLabel washer3Counter;
+    private JLabel washer4Counter;
+    private JLabel washer5Counter;
+
+    private JLabel dryer1Counter;
+    private JLabel dryer2Counter;
+    private JLabel dryer3Counter;
+    private JLabel dryer4Counter;
+    private JLabel dryer5Counter;
+        
+        
+        //Dryers Label
+        dryer1= new JLabel("Dryer 1: ");
+        machineReportPanel.add(dryerImgLabel);
+        machineReportPanel.add(dryer1);
+        
+        dryer2= new JLabel("Dryer 2: ");
+        machineReportPanel.add(dryerImgLabel);
+        machineReportPanel.add(dryer2);
+
+        dryer3= new JLabel("Dryer 3: ");
+        machineReportPanel.add(dryerImgLabel);
+        machineReportPanel.add(dryer3);
+
+        dryer4= new JLabel("Dryer 4: ");
+        machineReportPanel.add(dryerImgLabel);
+        machineReportPanel.add(dryer4);
+
+        dryer5= new JLabel("Dryer 5: ");
+        machineReportPanel.add(dryerImgLabel);
+        machineReportPanel.add(dryer5);

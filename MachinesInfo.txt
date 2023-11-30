@@ -1,0 +1,10 @@
+washer1@34@5
+washer2@78@4
+washer3@95@3
+washer4@54@2
+washer5@87@1
+dryer1@45@5@
+dryer2@67@4
+dryer3@24@3
+dryer4@74@2
+dryer5@14@1
