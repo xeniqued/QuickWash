@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter;
 public class Appointment {
     private LocalDateTime datetime;
     private int numcycles;
-    private Resident resident;
+    private int idnum;
     //This formatter can convert from a String object to a LocalDateTime object
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
@@ -12,15 +12,15 @@ public class Appointment {
         
         datetime = LocalDateTime.of(2000, 01, 01, 00, 00);
         numcycles = 0;
-        resident = new Resident();
+        idnum = 0;
 
     }
 
-    public Appointment(int year, int month, int day, int hour, int minute, int numcycles, Resident resident){
+    public Appointment(LocalDateTime dateTime, int numcycles, int idnum){
         
-        this.datetime = LocalDateTime.of(year, month, day, hour, minute);
+        this.datetime = dateTime;
         this.numcycles = numcycles;
-        this.resident = resident;
+        this.idnum = idnum;
 
     }
 
@@ -37,8 +37,8 @@ public class Appointment {
         return numcycles;
     }
 
-    public Resident getResident(){
-        return resident;
+    public int getIdNum(){
+        return idnum;
     }
 
     public static DateTimeFormatter getFormat(){
@@ -52,12 +52,8 @@ public class Appointment {
         this.numcycles = numcycles;
     }
 
-    public void setResident(Resident resident){
-        this.resident = resident;
-    }
-
     /**To string method to display values of each instance data */
     public String toString(){
-        return "Date&Time: " + datetime.format(format) + ", " + "Number_Of_Cycles: " + numcycles + ", " + resident.toString();
+        return "Date&Time: " + datetime.format(format) + ", " + "Number_Of_Cycles: " + numcycles + ", " + "ID_Number: " + idnum;
     }
 }

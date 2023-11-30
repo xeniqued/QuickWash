@@ -1,0 +1,4 @@
+AccessLevel: User, First_Name: A, Last_Name: B, Username: ba, Password: 123, ID_Number: 12, Email: zz@gmail.com
+AccessLevel: User, First_Name: CCC, Last_Name: XXX, Username: CCCXXX, Password: 123443, ID_Number: 5452, Email: SDSDAASD@gmail.com
+AccessLevel: Staff, First_Name: x, Last_Name: x, Username: Admin1, Password: QuickWash2
+AccessLevel: Manager, First_Name: x, Last_Name: x, Username: Manager1, Password: QuickWash3

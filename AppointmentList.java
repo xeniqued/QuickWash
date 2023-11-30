@@ -10,8 +10,17 @@ import java.time.format.DateTimeFormatter;
 public class AppointmentList {
     public static ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
 
-    public void createAppointment(int year, int month, int day, int hour, int minute, int numcycles, Resident resident){
-        Appointment appointment = new Appointment(year, month, day, hour, minute, numcycles, resident);
+    //createAppointment with a resident
+    public void createAppointment(LocalDateTime dateTime, int numcycles, Resident resident){
+        //LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute);
+        Appointment appointment = new Appointment(dateTime, numcycles, resident.getIdNum());
+        appointmentList.add(appointment);
+    }
+
+    //createAppointment with an idnum
+    public static void createAppointment(LocalDateTime dateTime, int numcycles, int idnum){
+        //LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute);
+        Appointment appointment = new Appointment(dateTime, numcycles, idnum);
         appointmentList.add(appointment);
     }
 
@@ -44,8 +53,8 @@ public class AppointmentList {
     public static void addToFile(){
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("AppointmentListData.txt"));
-            for(int i = 0; i < AppointmentList.appointmentList.size(); i++){
-                writer.write(AppointmentList.appointmentList.get(i).toString() + "\n");
+            for(int i = 0; i < appointmentList.size(); i++){
+                writer.write(appointmentList.get(i).toString() + "\n");
             }
             writer.close();
         } catch (IOException e){
@@ -61,11 +70,16 @@ public class AppointmentList {
                 line = line.replace(",","");
                 String[] lineArr = line.split(" ");
 
-                //used to print the split array
-                for (int i = 0; i < lineArr.length; i++){
-                    System.out.println(lineArr[i]);
-                }
+                //Getting the values needed to create an appointment object
 
+                String datetime = lineArr[1] + " " + lineArr[2];
+                LocalDateTime datetimeLD = LocalDateTime.parse(datetime, Appointment.getFormat());
+
+                int numcycles = Integer.parseInt(lineArr[4]);
+
+                int idnum = Integer.parseInt(lineArr[6]);
+                
+                createAppointment(datetimeLD, numcycles, idnum);
             }
             reader.close();
         } catch (IOException e){

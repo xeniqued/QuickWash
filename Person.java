@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public abstract class Person {
+public class Person {
     private AccessLevel accesslvl;
     private String username;
     private ArrayList<String> name = new ArrayList<String>();
