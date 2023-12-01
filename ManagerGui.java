@@ -54,7 +54,7 @@ public class ManagerGui extends JFrame {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               new NotificationGUI().setVisible(true);
+               new WelcomeScreen().setVisible(true);
             }
         });
 
