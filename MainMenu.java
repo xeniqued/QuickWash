@@ -3,12 +3,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -78,7 +75,7 @@ public class MainMenu extends JFrame {
                                         .addComponent(currentScheduleButton)
                                         .addComponent(scheduleAppointmentButton)
                                         .addComponent(editAppointmentButton)
-                                       // .addComponent(incidentReportButton)
+                                        .addComponent(incidentReportButton)
                                         .addComponent(machineReportButton)
                                         .addComponent(logoutButton, GroupLayout.PREFERRED_SIZE, 189, GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap(32, Short.MAX_VALUE))
@@ -95,8 +92,8 @@ public class MainMenu extends JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(editAppointmentButton)
                                 .addGap(18, 18, 18)
-                                //.addComponent(incidentReportButton)
-                               // .addGap(18, 18, 18)
+                                .addComponent(incidentReportButton)
+                                .addGap(18, 18, 18)
                                 .addComponent(machineReportButton)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                                 .addComponent(logoutButton, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
@@ -124,12 +121,12 @@ public class MainMenu extends JFrame {
             }
         });
 
-       // incidentReportButton.addActionListener(new ActionListener() {
-           // @Override
-           // public void actionPerformed(ActionEvent e) {
-            //    showIncidentReport();
+        //incidentReportButton.addActionListener(new ActionListener() {
+            //@Override
+            //public void actionPerformed(ActionEvent e) {
+                //showIncidentReport();
             //}
-        //});
+       // });
 
         machineReportButton.addActionListener(new ActionListener() {
             @Override
@@ -149,8 +146,8 @@ public class MainMenu extends JFrame {
         }
     }
 
-   /// protected void showIncidentReport() {
-        /// Handle Incident Report button click
+    //protected void showIncidentReport() {
+        // Handle Incident Report button click
    // }
 
     private JPanel createContentPanel() {
@@ -214,15 +211,15 @@ public class MainMenu extends JFrame {
             }
         });
 
-        //searchPanel.add(searchLabel);
-       // searchPanel.add(searchField);
-        //searchPanel.add(sortByLabel);
-       // searchPanel.add(sortByComboBox);
-       // searchPanel.add(searchButton);
-        //searchPanel.add(clearSearchButton);
-       // searchPanel.add(sortButton);
+        searchPanel.add(searchLabel);
+        searchPanel.add(searchField);
+        searchPanel.add(sortByLabel);
+        searchPanel.add(sortByComboBox);
+        searchPanel.add(searchButton);
+        searchPanel.add(clearSearchButton);
+        searchPanel.add(sortButton);
 
-        //contentPanel.add(searchPanel, BorderLayout.NORTH);
+        contentPanel.add(searchPanel, BorderLayout.NORTH);
 
         appointmentsTable = new JTable(new DefaultTableModel(
                 new Object[][]{{null, null, null, null, null},
@@ -307,58 +304,30 @@ public class MainMenu extends JFrame {
         JOptionPane.showMessageDialog(this, "Displaying Current Schedule");
     }
 
-   private void showScheduleAppointmentDialog() {
-    String name = JOptionPane.showInputDialog(this, "Enter Name:");
-    int dryCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Dry Cycles:"));
-    int washCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Wash Cycles:"));
-    int year = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Year:"));
-    int month = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Month:"));
-    int day = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Day:"));
-    int hour = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Hour:"));
-    int minute = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Minute:"));
+    private void showScheduleAppointmentDialog() {
+        String name = JOptionPane.showInputDialog(this, "Enter Name:");
+        int dryCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Dry Cycles:"));
+        int washCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Wash Cycles:"));
+        int year = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Year:"));
+        int month = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Month:"));
+        int day = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Day:"));
+        int hour = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Hour:"));
+        int minute = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Minute:"));
 
-    Resident resident = new Resident();
-    LocalDateTime appointmentDateTime = LocalDateTime.of(year, month, day, hour, minute);
-    String timeSlot = ""; 
-    Appointment newAppointment = new Appointment(name, dryCycles, appointmentDateTime, timeSlot);
-    appointmentList.add(newAppointment);
+        Resident resident = new Resident();
+        Appointment newAppointment = new Appointment(name, dryCycles, year, month, day, hour, minute, resident);
+        appointmentList.add(newAppointment);
+        addRowToTable(newAppointment);
 
-    addRowToTable(newAppointment);
-
-    // Update the Appointment.txt file
-    updateAppointmentFile(newAppointment);
-
-    JOptionPane.showMessageDialog(this, "Appointment Scheduled!\nMachine Number: " + newAppointment.getMachineNumber());
-       new NotificationGUI().setVisible(true);
-
-}
-
-private void updateAppointmentFile(Appointment newAppointment) {
-    // Update the Appointment.txt file with the new appointment
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter("Appointment.txt", true))) {
-        // Format the appointment data and write it to the file
-        String formattedData = String.format("%s,%d,%s,%s%n",
-                newAppointment.getName(),
-                newAppointment.getNumCycles(),
-                newAppointment.getDate(),
-                newAppointment.getTimeSlot());
-
-        writer.write(formattedData);
-
-        JOptionPane.showMessageDialog(this, "Appointment scheduled successfully!");
-    } catch (IOException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error scheduling appointment. Please try again.");
+        JOptionPane.showMessageDialog(this, "Appointment Scheduled!\nMachine Number: " + newAppointment.getMachineNumber());
+        new NotificationGUI().setVisible(true);
     }
-}
-
-
 
     private void addRowToTable(Appointment appointment) {
         DefaultTableModel model = (DefaultTableModel) appointmentsTable.getModel();
         String[] name = appointment.getName().split(" ");
-        String[] rowData = {name[0], name[1], String.valueOf(appointment.getNumCycles()),
-                String.valueOf(appointment.getNumCycles()), appointment.getDateTime(), appointment.getDateTime()};
+        String[] rowData = {name[0], name[1], String.valueOf(appointment.getDryCycles()),
+                String.valueOf(appointment.getNumCycles()), appointment.getDateTime(), appointment.getDate()};
         model.addRow(rowData);
     }
 
@@ -371,15 +340,12 @@ private void updateAppointmentFile(Appointment newAppointment) {
         }
     }
 
-   
+    
 
     private void editSelectedAppointment() {
         selectedRow = appointmentsTable.getSelectedRow();
         if (selectedRow != -1) {
-            // Get the appointment from the selected row
             Appointment selectedAppointment = appointmentList.get(selectedRow);
-    
-            // After editing, update the table
             showEditAppointmentDialog(selectedAppointment);
         } else {
             JOptionPane.showMessageDialog(this, "Please select an appointment to edit.");
@@ -388,15 +354,22 @@ private void updateAppointmentFile(Appointment newAppointment) {
 
     private void showEditAppointmentDialog(Appointment appointment) {
         String name = JOptionPane.showInputDialog(this, "Enter Name:", appointment.getName());
-        int dryCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Dry Cycles:", appointment.getNumCycles()));
+        int dryCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Dry Cycles:", appointment.getDryCycles()));
         int washCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Wash Cycles:", appointment.getNumCycles()));
-        int year = Integer.parseInt(JOptionPane.showInputDialog(this, "Date:", appointment.getYear()));
-    
+        int year = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Year:", appointment.getYear()));
+        int month = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Month:", appointment.getMonth()));
+        int day = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Day:", appointment.getDate()));
+        int hour = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Hour:", appointment.getHour()));
+        int minute = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Minute:", appointment.getMinute()));
 
         appointment.setName(name);
         appointment.setNumCycles(dryCycles);
         appointment.setNumCycles(washCycles);
-     
+        appointment.setYear(year);
+        appointment.setMonth(month);
+        appointment.setDay(day);
+        appointment.setHour(hour);
+        appointment.setMinute(minute);
 
         updateRowInTable(selectedRow, appointment);
     }
@@ -415,8 +388,8 @@ private void updateAppointmentFile(Appointment newAppointment) {
     private void updateRowInTable(int row, Appointment updatedAppointment) {
         DefaultTableModel model = (DefaultTableModel) appointmentsTable.getModel();
         String[] name = updatedAppointment.getName().split(" ");
-        String[] rowData = {name[0], name[1], String.valueOf(updatedAppointment.getNumCycles()),
-                String.valueOf(updatedAppointment.getNumCycles()), updatedAppointment.getDateTime(), updatedAppointment.getDateTime()};
+        String[] rowData = {name[0], name[1], String.valueOf(updatedAppointment.getDryCycles()),
+                String.valueOf(updatedAppointment.getNumCycles()), updatedAppointment.getDateTime(), updatedAppointment.getDate()};
 
         for (int i = 0; i < rowData.length; i++) {
             model.setValueAt(rowData[i], row, i);

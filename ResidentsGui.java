@@ -3,15 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class ResidentsGui extends JFrame {
     private ArrayList<Appointment> appointmentList;
@@ -45,12 +37,9 @@ public class ResidentsGui extends JFrame {
         JPanel sidePanel = new JPanel();
         sidePanel.setBackground(new Color(51, 51, 255));
 
-        JButton currentScheduleButton = createButton("Current Schedule");
+        JButton currentScheduleButton = createButton("My Schedule");
         JButton scheduleAppointmentButton = createButton("Schedule Appointment");
-        JButton editAppointmentButton = createButton("Edit Appointment");
-
-        //JButton incidentReportButton = createButton("Incident Report");
-        //JButton machineReportButton = createButton("Machine Report");
+        JButton editAppointmentButton = createButton("Edit Appointment"); // New button
 
         JButton logoutButton = new JButton("Log Out");
         logoutButton.setFont(new Font("Microsoft YaHei UI Light", Font.BOLD, 18));
@@ -59,7 +48,7 @@ public class ResidentsGui extends JFrame {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 new WelcomeScreen().setVisible(true);
+                 new NotificationGUI().setVisible(true);
             }
         });
 
@@ -77,9 +66,7 @@ public class ResidentsGui extends JFrame {
                                         .addComponent(welcomeLabel)
                                         .addComponent(currentScheduleButton)
                                         .addComponent(scheduleAppointmentButton)
-                                        .addComponent(editAppointmentButton)
-                                        //.addComponent(incidentReportButton)
-                                        //.addComponent(machineReportButton)
+                                        .addComponent(editAppointmentButton) // Add Edit button
                                         .addComponent(logoutButton, GroupLayout.PREFERRED_SIZE, 189, GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap(32, Short.MAX_VALUE))
         );
@@ -93,11 +80,7 @@ public class ResidentsGui extends JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(scheduleAppointmentButton)
                                 .addGap(18, 18, 18)
-                                .addComponent(editAppointmentButton)
-                                .addGap(18, 18, 18)
-                                //.addComponent(incidentReportButton)
-                                .addGap(18, 18, 18)
-                                //addComponent(machineReportButton)
+                                .addComponent(editAppointmentButton) // Add Edit button
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                                 .addComponent(logoutButton, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
                                 .addGap(74, 74, 74))
@@ -124,103 +107,25 @@ public class ResidentsGui extends JFrame {
             }
         });
 
-       // incidentReportButton.addActionListener(new ActionListener() {
-           // @Override
-            //public void actionPerformed(ActionEvent e) {
-                //showIncidentReport();
-           // }
-       // });
-
-        ///machineReportButton.addActionListener(new ActionListener() {
-          //  @Override
-           // public void actionPerformed(ActionEvent e) {
-            //   // showMachineReport();
-            //}
-        //});
-
         return sidePanel;
     }
-
-    protected void showMachineReport() {
-        try {
-            Desktop.getDesktop().browse(new URI("https://studentliving.managerpluscloud.com/v16/WorkOrders/WorkRequest/qRRequestPage.aspx?asset_key=p4zqNkLI8A1NVP0ELnXSig==&entity_key=9iuf4dpF3mCUsv2x4R2N4g=="));
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-   // protected void showIncidentReport() {
-        // Handle Incident Report button click
-    //}
 
     private JPanel createContentPanel() {
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout());
 
         JPanel searchPanel = new JPanel();
-       //JLabel searchLabel = new JLabel("Search:");
-       // JTextField searchField = new JTextField("Name, Date", 15);
+        //JLabel searchLabel = new JLabel("Search:");
+        //JTextField searchField = new JTextField("Name, Date", 15);
 
-        JLabel sortByLabel = new JLabel("Sort By:");
-        String[] sortByOptions = {"Name", "Date"};
-        JComboBox<String> sortByComboBox = new JComboBox<>(sortByOptions);
+        //JLabel sortByLabel = new JLabel("Sort By:");
+        //String[] sortByOptions = {"Name", "Date"};
+       // JComboBox<String> sortByComboBox = new JComboBox<>(sortByOptions);
 
-        JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               // String searchTerm = searchField.getText();
-               // searchAppointments(searchTerm);
-            }
-
-            private void searchAppointments(String searchTerm) {
-                ArrayList<Appointment> searchResults = new ArrayList<>();
-
-                for (Appointment appointment : appointmentList) {
-                    // Search by name
-                    if (appointment.getName().toLowerCase().contains(searchTerm.toLowerCase())) {
-                        searchResults.add(appointment);
-                    }
-                }
-
-                populateTable(searchResults);
-            }
-        });
-
-       // JButton clearSearchButton = new JButton("Clear Search");
-        //clearSearchButton.addActionListener(new ActionListener() {
-          //  @Override
-          //  public void actionPerformed(ActionEvent e) {
-             //   searchField.setText("");
-              //  populateTable(appointmentList);
-           // }
-      //  });
-
-        JButton sortButton = new JButton("Sort");
-        sortButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String sortBy = (String) sortByComboBox.getSelectedItem();
-                switch (sortBy) {
-                    case "Name":
-                        sortAppointmentsByName();
-                        break;
-                    case "Date":
-                        sortAppointmentsByDate();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-
-       // searchPanel.add(searchLabel);
-       // searchPanel.add(searchField);
+        //searchPanel.add(searchLabel);
+        //searchPanel.add(searchField);
         //searchPanel.add(sortByLabel);
-        //searchPanel.add(sortByComboBox);
-       // searchPanel.add(searchButton);
-       // searchPanel.add(clearSearchButton);
-        //searchPanel.add(sortButton);
+       // searchPanel.add(sortByComboBox);
 
         contentPanel.add(searchPanel, BorderLayout.NORTH);
 
@@ -242,6 +147,7 @@ public class ResidentsGui extends JFrame {
         JScrollPane tableScrollPane = new JScrollPane(appointmentsTable);
         contentPanel.add(tableScrollPane, BorderLayout.CENTER);
 
+        // New buttons for Edit and Delete
         JButton editAppointmentButton = createButton("Edit Appointment");
         JButton deleteAppointmentButton = createButton("Delete Appointment");
 
@@ -251,6 +157,7 @@ public class ResidentsGui extends JFrame {
 
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
+        // Action listeners for Edit and Delete buttons
         editAppointmentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -285,6 +192,7 @@ public class ResidentsGui extends JFrame {
     }
 
     private void handleButtonClick(String buttonText) {
+
         switch (buttonText) {
             case "My Schedule":
                 showCurrentSchedule();
@@ -306,59 +214,34 @@ public class ResidentsGui extends JFrame {
     private void showCurrentSchedule() {
         JOptionPane.showMessageDialog(this, "Displaying Current Schedule");
     }
-
-   private void showScheduleAppointmentDialog() {
-    String name = JOptionPane.showInputDialog(this, "Enter Name:");
-    int dryCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Dry Cycles:"));
-    int washCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Wash Cycles:"));
-    int year = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Year:"));
-    int month = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Month:"));
-    int day = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Day:"));
-    int hour = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Hour:"));
-    int minute = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Minute:"));
-
-    Resident resident = new Resident();
-    LocalDateTime appointmentDateTime = LocalDateTime.of(year, month, day, hour, minute);
-    String timeSlot = ""; 
-    Appointment newAppointment = new Appointment(name, dryCycles, appointmentDateTime, timeSlot);
-    appointmentList.add(newAppointment);
-
-    addRowToTable(newAppointment);
-
-    // Update the Appointment.txt file
-    updateAppointmentFile(newAppointment);
-
-    JOptionPane.showMessageDialog(this, "Appointment Scheduled!\nMachine Number: " + newAppointment.getMachineNumber());
-    new NotificationGUI().setVisible(true);
-
-}
-
-private void updateAppointmentFile(Appointment newAppointment) {
-    // Update the Appointment.txt file with the new appointment
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter("Appointment.txt", true))) {
-        // Format the appointment data and write it to the file
-        String formattedData = String.format("%s,%d,%s,%s%n",
-                newAppointment.getName(),
-                newAppointment.getNumCycles(),
-                newAppointment.getDate(),
-                newAppointment.getTimeSlot());
-
-        writer.write(formattedData);
-
-        JOptionPane.showMessageDialog(this, "Appointment scheduled successfully!");
-    } catch (IOException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error scheduling appointment. Please try again.");
+    private void showScheduleAppointmentDialog() {
+        String name = JOptionPane.showInputDialog(this, "Enter Name:");
+        int dryCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Dry Cycles:"));
+        int washCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Wash Cycles:"));
+        int year = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Year:"));
+        int month = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Month:"));
+        int day = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Day:"));
+        int hour = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Hour:"));
+        int minute = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Minute:"));
+    
+        // Create a new appointment and add it to the list
+        Resident resident = new Resident();
+        Appointment newAppointment = new Appointment(name, dryCycles, year, month, day, hour, minute, resident);
+        appointmentList.add(newAppointment);
+    
+        // Update the table with the new appointment
+        addRowToTable(newAppointment);
+    
+        // Display machine number
+        JOptionPane.showMessageDialog(this, "Appointment Scheduled!\nMachine Number: " + newAppointment.getMachineNumber());
+        new NotificationGUI().setVisible(true);
     }
-}
-
-
 
     private void addRowToTable(Appointment appointment) {
         DefaultTableModel model = (DefaultTableModel) appointmentsTable.getModel();
         String[] name = appointment.getName().split(" ");
-        String[] rowData = {name[0], name[1], String.valueOf(appointment.getNumCycles()),
-                String.valueOf(appointment.getNumCycles()), appointment.getDateTime(), appointment.getDateTime()};
+        String[] rowData = {name[0], name[1], String.valueOf(appointment.getDryCycles()),
+                String.valueOf(appointment.getNumCycles()), appointment.getDateTime(), appointment.getDate()};
         model.addRow(rowData);
     }
 
@@ -371,14 +254,14 @@ private void updateAppointmentFile(Appointment newAppointment) {
         }
     }
 
- 
+
 
     private void editSelectedAppointment() {
         selectedRow = appointmentsTable.getSelectedRow();
         if (selectedRow != -1) {
             // Get the appointment from the selected row
             Appointment selectedAppointment = appointmentList.get(selectedRow);
-    
+
             // After editing, update the table
             showEditAppointmentDialog(selectedAppointment);
         } else {
@@ -387,24 +270,37 @@ private void updateAppointmentFile(Appointment newAppointment) {
     }
 
     private void showEditAppointmentDialog(Appointment appointment) {
+        // Use input dialogs to get updated information
         String name = JOptionPane.showInputDialog(this, "Enter Name:", appointment.getName());
-        int dryCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Dry Cycles:", appointment.getNumCycles()));
+        int dryCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Dry Cycles:", appointment.getDryCycles()));
         int washCycles = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Wash Cycles:", appointment.getNumCycles()));
-        int year = Integer.parseInt(JOptionPane.showInputDialog(this, "Date:", appointment.getYear()));
-    
+        int year = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Year:", appointment.getYear()));
+        int month = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Month:", appointment.getMonth()));
+        int day = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Day:", appointment.getDate()));
+        int hour = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Hour:", appointment.getHour()));
+        int minute = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Minute:", appointment.getMinute()));
 
+        // Update the appointment with the new information
         appointment.setName(name);
         appointment.setNumCycles(dryCycles);
         appointment.setNumCycles(washCycles);
-     
+        appointment.setYear(year);
+        appointment.setMonth(month);
+        appointment.setDay(day);
+        appointment.setHour(hour);
+        appointment.setMinute(minute);
 
+        // Update the table with the edited appointment
         updateRowInTable(selectedRow, appointment);
     }
 
     private void deleteSelectedAppointment() {
         int selectedRow = appointmentsTable.getSelectedRow();
         if (selectedRow != -1) {
+            // Remove the appointment from the list
             appointmentList.remove(selectedRow);
+
+            // Remove the row from the table
             DefaultTableModel model = (DefaultTableModel) appointmentsTable.getModel();
             model.removeRow(selectedRow);
         } else {
@@ -415,22 +311,13 @@ private void updateAppointmentFile(Appointment newAppointment) {
     private void updateRowInTable(int row, Appointment updatedAppointment) {
         DefaultTableModel model = (DefaultTableModel) appointmentsTable.getModel();
         String[] name = updatedAppointment.getName().split(" ");
-        String[] rowData = {name[0], name[1], String.valueOf(updatedAppointment.getNumCycles()),
-                String.valueOf(updatedAppointment.getNumCycles()), updatedAppointment.getDateTime(), updatedAppointment.getDateTime()};
+        String[] rowData = {name[0], name[1], String.valueOf(updatedAppointment.getDryCycles()),
+                String.valueOf(updatedAppointment.getNumCycles()), updatedAppointment.getDateTime(), updatedAppointment.getDate()};
 
+        // Update the data in the specified row
         for (int i = 0; i < rowData.length; i++) {
             model.setValueAt(rowData[i], row, i);
         }
-    }
-
-    private void sortAppointmentsByName() {
-        appointmentList.sort(Comparator.comparing(Appointment::getName));
-        populateTable(appointmentList);
-    }
-
-    private void sortAppointmentsByDate() {
-        appointmentList.sort(Comparator.comparing(Appointment::getDateTime));
-        populateTable(appointmentList);
     }
 
     public static void main(String[] args) {
