@@ -21,7 +21,7 @@ public class Appointment {
         this.name = name;
         this.numCycles = numCycles;
         this.datetime = aDate;
-        this.resident = new Resident(); // Initialize resident properly
+        this.resident = new Resident();
         this.machineNumber = assignMachineNumber();
         this.timeSlot = timeSlot;
     }
