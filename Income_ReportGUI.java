@@ -66,15 +66,15 @@ public class Income_ReportGUI extends JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         
         //color greeting Panel
-        greetingPanel.setForeground(new Color(255,255,255));
+        greetingPanel.setBackground(new java.awt.Color(51, 102, 255));
 
         //set JLabel for Greeting Panel
         greeting.setFont(new Font("Times New Roman", 0, 14)); // NOI18N
-        //greeting.setForeground(new java.awt.Color(255, 255, 255));
+        greeting.setForeground(new java.awt.Color(255, 255, 255));
         greeting.setText("Welcome User");
 
         pageHeader.setFont(new Font("Times New Roman", 0, 12)); // NOI18N
-        //pageHeader.setForeground(new java.awt.Color(255, 255, 255));
+        pageHeader.setForeground(new java.awt.Color(255, 255, 255));
         pageHeader.setText("Income Report Generator");
 
         
@@ -169,17 +169,19 @@ public class Income_ReportGUI extends JFrame {
         
 
         searchBtn.setText("Search");
-         searchBtn.addActionListener(new ActionListener() {
+        searchBtn.setBackground(new java.awt.Color(51, 102, 255));
+        searchBtn.setForeground(new java.awt.Color(255, 255, 255));
+        searchBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 try{
-                    search(searchBar.getText());
+                    
                 }catch(Exception e){
                     JOptionPane.showMessageDialog(null,"ID number could not be found","Error",JOptionPane.ERROR_MESSAGE);
                 }
-
-                
             }
+
         });
+    
         
 
 
@@ -208,6 +210,8 @@ public class Income_ReportGUI extends JFrame {
 
         //Return Home Button
         returnHomeBtn.setText("Return Home");
+        returnHomeBtn.setBackground(new java.awt.Color(51, 102, 255));
+        returnHomeBtn.setForeground(new java.awt.Color(255, 255, 255));
         returnHomeBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 
@@ -276,12 +280,7 @@ public class Income_ReportGUI extends JFrame {
         pack();
     }// </editor-fold>  
 
-    public void search(String str){
-        model=(DefaultTableModel) customeSalesTable.getModel();
-        TableRowSorter<DefaultTableModel> trs=new TableRowSorter<>(model);
-        customeSalesTable.setRowSorter(trs);
-        trs.setRowFilter(RowFilter.regexFilter(str, null));
-    }
+    
     
     private ArrayList<CustomerSales> tableData(String file){
         Scanner sscan = null;
@@ -317,6 +316,8 @@ public class Income_ReportGUI extends JFrame {
     
     private void showTable(ArrayList<CustomerSales> clist)
     {
+        DefaultTableModel model = (DefaultTableModel) customeSalesTable.getModel();
+        model.setRowCount(0);
         if (clist.size()>0)
         {
             for(CustomerSales c: clist)

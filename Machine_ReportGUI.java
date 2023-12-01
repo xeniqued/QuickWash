@@ -15,13 +15,13 @@ import java.util.Date;
  public class Machine_ReportGUI extends javax.swing.JFrame {
 
      // Variables declaration - do not modify                     
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JButton returnButton;
+    private javax.swing.JButton makeReportBtn;
+    private javax.swing.JLabel pageTitle;
+    private javax.swing.JLabel greetingLabel;
+    private javax.swing.JPanel greetingPanel;
+    private javax.swing.JPanel machineTablePanel;
+    private javax.swing.JPanel btnPanel;
     private javax.swing.JScrollPane mScrollPane;
     private javax.swing.JTable machinesTable;
     private DefaultTableModel model;
@@ -44,56 +44,60 @@ import java.util.Date;
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
+        //intiallize Components
+        greetingPanel = new javax.swing.JPanel();
+        pageTitle = new javax.swing.JLabel();
+        greetingLabel = new javax.swing.JLabel();
+        machineTablePanel = new javax.swing.JPanel();
         mScrollPane = new javax.swing.JScrollPane();
         machinesTable = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnPanel = new javax.swing.JPanel();
+        returnButton = new javax.swing.JButton();
+        makeReportBtn = new javax.swing.JButton();
 
+        //Frame Settings
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(871, 612));
 
-        jPanel1.setBackground(new java.awt.Color(51, 102, 255));
+        //Greeting Panel Color
+        greetingPanel.setBackground(new java.awt.Color(51, 102, 255));
+        //Page Title
+        pageTitle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        pageTitle.setForeground(new java.awt.Color(255, 255, 255));
+        pageTitle.setText("Machine report Generator");
+        //Greeting
+        greetingLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        greetingLabel.setForeground(new java.awt.Color(255, 255, 255));
+        greetingLabel.setText("Welcome User");
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Machine report Generator");
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Welcome User");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
+        //Greeting Panel Layout
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(greetingPanel);
+        greetingPanel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
+                .addComponent(greetingLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pageTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(276, 276, 276))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(83, 83, 83)
-                .addComponent(jLabel2)
+                .addComponent(greetingLabel)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pageTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        //Machine Panel Color
+        machineTablePanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        //Table
-
+        //Machines Table
         machinelist=tableData("MachinesInfo.txt");
         
         String[] columnNames = { "MachineID","Total Number Of Cycles","Cycles Today"};
@@ -107,8 +111,10 @@ import java.util.Date;
 
         mScrollPane = new JScrollPane(machinesTable);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
+
+        //Machine Panel Layout
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(machineTablePanel);
+        machineTablePanel.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -123,31 +129,40 @@ import java.util.Date;
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        //Button Panel Color
+        btnPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        jButton1.setText("Return Home");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        //Return Home Button
+        returnButton.setText("Return Home");
+        returnButton.setBackground(new java.awt.Color(51, 102, 255));
+        returnButton.setForeground(new java.awt.Color(255, 255, 255));
+        returnButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Make a Report");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        //Make Report Button
+        makeReportBtn.setText("Make a Report");
+        makeReportBtn.setBackground(new java.awt.Color(51, 102, 255));
+        makeReportBtn.setForeground(new java.awt.Color(255, 255, 255));
+        makeReportBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 new Generate_Report().setVisible(true);
+                dispose();
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
+        //Button Panel Layout
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(btnPanel);
+        btnPanel.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(returnButton)
                 .addGap(147, 147, 147)
-                .addComponent(jButton2)
+                .addComponent(makeReportBtn)
                 .addGap(262, 262, 262))
         );
         jPanel3Layout.setVerticalGroup(
@@ -155,27 +170,28 @@ import java.util.Date;
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(returnButton)
+                    .addComponent(makeReportBtn))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
+        //Frame Layout
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(greetingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(machineTablePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(greetingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(machineTablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
