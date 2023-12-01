@@ -203,6 +203,7 @@ public class ManagerGui extends JFrame {
     }
 
     private void logOut() {
+        new WelcomeScreen().setVisible(true);
         dispose();
     }
 
