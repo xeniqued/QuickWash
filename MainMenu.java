@@ -320,6 +320,7 @@ public class MainMenu extends JFrame {
         addRowToTable(newAppointment);
 
         JOptionPane.showMessageDialog(this, "Appointment Scheduled!\nMachine Number: " + newAppointment.getMachineNumber());
+        new NotificationGUI().setVisible(true);
     }
 
     private void addRowToTable(Appointment appointment) {
