@@ -55,6 +55,13 @@ public class CustomerSales
         return totalAmount;
     }
 
+    public void increaseUseCountWash(){
+        this.totalAmountWash += 1;
+    }
+
+    public void increaseUseCountDry(){
+        this.totalAmountDry += 1;
+    }
 
 
     public String toString()

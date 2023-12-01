@@ -1,0 +1,12 @@
+1 Washer 0 0 false
+2 Washer 0 0 false
+3 Washer 0 0 false
+4 Washer 0 0 false
+5 Washer 0 0 false
+6 Washer 0 0 false
+7 Dryer 0 0 false
+8 Dryer 0 0 false
+9 Dryer 0 0 false
+10 Dryer 0 0 false
+11 Dryer 0 0 false
+12 Dryer 0 0 false

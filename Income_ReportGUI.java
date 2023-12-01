@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+/*Author Akele Benjamin 
+ * ID number 620130803
+*/
 public class Income_ReportGUI extends JFrame {
     // Variables declaration - do not modify                     
     private JButton searchBtn;
@@ -35,6 +37,7 @@ public class Income_ReportGUI extends JFrame {
     private ArrayList<CustomerSales> customerSalesList;
     private JTable customerSalesTable;
     private DefaultTableModel model;
+    private TableRowSorter sorter;
 
 
 
@@ -174,10 +177,22 @@ public class Income_ReportGUI extends JFrame {
         searchBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 try{
-                    
+                    search(searchBar.getText());
                 }catch(Exception e){
                     JOptionPane.showMessageDialog(null,"ID number could not be found","Error",JOptionPane.ERROR_MESSAGE);
                 }
+            }
+            private void search(String searchTerm) {
+                ArrayList<CustomerSales> searchResults = new ArrayList<>();
+
+                for (CustomerSales custSales : customerSalesList) {
+                    // Search by name
+                    if (custSales.getfName().toLowerCase().contains(searchTerm.toLowerCase())) {
+                        searchResults.add(custSales);
+                    }
+                }
+
+                showTable(searchResults);
             }
 
         });
@@ -189,7 +204,10 @@ public class Income_ReportGUI extends JFrame {
         
         String[] columnNames = { "First Name","Last Name","CustomerID","Date","Total Amount Wash","Total Amount Dry","Amount($)" };
         model=new DefaultTableModel(columnNames,0);
+        sorter = new TableRowSorter<>(model);
         customerSalesTable= new JTable(model);
+        customerSalesTable.setRowSorter(sorter);
+
         
         showTable(customerSalesList); //display table
         
@@ -329,7 +347,7 @@ public class Income_ReportGUI extends JFrame {
 
     private void addToTable(CustomerSales c)
     {
-        //finish Customer Sale Class
+        
         String[] cSale={c.getfName(),""+c.getlName(),""+c.getCustomerID(),""+c.getDate(),""+c.getTotalAmountWash(),""+c.getTotalAmountDry(),""+c.getTotalAmount(),""};
         model.addRow(cSale);
     }

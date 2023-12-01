@@ -4,16 +4,20 @@
  * and open the template in the editor.
  */
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author Akele Benjamin
+ * @author Akele Benjamin 620130803
  */
 public class Generate_Report extends javax.swing.JFrame {
     private javax.swing.JButton submitBtn;
     private javax.swing.JButton cancelBtn;
-    private javax.swing.JComboBox<String> machineComboBox;
+    private static javax.swing.JComboBox<String> machineComboBox;
     private javax.swing.JLabel staffName;
     private javax.swing.JLabel idNumLabel;
     private javax.swing.JLabel dateLabel;
@@ -25,10 +29,10 @@ public class Generate_Report extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel btnPanel;
     private javax.swing.JScrollPane rScrollPane;
-    private javax.swing.JTextArea reportTextArea;
-    private javax.swing.JTextField nameTextField;
-    private javax.swing.JTextField idNumTextField;
-    private javax.swing.JTextField dateTextField;
+    private static javax.swing.JTextArea reportTextArea;
+    private static javax.swing.JTextField nameTextField;
+    private static javax.swing.JTextField idNumTextField;
+    private static javax.swing.JTextField dateTextField;
 
     /**
      * Creates new form Generate_Report
@@ -209,7 +213,10 @@ public class Generate_Report extends javax.swing.JFrame {
         submitBtn.setForeground(new java.awt.Color(255, 255, 255));
         submitBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addToFile();
                 JOptionPane.showMessageDialog(null,"Your issue was Reported","Success",JOptionPane.PLAIN_MESSAGE);
+                new Machine_ReportGUI().setVisible(true);
+                dispose();
 ;
             }
         });
@@ -219,7 +226,8 @@ public class Generate_Report extends javax.swing.JFrame {
         cancelBtn.setForeground(new java.awt.Color(255, 255, 255));
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                
+                new Machine_ReportGUI().setVisible(true);
+                dispose();
             }
         });
 
@@ -268,7 +276,27 @@ public class Generate_Report extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>                        
+    }// </editor-fold> 
+    
+    public static void addToFile(){
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("MachineReports.txt"));
+                writer.write(nameTextField.getText());
+                writer.write("\t");
+                writer.write(idNumTextField.getText());
+                writer.write("\t");
+                writer.write(dateTextField.getText());
+                writer.write("\t");
+                writer.write((String) machineComboBox.getSelectedItem());
+                writer.write("\t");
+                writer.write(reportTextArea.getText());
+                writer.close();
+            }  
+        catch (IOException e){
+            JOptionPane.showMessageDialog(null,"There was an error submitting your Report","Error",JOptionPane.ERROR_MESSAGE);
+
+        }
+    }
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
         // TODO add your handling code here:

@@ -12,6 +12,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+/**
+ *
+ * @author Akele Benjamin 620130803
+ */
  public class Machine_ReportGUI extends javax.swing.JFrame {
 
      // Variables declaration - do not modify                     
@@ -98,15 +103,15 @@ import java.util.Date;
         machineTablePanel.setBackground(new java.awt.Color(255, 255, 255));
 
         //Machines Table
-        machinelist=tableData("MachinesInfo.txt");
+        machinelist=tableData("MachineListData.txt");
         
-        String[] columnNames = { "MachineID","Total Number Of Cycles","Cycles Today"};
+        String[] columnNames = { "Machine ID","Machine Type","Total Cycles","Cycles Today","Maintenance Request"};
         model=new DefaultTableModel(columnNames,0);
         machinesTable= new JTable(model);
         
         showTable(machinelist); //display table
         
-        machinesTable.setPreferredScrollableViewportSize(new Dimension(500, machinelist.size()*15 +50));
+        machinesTable.setPreferredScrollableViewportSize(new Dimension(600, machinelist.size()*15 +50));
         machinesTable.setFillsViewportHeight(true);
 
         mScrollPane = new JScrollPane(machinesTable);
@@ -205,19 +210,21 @@ import java.util.Date;
             mscan  = new Scanner(new File(file));
             while(mscan.hasNext()){
                 String data = mscan.nextLine(); 
-                String[] nextLine = data.split("@");
-                //Output: FirstName Lastname CustomerID Date TotalAmount-Wash TotalAmount-Dry $Amount
+                           String[] nextLine = data.split(" ");
+                           //Output: FirstName Lastname CustomerID Date TotalAmount-Wash TotalAmount-Dry $Amount
                 String mId=nextLine[0];
-                int totCycles=Integer.parseInt(nextLine[1]);
-                int dailyCycle=Integer.parseInt(nextLine[2]);
+                      String machineType=nextLine[1];
+                              int totCycles=Integer.parseInt(nextLine[2]);
+                            int dailyCycle=Integer.parseInt(nextLine[3]);
+                             Boolean machineRequest= Boolean.parseBoolean(nextLine[4]);
                 
-                Machine m=new Machine(mId,totCycles,dailyCycle);
+                Machine m=new Machine(mId,machineType,totCycles,dailyCycle,machineRequest);
                 mList.add(m);
             }
             mscan.close();
         }
         catch(IOException e){
-            System.out.println("An error has occured with reading the DATABASE");
+            JOptionPane.showMessageDialog(null,"An Error reading the Database","Error",JOptionPane.ERROR_MESSAGE);;
         }
 
         return mList;
@@ -239,7 +246,7 @@ import java.util.Date;
     private void addToTable(Machine m)
     {
         //finish Customer Sale Class
-        String[] machine={m.getMachineID(),""+m.getUseCount(),""+m.getDailyUseCount(),""};
+        String[] machine={m.getMachineID(),""+m.getMachineType(),""+m.getUseCount(),""+m.getDailyUseCount(),""+m.getMaintenanceRequest(),""};
         model.addRow(machine);
     }
 

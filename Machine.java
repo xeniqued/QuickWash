@@ -1,3 +1,7 @@
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class Machine {
     private String machineid;
     private MachineType machinetype;
@@ -8,17 +12,20 @@ public class Machine {
     public Machine(){
 
         machineid = "";
+        machinetype = MachineType.Washer;
         usecount = 0;
         dailyusecount = 0;
+        maintenancerequest = false;
 
     }
 
-    public Machine(String machineid, int usecount, int dailyusecount){
+    public Machine(String machineid, String machinetype, int usecount, int dailyusecount, boolean maintenancerequest){
 
         this.machineid = machineid;
+        this.machinetype = MachineType.valueOf(machinetype);
         this.usecount = usecount;
         this.dailyusecount = dailyusecount;
-        
+        this.maintenancerequest = maintenancerequest;
 
     }
 
@@ -28,6 +35,9 @@ public class Machine {
         return machineid;
     }
 
+    public String getMachineType(){
+        return machinetype.name();
+    }
 
     public int getUseCount(){
         return usecount;
@@ -37,6 +47,10 @@ public class Machine {
         return dailyusecount;
     }
 
+    /**Functions as checkAvailability() */
+    public boolean getMaintenanceRequest(){
+        return maintenancerequest;
+    }
 
 
     /**Mutator Methods */
@@ -77,3 +91,4 @@ public class Machine {
         return machineid + " " + machinetype.name() + " " + usecount + " " + dailyusecount + " " + String.valueOf(maintenancerequest);
     }
 }
+
