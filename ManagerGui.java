@@ -191,11 +191,7 @@ public class ManagerGui extends JFrame {
     }
 
     private void showMachineReport() {
-        try {
-            Desktop.getDesktop().browse(new URI("https://studentliving.managerpluscloud.com/v16/WorkOrders/WorkRequest/qRRequestPage.aspx?asset_key=p4zqNkLI8A1NVP0ELnXSig==&entity_key=9iuf4dpF3mCUsv2x4R2N4g=="));
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
+        new Machine_ReportGUI().setVisible(true);
     }
 
     private void generateIncomeReport() {
