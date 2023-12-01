@@ -2,12 +2,13 @@ import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
-
+        /**
         MachineList.readFromFile();
 
         for(int i = 0; i < MachineList.machineList.size(); i++){
             System.out.println(MachineList.machineList.get(i));
         }
+        */
     }
 }
 
