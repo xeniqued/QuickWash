@@ -48,7 +48,7 @@ public class ResidentsGui extends JFrame {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 new WelcomeScreen().setVisible(true);
+                 new NotificationGUI().setVisible(true);
             }
         });
 
@@ -234,6 +234,7 @@ public class ResidentsGui extends JFrame {
     
         // Display machine number
         JOptionPane.showMessageDialog(this, "Appointment Scheduled!\nMachine Number: " + newAppointment.getMachineNumber());
+        new NotificationGUI().setVisible(true);
     }
 
     private void addRowToTable(Appointment appointment) {
