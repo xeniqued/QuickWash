@@ -1,9 +1,16 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MachineList {
-    private static ArrayList<Machine> machineList = new ArrayList<Machine>();
+    public static ArrayList<Machine> machineList = new ArrayList<Machine>();
 
-    public void addToMachineList(Machine machine){
+    public static void createMachine(String machineid, String machinetype, int usecount, int dailyusecount, boolean maintenancerequest){
+        Machine machine = new Machine(machineid, machinetype, usecount, dailyusecount, maintenancerequest);
         machineList.add(machine);
     }
 
@@ -30,6 +37,42 @@ public class MachineList {
     public String generateMachineReport(){
         return "";
     }
+
+    public static void addToFile(){
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("MachineListData.txt"));
+            for(int i = 0; i < machineList.size(); i++){
+                writer.write(machineList.get(i).toString() + "\n");
+            }
+            writer.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void readFromFile(){
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("MachineListData.txt"));
+            String line;
+            while( (line = reader.readLine()) != null){
+                line = line.replace(",","");
+                String[] lineArr = line.split(" ");
+
+                //Getting the values needed to create a Machine object
+                String machineid = lineArr[0];
+                String machinetype = lineArr[1];
+                int usecount = Integer.parseInt(lineArr[2]);
+                int dailyusecount = Integer.parseInt(lineArr[3]);
+                boolean maintenancerequest = Boolean.parseBoolean(lineArr[4]);
+
+                createMachine(machineid, machinetype, usecount, dailyusecount, maintenancerequest);
+            }
+            reader.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    } 
+
 
     //The MachineList class uses the ArrayList class' default toString() method
     //It should return the elements in the format: [1, 2, 3]
