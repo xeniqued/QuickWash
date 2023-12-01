@@ -1,63 +1,64 @@
-import java.time.*;
-import java.time.format.DateTimeFormatter;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
-/**
- *
- * @author Jevon Hayles 620136482
- */
+
 public class Appointment {
-    private LocalDateTime datetime;
-    private int numcycles;
-    private String idnum;
-    //This formatter can convert from a String object to a LocalDateTime object
-    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private String name;
+    private int numCycles;
+    private String datetime;
+    private String timeSlot;
 
-    public Appointment(){
-        
-        datetime = LocalDateTime.of(2000, 01, 01, 00, 00);
-        numcycles = 0;
-        idnum = "";
-
+    // Constructor
+    public Appointment(String name, int numCycles, String datetime,String timeSlot) {
+        this.name = name;
+        this.numCycles = numCycles;
+        this.datetime = datetime;
+        this.timeSlot=timeSlot;
     }
 
-    public Appointment(LocalDateTime dateTime, int numcycles, String idnum){
-        
-        this.datetime = dateTime;
-        this.numcycles = numcycles;
-        this.idnum = idnum;
-
+    // Getters and setters (if needed)
+    public String getName() {
+        return name;
     }
 
-
-    /**Accessor Methods */
-    //This formats the LocalDateTime datetime object into a String of format dd-MM-yyyy HH:MM eg. 05-12-2023 14:20
-    //made static so that it can be called without an instance of the Appointment class existing
-    public String getDateTime(){
-        String dt = datetime.format(format);
-        return dt;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getNumCycles(){
-        return numcycles;
+    public int getNumCycles() {
+        return numCycles;
     }
 
-    public String getIdNum(){
-        return idnum;
+    public void setNumCycles(int numCycles) {
+        this.numCycles = numCycles;
     }
 
-    public static DateTimeFormatter getFormat(){
-        return format;
+    public String getDatetime() {
+        return datetime;
     }
 
-
-    /**Mutator Methods */
-    //There is no mutator for the datetime object because LocalDateTime objects are immutable, to change an appointments date/time then a new appointment object needs to be created
-    public void setNumCycles(int numcycles){
-        this.numcycles = numcycles;
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
     }
 
-    /**To string method to display values of each instance data */
-    public String toString(){
-        return "Date&Time: " + datetime.format(format) + ", " + "Number_Of_Cycles: " + numcycles + ", " + "ID_Number: " + idnum;
+    public String getTimeSlot() {
+        return timeSlot;
+    }
+
+    public void setTimeSlot(String timeSlot) {
+        this.timeSlot = timeSlot;
+    }
+
+    // Other methods as needed
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "name='" + name + '\'' +
+                ", numCycles=" + numCycles +
+                ", datetime=" + datetime +
+                ", timeSlot=" + timeSlot +
+                '}';
     }
 }
