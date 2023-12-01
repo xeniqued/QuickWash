@@ -1,4 +1,5 @@
 # QuickWash
+repository for QuickWash COMP2140
 This repository represents QuickWash, a laundry appointment scheduling system intended to alleviate the laundry issues at the George Alleyne Hall. 138 Student Living Jamaica Limited (138SL) is a Jamaican company that provides student accommodations at the University of the West Indies (UWI) Mona campus. 138SL currently operates three (3) halls of residence on the UWI Mona campus; this includes The Leslie Robinson Hall, the George Alleyne Hall, and Irvine Hall, in which they provide laundry services to its residents. These laundry services include self-operated washing and drying machines and ‘VIP’ services in which residents drop off their laundry to be washed, dried, and ironed. 
 More specifically, the laundry service at the George Alleyne Hall has been tedious for residents to navigate, with residents stating that 138SL protocols require them to:
 
