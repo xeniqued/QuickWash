@@ -232,6 +232,9 @@ public class AdminCreate extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // Validation for blank fields
         String name = jTextField1.getText().trim();
+        String[] nameArr = jTextField1.getText().split(" ");
+        String fname = nameArr[0];
+        String lname = nameArr[1];
         String idNumbertxt = jTextField2.getText().trim();
         String email = jTextField3.getText().trim();
         String password = new String(jPasswordField1.getPassword());
@@ -268,7 +271,8 @@ public class AdminCreate extends javax.swing.JFrame {
             return; // Stop processing if ID number is not an integer
         }
 
-        
+        PersonList.createManager(fname, lname, idNumbertxt, password);
+        PersonList.addToFile();
         JOptionPane.showMessageDialog(this, "Admin account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }     
     

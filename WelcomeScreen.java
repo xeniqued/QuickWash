@@ -26,6 +26,7 @@ public class WelcomeScreen extends javax.swing.JFrame {
     /* Method to customize the frame */
     private void initComponents() {
 
+        PersonList.readFromFile();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();

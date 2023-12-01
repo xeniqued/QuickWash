@@ -172,7 +172,7 @@ public class LoginScreen extends javax.swing.JFrame {
     }       
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt){
-      //  new WelcomeScreen().setVisible(true);
+        new WelcomeScreen().setVisible(true);
         dispose();
     }
     
@@ -183,8 +183,6 @@ public class LoginScreen extends javax.swing.JFrame {
         
         int minLength = 7;
         int idNumber;
-    
-        PersonList.readFromFile();
 
         //Check if both password and ID number are both short or empty
         if (passwordChars.length() < minLength || userID.length() < minLength){

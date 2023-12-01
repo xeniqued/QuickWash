@@ -297,6 +297,9 @@ public class ResidentCreate extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // Validation for blank fields
         String name = jTextField1.getText().trim();
+        String[] nameArr = jTextField1.getText().split(" ");
+        String fname = nameArr[0];
+        String lname = nameArr[1];
         String idNumbertxt = jTextField2.getText().trim();
         String email = jTextField3.getText().trim();
         String password = new String(jPasswordField1.getPassword());
@@ -333,8 +336,10 @@ public class ResidentCreate extends javax.swing.JFrame {
             return; // Stop processing if ID number is not an integer
         }
 
-        
-        JOptionPane.showMessageDialog(this, "Admin account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        PersonList.createResident(fname, lname, idNumbertxt, password, email);
+        PersonList.addToFile();
+        JOptionPane.showMessageDialog(this, "Resident account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
     }     
 
     /**

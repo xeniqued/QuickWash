@@ -1,4 +1,5 @@
-AccessLevel: User, First_Name: A, Last_Name: B, Username: 555555555, Password: 123456789, Email: zz@gmail.com
-AccessLevel: User, First_Name: CCC, Last_Name: XXX, Username: 321321321, Password: 12345678, Email: SDSDAASD@gmail.com
-AccessLevel: Staff, First_Name: x, Last_Name: x, Username: Admin1, Password: QuickWash2
-AccessLevel: Manager, First_Name: x, Last_Name: x, Username: Manager1, Password: QuickWash3
+AccessLevel: User, First_Name: A, Last_Name: B, ID_Num: 555555555, Password: 123456789, Email: zz@gmail.com
+AccessLevel: User, First_Name: CCC, Last_Name: XXX, ID_Num: 321321321, Password: 12345678, Email: SDSDAASD@gmail.com
+AccessLevel: Staff, First_Name: x, Last_Name: x, ID_Num: 666666666, Password: QuickWash2
+AccessLevel: Manager, First_Name: x, Last_Name: x, ID_Num: 777777777, Password: QuickWash3
+AccessLevel: User, First_Name: jbjbcsb, Last_Name: dbsadk, ID_Num: 62301245, Password: 123456789, Email: sdas@gmail.com
