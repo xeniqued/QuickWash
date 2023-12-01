@@ -195,7 +195,7 @@ public class ManagerGui extends JFrame {
     }
 
     private void generateIncomeReport() {
-        JOptionPane.showMessageDialog(this, "Income Report Generated");
+        new Income_ReportGUI().setVisible(true);
     }
 
  
