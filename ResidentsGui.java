@@ -254,6 +254,7 @@ public class ResidentsGui extends JFrame {
     }
 
     private void logOut() {
+        new WelcomeScreen().setVisible(true);
         dispose();
     }
 
