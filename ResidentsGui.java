@@ -329,6 +329,7 @@ public class ResidentsGui extends JFrame {
     updateAppointmentFile(newAppointment);
 
     JOptionPane.showMessageDialog(this, "Appointment Scheduled!\nMachine Number: " + newAppointment.getMachineNumber());
+    new NotificationGUI().setVisible(true);
 
 }
 
