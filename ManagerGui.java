@@ -109,7 +109,7 @@ public class ManagerGui extends JFrame {
         generateIncomeReportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                generateIncomeReport();
+                new Income_ReportGUI().setVisible(true);
             }
         });
 
