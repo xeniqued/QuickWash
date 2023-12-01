@@ -54,7 +54,7 @@ public class ManagerGui extends JFrame {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               new NotificationGUI().setVisible(true);
+                new WelcomeScreen().setVisible(true);
             }
         });
 
@@ -202,7 +202,8 @@ public class ManagerGui extends JFrame {
         JOptionPane.showMessageDialog(this, "Income Report Generated");
     }
 
- 
+   
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
