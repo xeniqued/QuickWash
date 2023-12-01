@@ -18,7 +18,7 @@ public class ResidentsGui extends JFrame {
 
     private void initComponents() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(879, 621));
 
         JPanel mainPanel = new JPanel(new BorderLayout());
 
@@ -30,7 +30,7 @@ public class ResidentsGui extends JFrame {
 
         add(mainPanel);
         pack();
-        setLocationRelativeTo(null);
+        //setLocationRelativeTo(null);
     }
 
     private JPanel createSidePanel() {
@@ -48,7 +48,7 @@ public class ResidentsGui extends JFrame {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                  new WelcomeScreen().setVisible(true);
+                logOut();
             }
         });
 
@@ -234,7 +234,7 @@ public class ResidentsGui extends JFrame {
     
         // Display machine number
         JOptionPane.showMessageDialog(this, "Appointment Scheduled!\nMachine Number: " + newAppointment.getMachineNumber());
-        new NotificationGUI().setVisible(true);
+        JOptionPane.showMessageDialog(this, "Notification Sent Successfully", "Notification", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void addRowToTable(Appointment appointment) {
@@ -254,7 +254,10 @@ public class ResidentsGui extends JFrame {
         }
     }
 
-
+    private void logOut() {
+        new WelcomeScreen().setVisible(true);
+        dispose();
+    }
 
     private void editSelectedAppointment() {
         selectedRow = appointmentsTable.getSelectedRow();
