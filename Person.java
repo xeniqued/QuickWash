@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class Person {
     private AccessLevel accesslvl;
     private String idnum;

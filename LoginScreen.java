@@ -217,7 +217,7 @@ public class LoginScreen extends javax.swing.JFrame {
         }
         
         // Dispose the current frame
-        //dispose();
+        dispose();
     }
     
 

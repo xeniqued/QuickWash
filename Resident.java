@@ -1,3 +1,7 @@
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class Resident extends Person {
     private String email;
 

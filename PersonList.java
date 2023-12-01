@@ -5,6 +5,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class PersonList {
     public static ArrayList<Person> personList = new ArrayList<Person>();
 

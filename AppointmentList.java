@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class AppointmentList {
     public static ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
 

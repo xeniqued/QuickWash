@@ -1,6 +1,10 @@
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class Appointment {
     private LocalDateTime datetime;
     private int numcycles;
