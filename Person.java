@@ -1,27 +1,31 @@
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class Person {
     private AccessLevel accesslvl;
-    private String username;
+    private String idnum;
     private ArrayList<String> name = new ArrayList<String>();
     private String password;
 
     public Person() {
 
         accesslvl = AccessLevel.User;
-        username = "";
+        idnum = "";
         name.add("");
         name.add("");
         password = "";
 
     }
 
-    public Person(String accesslvl, String firstname, String lastname,  String username, String password) {
+    public Person(String accesslvl, String firstname, String lastname,  String idnum, String password) {
 
         this.accesslvl = AccessLevel.valueOf(accesslvl);
         name.add(firstname);
         name.add(lastname);
-        this.username = username;
+        this.idnum = idnum;
         this.password = password;
 
     }
@@ -33,8 +37,8 @@ public class Person {
         return accesslvl.name();
     }
     
-    public String getUsername(){
-        return username;
+    public String getIdNum(){
+        return idnum;
     }
 
     public String getPassword(){
@@ -57,8 +61,8 @@ public class Person {
         name.set(1, lastname);
     }
 
-    public void setUsername(String username){
-        this.username = username;
+    public void setIdNum(String idnum){
+        this.idnum = idnum;
     }
 
     public void setPassword(String password){
@@ -68,6 +72,6 @@ public class Person {
 
     /**To string method to display values of each instance data */
     public String toString(){
-        return "AccessLevel: " + accesslvl.name() + ", " + "First_Name: " + name.get(0) + ", " + "Last_Name: " + name.get(1) + ", " + "Username: " + username + ", " + "Password: " + password;
+        return "AccessLevel: " + accesslvl.name() + ", " + "First_Name: " + name.get(0) + ", " + "Last_Name: " + name.get(1) + ", " + "ID_Num: " + idnum + ", " + "Password: " + password;
     }
 }
