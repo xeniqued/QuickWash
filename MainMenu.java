@@ -46,7 +46,7 @@ public class MainMenu extends JFrame {
         JButton scheduleAppointmentButton = createButton("Schedule Appointment");
         JButton editAppointmentButton = createButton("Edit Appointment");
 
-        JButton incidentReportButton = createButton("Incident Report");
+        //JButton incidentReportButton = createButton("Incident Report");
         JButton machineReportButton = createButton("Machine Report");
 
         JButton logoutButton = new JButton("Log Out");
@@ -56,7 +56,7 @@ public class MainMenu extends JFrame {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logOut();
+                new WelcomeScreen().setVisible(true);
             }
         });
 
@@ -121,12 +121,12 @@ public class MainMenu extends JFrame {
             }
         });
 
-        incidentReportButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showIncidentReport();
-            }
-        });
+        //incidentReportButton.addActionListener(new ActionListener() {
+            //@Override
+            //public void actionPerformed(ActionEvent e) {
+                //showIncidentReport();
+            //}
+       // });
 
         machineReportButton.addActionListener(new ActionListener() {
             @Override
@@ -146,9 +146,9 @@ public class MainMenu extends JFrame {
         }
     }
 
-    protected void showIncidentReport() {
+    //protected void showIncidentReport() {
         // Handle Incident Report button click
-    }
+   // }
 
     private JPanel createContentPanel() {
         JPanel contentPanel = new JPanel();
