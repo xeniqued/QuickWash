@@ -59,7 +59,7 @@ public class ResidentsGui extends JFrame {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logOut();
+                 new WelcomeScreen().setVisible(true);
             }
         });
 
@@ -127,7 +127,7 @@ public class ResidentsGui extends JFrame {
        // incidentReportButton.addActionListener(new ActionListener() {
            // @Override
             //public void actionPerformed(ActionEvent e) {
-                showIncidentReport();
+                //showIncidentReport();
            // }
        // });
 
@@ -149,9 +149,9 @@ public class ResidentsGui extends JFrame {
         }
     }
 
-    protected void showIncidentReport() {
+   // protected void showIncidentReport() {
         // Handle Incident Report button click
-    }
+    //}
 
     private JPanel createContentPanel() {
         JPanel contentPanel = new JPanel();
@@ -370,9 +370,7 @@ private void updateAppointmentFile(Appointment newAppointment) {
         }
     }
 
-    private void logOut() {
-        dispose();
-    }
+ 
 
     private void editSelectedAppointment() {
         selectedRow = appointmentsTable.getSelectedRow();
