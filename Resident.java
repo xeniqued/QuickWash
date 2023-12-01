@@ -1,38 +1,32 @@
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class Resident extends Person {
-    private int idnum;
     private String email;
 
     public Resident(){
 
         super();
-        idnum = 0;
         email = "";
         
     }
 
-    public Resident(String accesslvl, String firstname, String lastname,  String username, String password, int idnum, String email){
+    public Resident(String accesslvl, String firstname, String lastname,  String idnum, String password, String email){
 
-        super(accesslvl, firstname, lastname, username, password);
-        this.idnum = idnum;
+        super(accesslvl, firstname, lastname, idnum, password);
         this.email = email;
         
     }
 
 
     /**Accessor Methods */
-    public int getIdNum(){
-        return idnum;
-    }
-
     public String getEmail(){
         return email;
     }
 
 
     /**Mutator Methods */
-    public void setIdNum(int idnum){
-        this.idnum = idnum;
-    }
 
     public void setEmail(String email){
         this.email = email;
@@ -42,7 +36,7 @@ public class Resident extends Person {
     /**To string method to display values of instance data */
     @Override
     public String toString(){
-        return super.toString() + ", " + "ID_Number: " + idnum + ", " + "Email: " + email;
+        return super.toString() + ", " + "Email: " + email;
     }
 
 }

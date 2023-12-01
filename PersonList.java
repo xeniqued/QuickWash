@@ -5,31 +5,35 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class PersonList {
     public static ArrayList<Person> personList = new ArrayList<Person>();
 
-    public static void createResident(String firstname, String lastname,  String username, String password, int idnum, String email){
-        Resident resident = new Resident("User", firstname, lastname, username, password, idnum, email);
+    public static void createResident(String firstname, String lastname,  String idnum, String password, String email){
+        Resident resident = new Resident("User", firstname, lastname, idnum, password, email);
         personList.add(resident);
     }
 
-    public static void createStaff(String firstname, String lastname,  String username, String password){
-        Person staff = new Person("Staff", firstname, lastname, username, password);
+    public static void createStaff(String firstname, String lastname,  String idnum, String password){
+        Person staff = new Person("Staff", firstname, lastname, idnum, password);
         personList.add(staff);
     }
 
-    public static void createManager(String firstname, String lastname,  String username, String password){
-        Person manager = new Person("Manager", firstname, lastname, username, password);
+    public static void createManager(String firstname, String lastname,  String idnum, String password){
+        Person manager = new Person("Manager", firstname, lastname, idnum, password);
         personList.add(manager);
     }
 
-    //Uses username to return the index location of a person
+    //Uses idnum to return the index location of a person
     //if the function returns -1, then the person was not found
-    public int searchPerson(String username){
+    public static int searchPerson(String idnum){
         int personindex = -1;
 
         for(int i = 0; i < personList.size(); i++){
-            if(personList.get(i).getUsername() == username){
+            if(idnum.equals(personList.get(i).getIdNum())){
                 personindex = i;
             }
         }
@@ -38,8 +42,8 @@ public class PersonList {
     }
 
     //Uses searchperson to delete a person
-    public void deletePerson(String username){
-        personList.remove(searchPerson(username));
+    public void deletePerson(String idnum){
+        personList.remove(searchPerson(idnum));
     }
 
     public String displayPersons(){
@@ -71,17 +75,16 @@ public class PersonList {
                 String acclvl = lineArr[1];
                 String fname = lineArr[3];
                 String lname = lineArr[5];
-                String username = lineArr[7];
+                String idnum = lineArr[7];
                 String password = lineArr[9];   
 
                 if (acclvl.equals("Staff")){
-                    createStaff(fname, lname, username, password);
+                    createStaff(fname, lname, idnum, password);
                 } else if (acclvl.equals("Manager")){
-                    createManager(fname, lname, username, password);
+                    createManager(fname, lname, idnum, password);
                 } else if (acclvl.equals("User")){
-                    int idnum = Integer.parseInt(lineArr[11]);
-                    String email = lineArr[13];
-                    createResident(fname, lname, username, password, idnum, email);
+                    String email = lineArr[11];
+                    createResident(fname, lname, idnum, password, email);
                 }
             }
             reader.close();
@@ -89,5 +92,20 @@ public class PersonList {
             e.printStackTrace();
         }
     } 
+
+
+    public static boolean idPasswordMatching(String idnum, String password){
+        boolean tf = false;
+
+        int index = searchPerson(idnum);
+
+        if (index != -1){
+            if ( idnum.equals(personList.get(index).getIdNum()) && password.equals(personList.get(index).getPassword()) ){
+                tf = true;
+            }
+        }
+
+        return tf;
+    }
 
 }

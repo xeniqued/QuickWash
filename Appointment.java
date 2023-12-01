@@ -1,10 +1,14 @@
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class Appointment {
     private LocalDateTime datetime;
     private int numcycles;
-    private int idnum;
+    private String idnum;
     //This formatter can convert from a String object to a LocalDateTime object
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
@@ -12,11 +16,11 @@ public class Appointment {
         
         datetime = LocalDateTime.of(2000, 01, 01, 00, 00);
         numcycles = 0;
-        idnum = 0;
+        idnum = "";
 
     }
 
-    public Appointment(LocalDateTime dateTime, int numcycles, int idnum){
+    public Appointment(LocalDateTime dateTime, int numcycles, String idnum){
         
         this.datetime = dateTime;
         this.numcycles = numcycles;
@@ -37,7 +41,7 @@ public class Appointment {
         return numcycles;
     }
 
-    public int getIdNum(){
+    public String getIdNum(){
         return idnum;
     }
 

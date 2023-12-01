@@ -1,3 +1,7 @@
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class Machine {
     private String machineid;
     private MachineType machinetype;

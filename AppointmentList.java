@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class AppointmentList {
     public static ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
 
@@ -18,7 +22,7 @@ public class AppointmentList {
     }
 
     //createAppointment with an idnum
-    public static void createAppointment(LocalDateTime dateTime, int numcycles, int idnum){
+    public static void createAppointment(LocalDateTime dateTime, int numcycles, String idnum){
         //LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute);
         Appointment appointment = new Appointment(dateTime, numcycles, idnum);
         appointmentList.add(appointment);
@@ -77,7 +81,7 @@ public class AppointmentList {
 
                 int numcycles = Integer.parseInt(lineArr[4]);
 
-                int idnum = Integer.parseInt(lineArr[6]);
+                String idnum = lineArr[6];
                 
                 createAppointment(datetimeLD, numcycles, idnum);
             }

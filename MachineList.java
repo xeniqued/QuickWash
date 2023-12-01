@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Jevon Hayles 620136482
+ */
 public class MachineList {
     public static ArrayList<Machine> machineList = new ArrayList<Machine>();
 
