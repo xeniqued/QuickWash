@@ -339,9 +339,7 @@ public class MainMenu extends JFrame {
         }
     }
 
-    private void logOut() {
-        dispose();
-    }
+    
 
     private void editSelectedAppointment() {
         selectedRow = appointmentsTable.getSelectedRow();
