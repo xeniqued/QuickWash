@@ -37,8 +37,9 @@ public class ResidentGUI extends JFrame {
 
     private WelcomeScreen thisWS; //previous screen
     private static ResidentGUI thisResGUI; //current screen instance
-    private MakeAppointmentGUI thisMkAptGUI; //popup screen instance
-    private EditAppointmentGUI thisEdAptGUI; //popup screen instance
+    private MakeAppointmentGUI thisMkAptGUI = null; //popup screen instance
+    private EditAppointmentGUI thisEdAptGUI = null; //popup screen instance
+    private boolean winOpenCheck = false;
     
 
     public ResidentGUI(WelcomeScreen ws) {
@@ -48,7 +49,7 @@ public class ResidentGUI extends JFrame {
          */
         thisWS = ws;
         thisResGUI = this;
-
+        
         /**
          * This turns off the welcome screen while the ResidentGUI screen is open.
          */        

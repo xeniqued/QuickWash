@@ -41,6 +41,11 @@ public class MakeAppointmentGUI extends JFrame {
          */        
         thisRGUI = res;
         thisAddGUI = this;
+        setFocusable(true);
+
+        setAlwaysOnTop(true); 
+        toFront();
+        requestFocusInWindow();
 
         /*Labelling the frame/window*/
         setTitle("Create Appointment");      
@@ -74,6 +79,7 @@ public class MakeAppointmentGUI extends JFrame {
         UIManager.put( "Spinner.arc", 27); 
 
         disinner1Pnl = new JPanel();
+        disinner1Pnl.setBorder(new EmptyBorder(15, 0, 0, 0));
         disinner1Pnl.setPreferredSize(new Dimension(435,70));
         disinner1Pnl.setBackground(mainBlue);
         createAptLbl = new JLabel("Create Appointment ");

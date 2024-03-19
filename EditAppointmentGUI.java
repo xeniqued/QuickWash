@@ -43,6 +43,8 @@ public class EditAppointmentGUI extends JFrame {
          */        
         thisRGUI = res;
         thisEditGUI = this;
+        
+        setAlwaysOnTop(true); 
 
         /*Labelling the frame/window*/
         setTitle("Edit Appointment");      
