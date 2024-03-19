@@ -64,7 +64,7 @@ public class ResidentGUI extends JFrame {
 
         
         
-        // Declaring layout
+        // Declaring layout for frame/window 
         setLayout(new BorderLayout());
 
 
@@ -180,23 +180,22 @@ public class ResidentGUI extends JFrame {
         //=====================================================//
         
         disPnl = new JPanel(new BorderLayout());    
-        disPnl.setBorder(new EmptyBorder(5, 0, 23, 0));    
-        disPnl.setBackground(mainWhite);           
-        disPnl.setSize(new Dimension(900, 768));
+        disPnl.setBackground(mainWhite);            
+        //disPnl.setBackground(Color.GRAY);         
+        disPnl.setBorder(new EmptyBorder(18, 27, 27, 25));     
+        disPnl.setPreferredSize(new Dimension(905, 768));
 
 
         // Panel showing appoiments table
-        apptPnl = new JPanel(new FlowLayout());        
-        apptPnl.setBackground(mainWhite);
-        //apptPnl.setBackground(new Color(200, 34, 23));
-        //apptPnl.setBorder(BorderFactory.createLineBorder(mainBlue, 2));   
-        
-        apptPnl.setPreferredSize(new Dimension(900, 700));
+        apptPnl = new JPanel();   
+        apptPnl.setLayout(new BoxLayout (apptPnl, BoxLayout.Y_AXIS));   
+        apptPnl.setOpaque(false);            
+        //apptPnl.setBackground(Color.GREEN);  
 
 
-        JPanel apptinner1Pnl = new JPanel(new BorderLayout());        
-        apptinner1Pnl.setOpaque(false);   
-        apptinner1Pnl.setBorder(new EmptyBorder(18, 0, 0, 0)); 
+        JPanel apptinner1Pnl = new JPanel(new BorderLayout());      
+        apptinner1Pnl.setBorder(new EmptyBorder(8, 0, 6, 0));  
+        apptinner1Pnl.setOpaque(false);      
 
         apptLbl = new JLabel();        
         apptLbl.setText("Scheduled Wash Appointments");
@@ -217,36 +216,39 @@ public class ResidentGUI extends JFrame {
 
         // Panel to display table itself
         JPanel apptinner2Pnl = new JPanel();        
-        apptinner2Pnl.setOpaque(false);
-        apptinner2Pnl.setBorder(new EmptyBorder(0, 45, 0, 7)); 
-        apptinner2Pnl.setSize(new Dimension(900, 570));
+        apptinner2Pnl.setOpaque(false); 
+        apptinner2Pnl.setBorder(new EmptyBorder(0, 0, 5, 0));
             
-        apptColumnNames = new String[]{ "Date (D/M/Y)", "Time", "Wash Load #", "Dry Load #", "Machine #", "Confirmed?" };
+        apptColumnNames = new String[]{ "Date(D/M/Y)", "Time", "Wash Load #", "Dry Load #", "Machine #", "Completed?", "Confirmed?"};
 
         //Update this value, should be sorted by upcoming date
         apptData = new String[][] {
-            {"20/03/2024", "16:00", "3", "2", "1", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes"}
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"}
         };
 
         //Rendering table with data above
-        apptTable = new TableRenderer(apptinner2Pnl, new Dimension(780, 415), apptColumnNames, apptData);
+        apptTable = new TableRenderer(apptinner2Pnl, new Dimension(826, 425), apptColumnNames, apptData);
         apptPnl.add(apptinner2Pnl);
 
 
-        detailsPnl = new JPanel();    
-        detailsPnl.setBorder(new EmptyBorder(0, 75, 0, 40));    
-        detailsPnl.setBackground(mainWhite);;
-        detailsPnl.setPreferredSize(new Dimension(800, 132));
+        detailsPnl = new JPanel();           
+        detailsPnl.setOpaque(false);   
+        //detailsPnl.setBackground(Color.ORANGE);  
+        detailsPnl.setPreferredSize(new Dimension(885, 140));
         
         JPanel detsinner1Pnl = new JPanel(new BorderLayout());   
-        detsinner1Pnl.setPreferredSize(new Dimension(800, 30));
-        detsinner1Pnl.setOpaque(false);
+        detsinner1Pnl.setBorder(new EmptyBorder(10, 0, 5, 0));  
+        detsinner1Pnl.setOpaque(false);;
         
-        detailsLbl = new JLabel();        
-        detailsLbl.setText("Selected Appointment Date & Time Details");
+        detailsLbl = new JLabel(" Selected Appointment Date & Time Details");      
+        try {
+            detailsLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/selecticon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+        } catch (Exception ioe) {
+            System.out.println("Select icon not found.");
+        }      
         detailsLbl.setForeground(mainBlue);
-        detailsLbl.setHorizontalAlignment(JLabel.CENTER);
+        detailsLbl.setHorizontalAlignment(JLabel.LEFT);
         detailsLbl.setFont(new Font(detailsLbl.getFont().getFontName(), Font.BOLD, 19));        
         detsinner1Pnl.add(detailsLbl, BorderLayout.NORTH);
 
@@ -254,10 +256,8 @@ public class ResidentGUI extends JFrame {
 
 
         JPanel detsinner2Pnl = new JPanel(new BorderLayout());        
-        detsinner2Pnl.setOpaque(false); 
-        //detsinner2Pnl.setBackground(new Color(123,23,55));  
-        detsinner2Pnl.setBorder(new EmptyBorder(0, 0, 0, 0));   
-        detsinner2Pnl.setSize(new Dimension(800, 30)); 
+        detsinner2Pnl.setOpaque(false);    
+        detsinner2Pnl.setSize(new Dimension(885, 30)); 
 
         detsColumnNames = new String[]{ "Time", "Weekday", "Month", "Day",  "Year"};
 
@@ -267,7 +267,7 @@ public class ResidentGUI extends JFrame {
         };
 
         //Rendering details table with data above
-        detsTable = new TableRenderer(detsinner2Pnl, new Dimension(780, 35), detsColumnNames, detsData);
+        detsTable = new TableRenderer(detsinner2Pnl, new Dimension(826, 35), detsColumnNames, detsData);
 
         detailsPnl.add(detsinner2Pnl);
 
@@ -287,7 +287,7 @@ public class ResidentGUI extends JFrame {
 
         //Extra frame/window settings
         pack();
-        setSize(1170, 768);//1152
+        setSize(1200, 768);
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);

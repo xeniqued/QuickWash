@@ -16,6 +16,7 @@ public class TableRenderer {
     private String[][] tableData;
 
     private Color mainBlue = new Color(10, 87, 162);
+    private Color mainWhite = new Color(255, 255, 255);
 
     /**
      * This sets up the table to put in the given panel.
@@ -40,18 +41,20 @@ public class TableRenderer {
         };     
         table.setGridColor(mainBlue);
         table.setShowGrid(true);   
-        table.setBorder(BorderFactory.createLineBorder(mainBlue, 1, true));
-
-        //UIManager.getDefaults().put("TableHeader.cellBorder", BorderFactory.createLineBorder(mainBlue));
-
-        table.getTableHeader().setPreferredSize(new Dimension(20, 45));
-        table.getTableHeader().setBorder(BorderFactory.createLineBorder(mainBlue, 1, true));
-        table.getTableHeader().setFont(new Font(table.getTableHeader().getFont().getFontName(), Font.BOLD, 16));
-        table.getTableHeader().setForeground(mainBlue);
+        table.setBorder(new MatteBorder(0, 1, 1, 1, mainBlue));
 
         table.setRowHeight(35);
         table.setFont(new Font(table.getFont().getFontName(), Font.BOLD, 15));
         table.setForeground(mainBlue);
+
+        //UIManager.getDefaults().put("TableHeader.cellBorder", BorderFactory.createLineBorder(mainBlue));
+
+        table.getTableHeader().setPreferredSize(new Dimension(0, 45));
+        table.getTableHeader().setBorder(new MatteBorder(1, 1, 1, 1, mainBlue));
+        table.getTableHeader().setFont(new Font(table.getTableHeader().getFont().getFontName(), Font.BOLD, 16));
+        table.getTableHeader().setForeground(mainWhite);
+        table.getTableHeader().setBackground(mainBlue);
+
         
         DefaultTableCellRenderer timesRenderer = new DefaultTableCellRenderer();
         timesRenderer.setFont(new Font(table.getFont().getFontName(), Font.BOLD, 50));
