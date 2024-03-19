@@ -31,7 +31,7 @@ public class MakeAppointmentGUI extends JFrame {
     private Color successGreen = new Color(68, 218, 103);
 
     private static ResidentGUI thisRGUI; //previous screen
-    private MakeAppointmentGUI thisAddGUI;
+    private MakeAppointmentGUI thisAddGUI; //current screen instance
 
 
     public MakeAppointmentGUI(ResidentGUI res){
@@ -67,6 +67,7 @@ public class MakeAppointmentGUI extends JFrame {
          * Main panel for input section
          */
         disPnl.setPreferredSize(new Dimension(430,400));
+        disPnl.setBorder(new EmptyBorder(0, 1, 0, 2));
         disPnl.setBackground(mainWhite); 
 
         //FLATLAF stylings
@@ -75,7 +76,6 @@ public class MakeAppointmentGUI extends JFrame {
         disinner1Pnl = new JPanel();
         disinner1Pnl.setPreferredSize(new Dimension(435,70));
         disinner1Pnl.setBackground(mainBlue);
-        disinner1Pnl.setBorder(new EmptyBorder(16, 0, 0, 0));
         createAptLbl = new JLabel("Create Appointment ");
         createAptLbl.setHorizontalAlignment(JLabel.CENTER);
         createAptLbl.setOpaque(false);
@@ -140,7 +140,7 @@ public class MakeAppointmentGUI extends JFrame {
         disinner3Pnl.setBorder(BorderFactory.createLineBorder(mainBlue, 1));
         disinner3Pnl.setLayout(new BoxLayout(disinner3Pnl, BoxLayout.Y_AXIS));
         disinner3Pnl.setOpaque(false);
-        disinner3Pnl.setPreferredSize(new Dimension(370,245));
+        disinner3Pnl.setPreferredSize(new Dimension(371,245));
 
         JPanel disinner3i1Pnl = new JPanel();
         disinner3i1Pnl.setOpaque(false);
@@ -219,7 +219,7 @@ public class MakeAppointmentGUI extends JFrame {
         int count = 0;    
         for (int y = 2024; y < 2031; y++) {
             years[count] = Integer.toString(y);  
-            System.out.print(y + "\n"); 
+            //System.out.print(y + "\n"); 
             count++;
         };        
         yearDropBox = new JComboBox<String>(years); 
@@ -241,7 +241,7 @@ public class MakeAppointmentGUI extends JFrame {
         count = 0;
         for (int t = 9; t < 19; t++) {
             times[count] = Integer.toString(t) + ":00";
-            System.out.print(t + "\n"); 
+            //System.out.print(t + "\n"); 
             count++;
         };               
         timeDropBox = new JComboBox<String>(times); 
@@ -305,7 +305,7 @@ public class MakeAppointmentGUI extends JFrame {
          * Extra frame set up things
          */
         pack();
-        setSize(439, 565);
+        setSize(440, 565);
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true); 

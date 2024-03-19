@@ -16,6 +16,7 @@ public class EditAppointmentGUI extends JFrame {
     private JPanel disPnl, disinner1Pnl, disinner2Pnl, disinner3Pnl;
     private JPanel btnPnl;
 
+    private JButton btnDelete;
     private JButton btnApply;
     private JButton btnCancel;
 
@@ -24,6 +25,7 @@ public class EditAppointmentGUI extends JFrame {
     private JSpinner washSpinner, drySpinner, daySpinner;
     private JLabel dateLbl, monLbl, dayLbl, yearLbl, timeLbl;
     private JComboBox<String> monthDropBox,  yearDropBox, timeDropBox;
+    private JCheckBox attendedCheck;
 
     private Color mainBlue = new Color(10, 87, 162);
     private Color mainWhite = new Color(255, 255, 255);
@@ -31,7 +33,7 @@ public class EditAppointmentGUI extends JFrame {
     private Color successGreen = new Color(68, 218, 103);
 
     private static ResidentGUI thisRGUI; //previous screen
-    private EditAppointmentGUI thisEditGUI;
+    private EditAppointmentGUI thisEditGUI; //current screen instance
 
 
     public EditAppointmentGUI(ResidentGUI res){
@@ -67,6 +69,7 @@ public class EditAppointmentGUI extends JFrame {
          * Main panel for input section
          */
         disPnl.setPreferredSize(new Dimension(430,400));
+        disPnl.setBorder(new EmptyBorder(0, 1, 0, 2));
         disPnl.setBackground(mainWhite); 
 
         //FLATLAF stylings
@@ -140,7 +143,7 @@ public class EditAppointmentGUI extends JFrame {
         disinner3Pnl.setBorder(BorderFactory.createLineBorder(mainBlue, 1));
         disinner3Pnl.setLayout(new BoxLayout(disinner3Pnl, BoxLayout.Y_AXIS));
         disinner3Pnl.setOpaque(false);
-        disinner3Pnl.setPreferredSize(new Dimension(370,245));
+        disinner3Pnl.setPreferredSize(new Dimension(371,285));
 
         JPanel disinner3i1Pnl = new JPanel();
         disinner3i1Pnl.setOpaque(false);
@@ -209,6 +212,7 @@ public class EditAppointmentGUI extends JFrame {
         disinner3div2Pnl.setPreferredSize(new Dimension(430,40));
         disinner3div2Pnl.setBorder(new EmptyBorder(0, 25, 15, 33));
 
+
         JPanel disinner3i4Pnl = new JPanel(new BorderLayout());
         disinner3i4Pnl.setOpaque(false);
         yearLbl = new JLabel("Year");  
@@ -219,7 +223,7 @@ public class EditAppointmentGUI extends JFrame {
         int count = 0;    
         for (int y = 2024; y < 2031; y++) {
             years[count] = Integer.toString(y);  
-            System.out.print(y + "\n"); 
+            //System.out.print(y + "\n"); 
             count++;
         };        
         yearDropBox = new JComboBox<String>(years); 
@@ -241,7 +245,7 @@ public class EditAppointmentGUI extends JFrame {
         count = 0;
         for (int t = 9; t < 19; t++) {
             times[count] = Integer.toString(t) + ":00";
-            System.out.print(t + "\n"); 
+            //System.out.print(t + "\n"); 
             count++;
         };               
         timeDropBox = new JComboBox<String>(times); 
@@ -252,7 +256,23 @@ public class EditAppointmentGUI extends JFrame {
         
         disinner3div2Pnl.add(disinner3i5Pnl, BorderLayout.LINE_END);    
 
-        disinner3Pnl.add(disinner3div2Pnl);  
+        disinner3Pnl.add(disinner3div2Pnl);    
+
+
+
+        JPanel disinner3div3Pnl = new JPanel();
+        disinner3div3Pnl.setOpaque(false);
+        disinner3div3Pnl.setPreferredSize(new Dimension(430,40));
+        disinner3div3Pnl.setBorder(new EmptyBorder(0, 0, 40, 0));   
+
+        attendedCheck = new JCheckBox(" Attended?");
+        attendedCheck.setHorizontalAlignment(SwingConstants.CENTER);
+        attendedCheck.setForeground(mainBlue);
+        attendedCheck.setPreferredSize(new Dimension(118,35));
+        attendedCheck.setFont(new Font(dayLbl.getFont().getFontName(), Font.BOLD, 16)); 
+        disinner3div3Pnl.add(attendedCheck);  
+
+        disinner3Pnl.add(disinner3div3Pnl);  
          
 
 
@@ -274,21 +294,35 @@ public class EditAppointmentGUI extends JFrame {
         btnApply.setFont(new Font(btnApply.getFont().getFontName(), Font.BOLD, 16));
         btnApply.setForeground(mainWhite);
         btnApply.setBackground(mainBlue);
-        btnApply.setPreferredSize(new Dimension(145, 35));
+        btnApply.setPreferredSize(new Dimension(135, 35));
         btnApply.addActionListener(new ApplyBtnListener());
+
+
+        ImageIcon DeleteIcon = null;      
+        try {
+            DeleteIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/deleteicon.png").getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH)));
+        } catch (Exception ioe) {
+            System.out.println("Delete icon not found.");
+        }  
+        btnDelete = new JButton(DeleteIcon);
+        btnDelete.setForeground(mainWhite);
+        btnDelete.setBackground(mainBlue);
+        btnDelete.setPreferredSize(new Dimension(50, 35));
+        btnDelete.addActionListener(new DeleteBtnListener());
         
         
         btnCancel = new JButton("Cancel");
         btnCancel.setFont(new Font(btnCancel.getFont().getFontName(), Font.BOLD, 16));
         btnCancel.setForeground(mainWhite);
         btnCancel.setBackground(mainBlue);
-        btnCancel.setPreferredSize(new Dimension(120, 35));
+        btnCancel.setPreferredSize(new Dimension(110, 35));
         btnCancel.addActionListener(new CancelBtnListener());
 
         
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 20, 0, 20);
+        gbc.insets = new Insets(0, 9, 0, 9);
         btnPnl.add(btnApply, gbc);
+        btnPnl.add(btnDelete, gbc);
         btnPnl.add(btnCancel, gbc);
 
 
@@ -305,7 +339,7 @@ public class EditAppointmentGUI extends JFrame {
          * Extra frame set up things
          */
         pack();
-        setSize(439, 565);
+        setSize(440, 600);
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true); 
@@ -320,6 +354,16 @@ public class EditAppointmentGUI extends JFrame {
     
 
     private class ApplyBtnListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            
+        }
+
+    }
+
+
+    private class DeleteBtnListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
         {

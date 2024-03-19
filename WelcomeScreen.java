@@ -40,8 +40,8 @@ public class WelcomeScreen extends JFrame {
     private static ImageIcon icon;
     private static Image iconimg;
     private static ImageIcon banner;
-    private static WelcomeScreen thisUserData;
-    private ResidentGUI resGUI;
+    private static WelcomeScreen thisUserData; //current screen instance
+    private ResidentGUI resGUI; //next screen instance
 
     public WelcomeScreen() {
         

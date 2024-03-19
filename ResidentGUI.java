@@ -36,9 +36,9 @@ public class ResidentGUI extends JFrame {
     private Color successGreen = new Color(68, 218, 103);
 
     private WelcomeScreen thisWS; //previous screen
-    private static ResidentGUI thisResGUI;
-    private MakeAppointmentGUI thisMkAptGUI;
-    private EditAppointmentGUI thisEdAptGUI;
+    private static ResidentGUI thisResGUI; //current screen instance
+    private MakeAppointmentGUI thisMkAptGUI; //popup screen instance
+    private EditAppointmentGUI thisEdAptGUI; //popup screen instance
     
 
     public ResidentGUI(WelcomeScreen ws) {
@@ -141,7 +141,7 @@ public class ResidentGUI extends JFrame {
             System.out.println("Create icon not found.");
         }      
         btnConfirm = new JButton(CnfmAptIcon);
-        btnConfirm.setText(" Confirm Appointment");
+        btnConfirm.setText(" Mark As Attended");
         btnConfirm.setFont(new Font(btnConfirm.getFont().getFontName(), Font.BOLD, 16));
         btnConfirm.setForeground(mainWhite);
         btnConfirm.setBackground(mainBlue);
@@ -219,7 +219,7 @@ public class ResidentGUI extends JFrame {
         apptinner2Pnl.setOpaque(false); 
         apptinner2Pnl.setBorder(new EmptyBorder(0, 0, 5, 0));
             
-        apptColumnNames = new String[]{ "Date(D/M/Y)", "Time", "Wash Load #", "Dry Load #", "Machine #", "Completed?", "Confirmed?"};
+        apptColumnNames = new String[]{ "Date D/M/Y", "Time", "Wash Load #", "Dry Load #", "Machine #", "Attended?", "Confirmed?"};
 
         //Update this value, should be sorted by upcoming date
         apptData = new String[][] {
