@@ -358,6 +358,7 @@ public class ResidentGUI extends JFrame {
     private class MkAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (thisMkAptGUI == null) {
+                // when appointment database class is implemented pass it into this to give it access
                 thisMkAptGUI = new MakeAppointmentGUI(thisResGUI);
             } else {
                 thisMkAptGUI = null;
@@ -372,6 +373,7 @@ public class ResidentGUI extends JFrame {
     private class EditAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (thisEdAptGUI == null) {
+                // when appointment database class is implemented pass it into this to give it access
                 thisEdAptGUI = new EditAppointmentGUI(thisResGUI);
             } else {
                 thisEdAptGUI = null;
