@@ -375,7 +375,7 @@ public class EditAppointmentGUI extends JFrame {
     {
         public void actionPerformed(ActionEvent e)
         {
-            
+            //open dialog window with appointment details and ask for confirmation before updating database
         }
 
     }
@@ -387,7 +387,7 @@ public class EditAppointmentGUI extends JFrame {
     {
         public void actionPerformed(ActionEvent e)
         {
-            
+            //ask for confirmation here before deleting
         }
 
     }

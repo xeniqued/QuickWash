@@ -341,7 +341,7 @@ public class MakeAppointmentGUI extends JFrame {
     {
         public void actionPerformed(ActionEvent e)
         {
-            
+            //open dialog window with appointment details and ask for confirmation before adding to database
         }
 
     }
