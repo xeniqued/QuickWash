@@ -1,3 +1,3 @@
-public class AppointmentDatabase {
+public class Database {
     
 }

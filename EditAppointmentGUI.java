@@ -208,7 +208,7 @@ public class EditAppointmentGUI extends JFrame {
         daySpinner.setPreferredSize(new Dimension(119,35));
         ((DefaultEditor)daySpinner.getEditor()).getTextField().setEditable(false);
         ((DefaultEditor)daySpinner.getEditor()).getTextField().setForeground(mainBlue);  
-        ((DefaultEditor)daySpinner.getEditor()).getTextField().setFont(new Font(daySpinner.getFont().getFontName(), Font.PLAIN, 14));   
+        ((DefaultEditor)daySpinner.getEditor()).getTextField().setFont(new Font(dayLbl.getFont().getFontName(), Font.PLAIN, 14));   
         
         disinner3i3Pnl.add(daySpinner, BorderLayout.SOUTH); 
 
