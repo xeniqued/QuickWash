@@ -7,26 +7,31 @@ import org.w3c.dom.ranges.Range;
 import java.awt.*;
 import java.awt.event.*;
 
+
+/**
+ * This class creates a screen in which the user can edit or delete an appointment.
+ */
 public class EditAppointmentGUI extends JFrame {
 
     /**
      * This class creates a screen in which the user can add a trip to the arraylist.
      */
 
-    private JPanel disPnl, disinner1Pnl, disinner2Pnl, disinner3Pnl;
-    private JPanel btnPnl;
+    private JPanel disPnl, disinner1Pnl, disinner2Pnl, disinner3Pnl; //display panel and its subpanels at the top
+    private JPanel btnPnl; //button panel at the bottom
 
-    private JButton btnDelete;
-    private JButton btnApply;
-    private JButton btnCancel;
+    private JButton btnDelete; // Used to handle deleting the appointment from the appointment database
+    private JButton btnApply; // Used to handle saving edits to the appointment database
+    private JButton btnCancel; // closes window and returns to the resident gui
 
-    private JLabel  createAptLbl;
+    private JLabel  editAptLbl; // displays Edit Appointment at top
     private JLabel washLbl, dryLbl;
-    private JSpinner washSpinner, drySpinner, daySpinner;
+    private JSpinner washSpinner, drySpinner, daySpinner; // accepts wash loads, dry loads, day of month
     private JLabel dateLbl, monLbl, dayLbl, yearLbl, timeLbl;
-    private JComboBox<String> monthDropBox,  yearDropBox, timeDropBox;
-    private JCheckBox attendedCheck;
+    private JComboBox<String> monthDropBox,  yearDropBox, timeDropBox; // accepts month, year, time
+    private JCheckBox attendedCheck; // accepts a boolean for whether an appointment was attended
 
+    // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
     private Color mainWhite = new Color(255, 255, 255);
     private Color errorRed = new Color(239, 66, 66);    
@@ -39,11 +44,12 @@ public class EditAppointmentGUI extends JFrame {
     public EditAppointmentGUI(ResidentGUI res){
 
         /**
-         * This sets up user information to ensure that the window shares the same data for a user
-         */        
+         * This sets up attributes to ensure that the window instances are linked
+         */            
         thisRGUI = res;
         thisEditGUI = this;
-        
+                
+        // Additional window/frame settings
         setAlwaysOnTop(true); 
 
         /*Labelling the frame/window*/
@@ -54,22 +60,20 @@ public class EditAppointmentGUI extends JFrame {
         //Declaring layout
         setLayout(new BorderLayout());
 
+
         //=================================================//
         //=                SETTING UP PANELS              =//
         //=================================================//
-        //btnPnl = new JPanel(); 
-        //disPnl = new JPanel(); //For inputting area
+
+        disPnl = new JPanel(new FlowLayout(FlowLayout.CENTER)); //For inputting area
         btnPnl = new JPanel(new GridBagLayout()); //For buttons
-        disPnl = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
 
 
         //============================================//
         //=   STRUCTURING & CREATING DISPLAY PANEL   =//
         //============================================// 
 
-        /**
-         * Main panel for input section
-         */
+        //Data should be loaded and the fields autofilled woth the appointment data in this section
         disPnl.setPreferredSize(new Dimension(430,400));
         disPnl.setBorder(new EmptyBorder(0, 1, 0, 2));
         disPnl.setBackground(mainWhite); 
@@ -77,19 +81,22 @@ public class EditAppointmentGUI extends JFrame {
         //FLATLAF stylings
         UIManager.put( "Spinner.arc", 27); 
 
+        // CREATING AND ALLIGNING EDIT APPOINTMENT LABEL //               
+        //(displayinnerpanel1) holds create appt label at top
         disinner1Pnl = new JPanel();
         disinner1Pnl.setPreferredSize(new Dimension(435,70));
         disinner1Pnl.setBackground(mainBlue);
         disinner1Pnl.setBorder(new EmptyBorder(16, 0, 0, 0));
-        createAptLbl = new JLabel("Edit Appointment ");
-        createAptLbl.setHorizontalAlignment(JLabel.CENTER);
-        createAptLbl.setOpaque(false);
-        createAptLbl.setForeground(mainWhite);
-        createAptLbl.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 19));        
-        disinner1Pnl.add(createAptLbl);
+        editAptLbl = new JLabel("Edit Appointment");
+        editAptLbl.setHorizontalAlignment(JLabel.CENTER);
+        editAptLbl.setOpaque(false);
+        editAptLbl.setForeground(mainWhite);
+        editAptLbl.setFont(new Font(editAptLbl.getFont().getFontName(), Font.BOLD, 19));        
+        disinner1Pnl.add(editAptLbl);
 
 
-
+        // CREATING AND ALLIGNING WASH AND DRY LOADS INPUT FIELDS //               
+        //(displayinnerpanel2) holds both wash, dry labels and input fields inside display panel
         disinner2Pnl = new JPanel(new BorderLayout());      
         disinner2Pnl.setOpaque(false);  
         disinner2Pnl.setPreferredSize(new Dimension(430,95));
@@ -109,9 +116,9 @@ public class EditAppointmentGUI extends JFrame {
          1);//step
         washSpinner = new JSpinner(washSpinModel);
         washSpinner.setPreferredSize(new Dimension(110,35));
-       ((DefaultEditor)washSpinner.getEditor()).getTextField().setEditable(false);
-       ((DefaultEditor)washSpinner.getEditor()).getTextField().setForeground(mainBlue);  
-       ((DefaultEditor)washSpinner.getEditor()).getTextField().setFont(new Font(createAptLbl.getFont().getFontName(), Font.PLAIN, 15));   
+        ((DefaultEditor)washSpinner.getEditor()).getTextField().setEditable(false);
+        ((DefaultEditor)washSpinner.getEditor()).getTextField().setForeground(mainBlue);  
+        ((DefaultEditor)washSpinner.getEditor()).getTextField().setFont(new Font(editAptLbl.getFont().getFontName(), Font.PLAIN, 15));   
         disinner2i1Pnl.add(washSpinner, BorderLayout.SOUTH);
 
         disinner2Pnl.add(disinner2i1Pnl, BorderLayout.LINE_START);
@@ -133,7 +140,7 @@ public class EditAppointmentGUI extends JFrame {
         drySpinner.setPreferredSize(new Dimension(110,35));
         ((DefaultEditor)drySpinner.getEditor()).getTextField().setEditable(false);
         ((DefaultEditor)drySpinner.getEditor()).getTextField().setForeground(mainBlue);  
-        ((DefaultEditor)drySpinner.getEditor()).getTextField().setFont(new Font(createAptLbl.getFont().getFontName(), Font.PLAIN, 15));   
+        ((DefaultEditor)drySpinner.getEditor()).getTextField().setFont(new Font(editAptLbl.getFont().getFontName(), Font.PLAIN, 15));   
          
         disinner2i2Pnl.add(drySpinner, BorderLayout.SOUTH);
 
@@ -141,6 +148,8 @@ public class EditAppointmentGUI extends JFrame {
 
 
 
+        // CREATING AND ALLIGNING MONTH, DAY, YEAR, TIME, ATTENDANCE INPUT FIELDS //               
+        //(displayinnerpanel3) holds both wash, dry labels and input fields inside display panel
         disinner3Pnl = new JPanel(); 
         disinner3Pnl.setBorder(BorderFactory.createLineBorder(mainBlue, 1));
         disinner3Pnl.setLayout(new BoxLayout(disinner3Pnl, BoxLayout.Y_AXIS));
@@ -154,7 +163,7 @@ public class EditAppointmentGUI extends JFrame {
         dateLbl.setHorizontalAlignment(JLabel.CENTER);
         dateLbl.setOpaque(false);
         dateLbl.setForeground(mainBlue);
-        dateLbl.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 17));        
+        dateLbl.setFont(new Font(dateLbl.getFont().getFontName(), Font.BOLD, 17));        
         disinner3i1Pnl.add(dateLbl); 
 
         disinner3Pnl.add(disinner3i1Pnl);    
@@ -177,7 +186,7 @@ public class EditAppointmentGUI extends JFrame {
                             "5 - May", "6 - June", "7 - July", "8 - Aug", "9 - Sept",
                             "10 - Oct", "11 - Nov", "12 - Dec"};        
         monthDropBox = new JComboBox<String>(months);
-        monthDropBox.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 15));        
+        monthDropBox.setFont(new Font(monthDropBox.getFont().getFontName(), Font.BOLD, 15));        
         monthDropBox.setForeground(mainBlue);
         monthDropBox.setPreferredSize(new Dimension(120,35));
         disinner3i2Pnl.add(monthDropBox, BorderLayout.SOUTH);    
@@ -199,7 +208,7 @@ public class EditAppointmentGUI extends JFrame {
         daySpinner.setPreferredSize(new Dimension(119,35));
         ((DefaultEditor)daySpinner.getEditor()).getTextField().setEditable(false);
         ((DefaultEditor)daySpinner.getEditor()).getTextField().setForeground(mainBlue);  
-        ((DefaultEditor)daySpinner.getEditor()).getTextField().setFont(new Font(createAptLbl.getFont().getFontName(), Font.PLAIN, 14));   
+        ((DefaultEditor)daySpinner.getEditor()).getTextField().setFont(new Font(daySpinner.getFont().getFontName(), Font.PLAIN, 14));   
         
         disinner3i3Pnl.add(daySpinner, BorderLayout.SOUTH); 
 
@@ -231,7 +240,7 @@ public class EditAppointmentGUI extends JFrame {
         yearDropBox = new JComboBox<String>(years); 
         yearDropBox.setPreferredSize(new Dimension(119,35));
         yearDropBox.setForeground(mainBlue);
-        yearDropBox.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 15));        
+        yearDropBox.setFont(new Font(yearDropBox.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i4Pnl.add(yearDropBox, BorderLayout.SOUTH);  
         
         disinner3div2Pnl.add(disinner3i4Pnl, BorderLayout.LINE_START);   
@@ -251,7 +260,7 @@ public class EditAppointmentGUI extends JFrame {
             count++;
         };               
         timeDropBox = new JComboBox<String>(times); 
-        timeDropBox.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 15));        
+        timeDropBox.setFont(new Font(timeDropBox.getFont().getFontName(), Font.BOLD, 15));        
         timeDropBox.setForeground(mainBlue);
         timeDropBox.setPreferredSize(new Dimension(118,35));
         disinner3i5Pnl.add(timeDropBox, BorderLayout.SOUTH);    
@@ -278,28 +287,25 @@ public class EditAppointmentGUI extends JFrame {
          
 
 
-
+        //======================================================//
+        //=    ADDING INNER DISPLAY PANELS TO DISPLAY PANEL    =//
+        //======================================================//
         disPnl.add(disinner1Pnl); 
         disPnl.add(disinner2Pnl); 
         disPnl.add(disinner3Pnl); 
+
 
         //========================================//
         //=   CREATING THE BUTTONS AT BOTTOM     =//
         //========================================//   
 
-        //btnPnl.setBackground(new Color(195,195,195));
         btnPnl.setBackground(mainWhite);
+        //btnPnl.setBackground(new Color(195,195,195));
         btnPnl.setSize(450, 380);
         btnPnl.setBorder(new EmptyBorder(20, 15, 30, 15));
 
-        btnApply = new JButton("Apply Edits");
-        btnApply.setFont(new Font(btnApply.getFont().getFontName(), Font.BOLD, 16));
-        btnApply.setForeground(mainWhite);
-        btnApply.setBackground(mainBlue);
-        btnApply.setPreferredSize(new Dimension(135, 35));
-        btnApply.addActionListener(new ApplyBtnListener());
 
-
+        // CREATING AND ALLIGNING DELETE BUTTON // 
         ImageIcon DeleteIcon = null;      
         try {
             DeleteIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/deleteicon.png").getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH)));
@@ -312,7 +318,15 @@ public class EditAppointmentGUI extends JFrame {
         btnDelete.setPreferredSize(new Dimension(50, 35));
         btnDelete.addActionListener(new DeleteBtnListener());
         
+        // CREATING AND ALLIGNING APPLY EDITS BUTTON // 
+        btnApply = new JButton("Apply Edits");
+        btnApply.setFont(new Font(btnApply.getFont().getFontName(), Font.BOLD, 16));
+        btnApply.setForeground(mainWhite);
+        btnApply.setBackground(mainBlue);
+        btnApply.setPreferredSize(new Dimension(135, 35));
+        btnApply.addActionListener(new ApplyBtnListener());
         
+        // CREATING AND ALLIGNING CANCEL BUTTON // 
         btnCancel = new JButton("Cancel");
         btnCancel.setFont(new Font(btnCancel.getFont().getFontName(), Font.BOLD, 16));
         btnCancel.setForeground(mainWhite);
@@ -323,8 +337,8 @@ public class EditAppointmentGUI extends JFrame {
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 9, 0, 9);
-        btnPnl.add(btnApply, gbc);
         btnPnl.add(btnDelete, gbc);
+        btnPnl.add(btnApply, gbc);
         btnPnl.add(btnCancel, gbc);
 
 
@@ -346,7 +360,7 @@ public class EditAppointmentGUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true); 
 
-    } //public AddTripScreen(TripDisplayScreen tds, Account acc) end (constructor)
+    } //public EditAppointmentGUI() end (constructor)
 
 
     
@@ -354,7 +368,9 @@ public class EditAppointmentGUI extends JFrame {
     //=           BUTTON LISTENING FUNCTIONALITIES            =//
     //=========================================================//
     
-
+    /**
+     * This button listener handles taking the data from the input fields and updating it to the appointment database
+     */
     private class ApplyBtnListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
@@ -364,7 +380,9 @@ public class EditAppointmentGUI extends JFrame {
 
     }
 
-
+    /**
+     * This button listener handles removing the appointment from the appointment database
+     */
     private class DeleteBtnListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
@@ -390,4 +408,4 @@ public class EditAppointmentGUI extends JFrame {
 
     }
 
-} //public class AddTripScreen() end 
+} //public class EditAppointmentGUI() end 

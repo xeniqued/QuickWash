@@ -21,9 +21,13 @@ public class TableRenderer {
     /**
      * This sets up the table to put in the given panel.
      * @param pnl is the panel where the table will be displayed.
+     * @param displaySize is the size of the table's display.
+     * @param columnNames is string array for the names of the table's columns.
+     * @param tableData a 2D string array featuring the table's data.
      */
     public TableRenderer(JPanel pnl, Dimension displaySize, String[] columnNames, String[][] tableData) {    
         
+        //storing the data in the class for later
         this.tableData = tableData;
         this.columnNames = columnNames;
 
@@ -32,8 +36,11 @@ public class TableRenderer {
             model.addRow(this.tableData[i]);  
         }
 
+        //FLATLAF table styling
         UIManager.put( "Table.selectionBackground", new Color(85, 151, 216));
 
+        
+        // CREATING AND SETTING UP TABLE APPEARANCE // 
         table = new JTable(model){
             public boolean editCellAt(int row, int column, java.util.EventObject e) {
                return false;
@@ -67,6 +74,8 @@ public class TableRenderer {
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
+        
+        // ADDITIONAL SETUP AND ADDING TABLE TO GIVEN JPANEL // 
         table.setPreferredScrollableViewportSize(displaySize);
         table.setFillsViewportHeight(true);
         scrollPane = new JScrollPane(table);
@@ -80,13 +89,5 @@ public class TableRenderer {
     public DefaultTableModel getModel(){
         return model;
     }    
-
-    //=========================================================//
-    //=          BUTTON LISTENING FUNCTIONALITIES             =//
-    //=========================================================//
-
-    /**
-     * This implements Sign Up Button functionalities
-     */
     
 }

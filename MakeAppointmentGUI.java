@@ -13,18 +13,19 @@ public class MakeAppointmentGUI extends JFrame {
      * This class creates a screen in which the user can add a trip to the arraylist.
      */
 
-    private JPanel disPnl, disinner1Pnl, disinner2Pnl, disinner3Pnl;
-    private JPanel btnPnl;
+    private JPanel disPnl, disinner1Pnl, disinner2Pnl, disinner3Pnl; //display panel and its subpanels at the top
+    private JPanel btnPnl; //button panel at the bottom
 
-    private JButton btnSchedule;
-    private JButton btnCancel;
+    private JButton btnSchedule; // Used to handle taking the inputted data and adding it to the appointment database
+    private JButton btnCancel; // closes window and returns to the resident gui
 
-    private JLabel  createAptLbl;
-    private JLabel washLbl, dryLbl;
-    private JSpinner washSpinner, drySpinner, daySpinner;
+    private JLabel  createAptLbl;  // displays Create Appointment at top
+    private JLabel washLbl, dryLbl; 
+    private JSpinner washSpinner, drySpinner, daySpinner; // accepts wash loads, dry loads, day of month
     private JLabel dateLbl, monLbl, dayLbl, yearLbl, timeLbl;
-    private JComboBox<String> monthDropBox,  yearDropBox, timeDropBox;
+    private JComboBox<String> monthDropBox,  yearDropBox, timeDropBox; // accepts month, year, time
 
+    // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
     private Color mainWhite = new Color(255, 255, 255);
     private Color errorRed = new Color(239, 66, 66);    
@@ -33,19 +34,20 @@ public class MakeAppointmentGUI extends JFrame {
     private static ResidentGUI thisRGUI; //previous screen
     private MakeAppointmentGUI thisAddGUI; //current screen instance
 
-
+    /**
+     * This class creates a screen in which the user can schedule an appointment.
+     */
     public MakeAppointmentGUI(ResidentGUI res){
 
         /**
-         * This sets up user information to ensure that the window shares the same data for a user
+         * This sets up attributes to ensure that the window instances are linked
          */        
         thisRGUI = res;
         thisAddGUI = this;
         setFocusable(true);
 
+        // Additional window/frame settings
         setAlwaysOnTop(true); 
-        toFront();
-        requestFocusInWindow();
 
         /*Labelling the frame/window*/
         setTitle("Create Appointment");      
@@ -55,22 +57,21 @@ public class MakeAppointmentGUI extends JFrame {
         //Declaring layout
         setLayout(new BorderLayout());
 
-        //=================================================//
-        //=                SETTING UP PANELS              =//
-        //=================================================//
-        //btnPnl = new JPanel(); 
-        //disPnl = new JPanel(); //For inputting area
+
+        //==================================================//
+        //=                                                =//
+        //=               SETTING UP PANELS                =//
+        //=                                                =//
+        //==================================================//
+        
+        disPnl = new JPanel(new FlowLayout(FlowLayout.CENTER)); //For inputting area
         btnPnl = new JPanel(new GridBagLayout()); //For buttons
-        disPnl = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
 
 
         //============================================//
         //=   STRUCTURING & CREATING DISPLAY PANEL   =//
         //============================================// 
 
-        /**
-         * Main panel for input section
-         */
         disPnl.setPreferredSize(new Dimension(430,400));
         disPnl.setBorder(new EmptyBorder(0, 1, 0, 2));
         disPnl.setBackground(mainWhite); 
@@ -78,11 +79,13 @@ public class MakeAppointmentGUI extends JFrame {
         //FLATLAF stylings
         UIManager.put( "Spinner.arc", 27); 
 
+        // CREATING AND ALLIGNING CREATE APPOINTMENT LABEL //               
+        //(displayinnerpanel1) holds create appt label at top
         disinner1Pnl = new JPanel();
-        disinner1Pnl.setBorder(new EmptyBorder(15, 0, 0, 0));
+        disinner1Pnl.setBorder(new EmptyBorder(16, 0, 0, 0));
         disinner1Pnl.setPreferredSize(new Dimension(435,70));
         disinner1Pnl.setBackground(mainBlue);
-        createAptLbl = new JLabel("Create Appointment ");
+        createAptLbl = new JLabel("Create Appointment");
         createAptLbl.setHorizontalAlignment(JLabel.CENTER);
         createAptLbl.setOpaque(false);
         createAptLbl.setForeground(mainWhite);
@@ -90,7 +93,8 @@ public class MakeAppointmentGUI extends JFrame {
         disinner1Pnl.add(createAptLbl);
 
 
-
+        // CREATING AND ALLIGNING WASH AND DRY LOADS INPUT FIELDS //               
+        //(displayinnerpanel2) holds both wash, dry labels and input fields inside display panel
         disinner2Pnl = new JPanel(new BorderLayout());      
         disinner2Pnl.setOpaque(false);  
         disinner2Pnl.setPreferredSize(new Dimension(430,95));
@@ -110,9 +114,9 @@ public class MakeAppointmentGUI extends JFrame {
          1);//step
         washSpinner = new JSpinner(washSpinModel);
         washSpinner.setPreferredSize(new Dimension(110,35));
-       ((DefaultEditor)washSpinner.getEditor()).getTextField().setEditable(false);
-       ((DefaultEditor)washSpinner.getEditor()).getTextField().setForeground(mainBlue);  
-       ((DefaultEditor)washSpinner.getEditor()).getTextField().setFont(new Font(createAptLbl.getFont().getFontName(), Font.PLAIN, 15));   
+        ((DefaultEditor)washSpinner.getEditor()).getTextField().setEditable(false);
+        ((DefaultEditor)washSpinner.getEditor()).getTextField().setForeground(mainBlue);  
+        ((DefaultEditor)washSpinner.getEditor()).getTextField().setFont(new Font(createAptLbl.getFont().getFontName(), Font.PLAIN, 15));   
         disinner2i1Pnl.add(washSpinner, BorderLayout.SOUTH);
 
         disinner2Pnl.add(disinner2i1Pnl, BorderLayout.LINE_START);
@@ -142,6 +146,8 @@ public class MakeAppointmentGUI extends JFrame {
 
 
 
+        // CREATING AND ALLIGNING MONTH, DAY, YEAR, TIME INPUT FIELDS //               
+        //(displayinnerpanel3) holds both wash, dry labels and input fields inside display panel
         disinner3Pnl = new JPanel(); 
         disinner3Pnl.setBorder(BorderFactory.createLineBorder(mainBlue, 1));
         disinner3Pnl.setLayout(new BoxLayout(disinner3Pnl, BoxLayout.Y_AXIS));
@@ -167,7 +173,6 @@ public class MakeAppointmentGUI extends JFrame {
         disinner3div1Pnl.setPreferredSize(new Dimension(430,50));
         disinner3div1Pnl.setBorder(new EmptyBorder(0, 25, 25, 33)); 
 
-
         JPanel disinner3i2Pnl = new JPanel(new BorderLayout());
         disinner3i2Pnl.setOpaque(false);        
         monLbl = new JLabel("Month");  
@@ -181,6 +186,7 @@ public class MakeAppointmentGUI extends JFrame {
         monthDropBox.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 15));        
         monthDropBox.setForeground(mainBlue);
         monthDropBox.setPreferredSize(new Dimension(120,35));
+
         disinner3i2Pnl.add(monthDropBox, BorderLayout.SOUTH);    
 
         disinner3div1Pnl.add(disinner3i2Pnl, BorderLayout.LINE_START); 
@@ -262,20 +268,24 @@ public class MakeAppointmentGUI extends JFrame {
          
 
 
-
+        //======================================================//
+        //=    ADDING INNER DISPLAY PANELS TO DISPLAY PANEL    =//
+        //======================================================//
         disPnl.add(disinner1Pnl); 
         disPnl.add(disinner2Pnl); 
         disPnl.add(disinner3Pnl); 
+
 
         //========================================//
         //=   CREATING THE BUTTONS AT BOTTOM     =//
         //========================================//   
 
-        //btnPnl.setBackground(new Color(195,195,195));
         btnPnl.setBackground(mainWhite);
+        //btnPnl.setBackground(new Color(195,195,195));
         btnPnl.setSize(450, 380);
         btnPnl.setBorder(new EmptyBorder(20, 15, 30, 15));
 
+        // CREATING AND ALLIGNING SCHEDULE BUTTON // 
         btnSchedule = new JButton("Schedule");
         btnSchedule.setFont(new Font(btnSchedule.getFont().getFontName(), Font.BOLD, 16));
         btnSchedule.setForeground(mainWhite);
@@ -283,14 +293,14 @@ public class MakeAppointmentGUI extends JFrame {
         btnSchedule.setPreferredSize(new Dimension(130, 35));
         btnSchedule.addActionListener(new ScheduleBtnListener());
         
-        
+
+        // CREATING AND ALLIGNING CANCEL BUTTON // 
         btnCancel = new JButton("Cancel");
         btnCancel.setFont(new Font(btnCancel.getFont().getFontName(), Font.BOLD, 16));
         btnCancel.setForeground(mainWhite);
         btnCancel.setBackground(mainBlue);
         btnCancel.setPreferredSize(new Dimension(120, 35));
         btnCancel.addActionListener(new CancelBtnListener());
-
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 20, 0, 20);
@@ -316,7 +326,7 @@ public class MakeAppointmentGUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true); 
 
-    } //public AddTripScreen(TripDisplayScreen tds, Account acc) end (constructor)
+    } //public MakeAppointmentGUI() end (constructor)
 
 
     
@@ -324,7 +334,9 @@ public class MakeAppointmentGUI extends JFrame {
     //=           BUTTON LISTENING FUNCTIONALITIES            =//
     //=========================================================//
     
-
+    /**
+     * This button listener handles taking the data from the input fields and adding it to the appointment database
+     */
     private class ScheduleBtnListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
@@ -336,7 +348,7 @@ public class MakeAppointmentGUI extends JFrame {
     
 
     /**
-     * This button listener exits the current display screen and returns to the previous screen.
+     * This button listener exits the current screen and returns to the previous screen.
      */
     private class CancelBtnListener implements ActionListener
     {
@@ -350,4 +362,4 @@ public class MakeAppointmentGUI extends JFrame {
 
     }
 
-} //public class AddTripScreen() end 
+} //public class MakeAppointmentGUI() end 

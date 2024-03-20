@@ -15,21 +15,23 @@ import java.util.*;
  * This displays the main resident screen of the system where appointments are displayed 
  * and can be edited.
  */
-
 public class ResidentGUI extends JFrame {
 
-    private JPanel navPnl;
-    private JPanel disPnl, apptPnl, detailsPnl;
-    private TableRenderer apptTable, detsTable;
-    private String[] apptColumnNames, detsColumnNames;
-    private String[][] apptData, detsData;
-    private DefaultTableModel model;
+    private JPanel navPnl; // (navigate panel) entire panel on the left  
+    // (display panel) entire panel on the right, (appointments panel) appointment table at top, 
+    // (details panel) appt info at bottom
+    private JPanel disPnl, apptPnl, detailsPnl; 
+    private TableRenderer apptTable, detsTable; //uses custom class to display a table for above
+    private String[] apptColumnNames, detsColumnNames; //stores column names for each table
+    private String[][] apptData, detsData; // stores data for rows in appointment & details tables
 
-    private JLabel navLbl, apptLbl, infoLbl;
+    private JLabel navLbl, apptLbl, infoLbl; //navLbl is where the Residents's first name is inserted
     private JLabel detailsLbl;
 
-    private JButton btnMakeAppt, btnEditAppt, btnConfirm, btnLogout;
+    // Make Appointment, Edit Appointment, Mark Attend, Logout buttons
+    private JButton btnMakeAppt, btnEditAppt, btnAttend, btnLogout; 
     
+    // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
     private Color mainWhite = new Color(255, 255, 255);
     private Color errorRed = new Color(239, 66, 66);    
@@ -37,16 +39,15 @@ public class ResidentGUI extends JFrame {
 
     private WelcomeScreen thisWS; //previous screen
     private static ResidentGUI thisResGUI; //current screen instance
-    private MakeAppointmentGUI thisMkAptGUI = null; //popup screen instance
-    private EditAppointmentGUI thisEdAptGUI = null; //popup screen instance
-    private boolean winOpenCheck = false;
+    private MakeAppointmentGUI thisMkAptGUI = null; //MakeAppointmentGUI popup screen instance
+    private EditAppointmentGUI thisEdAptGUI = null; //EditAppointmentGUI popup screen instance
     
 
     public ResidentGUI(WelcomeScreen ws) {
 
         /**
-         * This sets up user information to ensure that the windows share same user data.
-         */
+         * This sets up attributes to ensure that the window instances are linked
+         */        
         thisWS = ws;
         thisResGUI = this;
         
@@ -70,9 +71,10 @@ public class ResidentGUI extends JFrame {
 
 
         //==================================================//
+        //=                                                =//
         //=               SETTING UP PANELS                =//
+        //=                                                =//
         //==================================================//
-
 
         
         //=======================================================//
@@ -96,13 +98,20 @@ public class ResidentGUI extends JFrame {
         } catch (Exception ioe) {
             System.out.println("User icon not found.");
         }      
+        // replace <Resident> with the variable storing the the user's name
         navLbl.setText("Hello, " + "<Resident>"); 
         navLbl.setForeground(mainWhite);  
         navLbl.setHorizontalAlignment(JLabel.CENTER);
         navLbl.setFont(new Font(navLbl.getFont().getFontName(), Font.BOLD, 19));
         
 
-        /*Button set up*/   
+
+        //===============================================//
+        //=    CREATING THE BUTTONS AT BOTTOM RIGHT     =//
+        //===============================================//
+        
+        
+        // CREATING AND ALLIGNING MAKE APPOINTMENT BUTTON // 
         ImageIcon MkAptIcon = null;      
         try {
             MkAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/createicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
@@ -119,6 +128,8 @@ public class ResidentGUI extends JFrame {
         btnMakeAppt.setMargin(new Insets(7, 20, 7, 0));
         btnMakeAppt.addActionListener(new MkAptBtnListener());
 
+        
+        // CREATING AND ALLIGNING EDIT APPOINTMENT BUTTON // 
         ImageIcon EditAptIcon = null;      
         try {
             EditAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/editicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
@@ -135,27 +146,29 @@ public class ResidentGUI extends JFrame {
         btnEditAppt.setMargin(new Insets(7, 20, 7, 0));
         btnEditAppt.addActionListener(new EditAptBtnListener());
         
-        ImageIcon CnfmAptIcon = null;      
+        
+        // CREATING AND ALLIGNING MARK ATTEND APPOINTMENT BUTTON // 
+        ImageIcon AttendAptIcon = null;      
         try {
-            CnfmAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/confirmicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+            AttendAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/confirmicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
         } catch (Exception ioe) {
             System.out.println("Create icon not found.");
         }      
-        btnConfirm = new JButton(CnfmAptIcon);
-        btnConfirm.setText(" Mark As Attended");
-        btnConfirm.setFont(new Font(btnConfirm.getFont().getFontName(), Font.BOLD, 16));
-        btnConfirm.setForeground(mainWhite);
-        btnConfirm.setBackground(mainBlue);
-        btnConfirm.setHorizontalAlignment(SwingConstants.LEFT);
-        btnConfirm.setBorderPainted(false);
-        btnConfirm.setMargin(new Insets(7, 20, 7, 0));
-        btnConfirm.addActionListener(new ConfirmBtnListener());
+        btnAttend = new JButton(AttendAptIcon);
+        btnAttend.setText(" Mark As Attended");
+        btnAttend.setFont(new Font(btnAttend.getFont().getFontName(), Font.BOLD, 16));
+        btnAttend.setForeground(mainWhite);
+        btnAttend.setBackground(mainBlue);
+        btnAttend.setHorizontalAlignment(SwingConstants.LEFT);
+        btnAttend.setBorderPainted(false);
+        btnAttend.setMargin(new Insets(7, 20, 7, 0));
+        btnAttend.addActionListener(new ConfirmBtnListener());
 
                         
         navinner1Pnl.add(navLbl);
         navinner1Pnl.add(btnMakeAppt);
         navinner1Pnl.add(btnEditAppt);
-        navinner1Pnl.add(btnConfirm);
+        navinner1Pnl.add(btnAttend);
 
 
 
@@ -171,6 +184,8 @@ public class ResidentGUI extends JFrame {
 
         navinner2Pnl.add(btnLogout);
 
+        
+        // Adding inner navigation panels to the navigation panel
         navPnl.add(navinner1Pnl, BorderLayout.NORTH);
         navPnl.add(navinner2Pnl, BorderLayout.SOUTH);
 
@@ -187,7 +202,9 @@ public class ResidentGUI extends JFrame {
         disPnl.setPreferredSize(new Dimension(905, 768));
 
 
-        // Panel showing appoiments table
+
+        
+        // CREATING AND ALLIGNING APPOINTMENT PANEL // 
         apptPnl = new JPanel();   
         apptPnl.setLayout(new BoxLayout (apptPnl, BoxLayout.Y_AXIS));   
         apptPnl.setOpaque(false);            
@@ -215,7 +232,8 @@ public class ResidentGUI extends JFrame {
         apptPnl.add(apptinner1Pnl);
 
 
-        // Panel to display table itself
+        
+        // PANEL FOR APPOINTMENT TABLE ITSELF // 
         JPanel apptinner2Pnl = new JPanel();        
         apptinner2Pnl.setOpaque(false); 
         apptinner2Pnl.setBorder(new EmptyBorder(0, 0, 5, 0));
@@ -225,6 +243,36 @@ public class ResidentGUI extends JFrame {
         //Update this value, should be sorted by upcoming date
         apptData = new String[][] {
             {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
+            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
+            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
             {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"}
         };
 
@@ -233,6 +281,7 @@ public class ResidentGUI extends JFrame {
         apptPnl.add(apptinner2Pnl);
 
 
+        // PANEL FOR APPOINTMENT DETAILS TABLE ITSELF // 
         detailsPnl = new JPanel();           
         detailsPnl.setOpaque(false);   
         //detailsPnl.setBackground(Color.ORANGE);  
@@ -273,7 +322,8 @@ public class ResidentGUI extends JFrame {
         detailsPnl.add(detsinner2Pnl);
 
 
-
+        
+        // Adding inner appointment panels to the appointment panel
         disPnl.add(apptPnl, BorderLayout.NORTH);
         disPnl.add(detailsPnl, BorderLayout.SOUTH);
         disPnl.add(apptPnl);
@@ -307,7 +357,11 @@ public class ResidentGUI extends JFrame {
      */
     private class MkAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            thisMkAptGUI = new MakeAppointmentGUI(thisResGUI);
+            if (thisMkAptGUI == null) {
+                thisMkAptGUI = new MakeAppointmentGUI(thisResGUI);
+            } else {
+                thisMkAptGUI = null;
+            }
         }
 
     }
@@ -317,7 +371,11 @@ public class ResidentGUI extends JFrame {
      */
     private class EditAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            thisEdAptGUI = new EditAppointmentGUI(thisResGUI);
+            if (thisEdAptGUI == null) {
+                thisEdAptGUI = new EditAppointmentGUI(thisResGUI);
+            } else {
+                thisEdAptGUI = null;
+            }
         }
 
     }
@@ -333,7 +391,7 @@ public class ResidentGUI extends JFrame {
     }
 
     /**
-     * This exits the current screen and returns the user to the previous screen Close
+     * This exits the current screen and returns the user to the previous screen
      */
     private class LogoutBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
