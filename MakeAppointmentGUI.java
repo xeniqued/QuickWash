@@ -271,7 +271,7 @@ public class MakeAppointmentGUI extends JFrame {
         //======================================================//
         //=    ADDING INNER DISPLAY PANELS TO DISPLAY PANEL    =//
         //======================================================//
-        disPnl.add(disinner1Pnl); 
+        add(disinner1Pnl, BorderLayout.NORTH); 
         disPnl.add(disinner2Pnl); 
         disPnl.add(disinner3Pnl); 
 
@@ -312,7 +312,7 @@ public class MakeAppointmentGUI extends JFrame {
         /**
          * Adding main panels to frame/window
          */
-        add(disPnl, BorderLayout.BEFORE_LINE_BEGINS);
+        add(disPnl, BorderLayout.CENTER);
         add(btnPnl, BorderLayout.SOUTH);
 
 

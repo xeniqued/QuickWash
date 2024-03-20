@@ -19,7 +19,7 @@ public class ResidentGUI extends JFrame {
 
     private JPanel navPnl; // (navigate panel) entire panel on the left  
     // (display panel) entire panel on the right, (appointments panel) appointment table at top, 
-    // (details panel) appt info at bottom
+    // (details panel) appointment info at bottom
     private JPanel disPnl, apptPnl, detailsPnl; 
     private TableRenderer apptTable, detsTable; //uses custom class to display a table for above
     private String[] apptColumnNames, detsColumnNames; //stores column names for each table
@@ -357,12 +357,7 @@ public class ResidentGUI extends JFrame {
      */
     private class MkAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (thisMkAptGUI == null) {
-                // when appointment database class is implemented pass it into this to give it access
-                thisMkAptGUI = new MakeAppointmentGUI(thisResGUI);
-            } else {
-                thisMkAptGUI = null;
-            }
+            thisMkAptGUI = new MakeAppointmentGUI(thisResGUI);
         }
 
     }
@@ -372,12 +367,7 @@ public class ResidentGUI extends JFrame {
      */
     private class EditAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (thisEdAptGUI == null) {
-                // when appointment database class is implemented pass it into this to give it access
-                thisEdAptGUI = new EditAppointmentGUI(thisResGUI);
-            } else {
-                thisEdAptGUI = null;
-            }
+            thisEdAptGUI = new EditAppointmentGUI(thisResGUI);
         }
 
     }

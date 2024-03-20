@@ -154,7 +154,7 @@ public class EditAppointmentGUI extends JFrame {
         disinner3Pnl.setBorder(BorderFactory.createLineBorder(mainBlue, 1));
         disinner3Pnl.setLayout(new BoxLayout(disinner3Pnl, BoxLayout.Y_AXIS));
         disinner3Pnl.setOpaque(false);
-        disinner3Pnl.setPreferredSize(new Dimension(371,285));
+        disinner3Pnl.setPreferredSize(new Dimension(371,286));
 
         JPanel disinner3i1Pnl = new JPanel();
         disinner3i1Pnl.setOpaque(false);
@@ -290,7 +290,7 @@ public class EditAppointmentGUI extends JFrame {
         //======================================================//
         //=    ADDING INNER DISPLAY PANELS TO DISPLAY PANEL    =//
         //======================================================//
-        disPnl.add(disinner1Pnl); 
+        add(disinner1Pnl, BorderLayout.NORTH); 
         disPnl.add(disinner2Pnl); 
         disPnl.add(disinner3Pnl); 
 
@@ -346,7 +346,7 @@ public class EditAppointmentGUI extends JFrame {
         /**
          * Adding main panels to frame/window
          */
-        add(disPnl, BorderLayout.BEFORE_LINE_BEGINS);
+        add(disPnl, BorderLayout.CENTER);
         add(btnPnl, BorderLayout.SOUTH);
 
 

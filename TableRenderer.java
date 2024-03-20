@@ -22,7 +22,7 @@ public class TableRenderer {
      * This sets up the table to put in the given panel.
      * @param pnl is the panel where the table will be displayed.
      * @param displaySize is the size of the table's display.
-     * @param columnNames is string array for the names of the table's columns.
+     * @param columnNames is a string array for the names of the table's columns.
      * @param tableData a 2D string array featuring the table's data.
      */
     public TableRenderer(JPanel pnl, Dimension displaySize, String[] columnNames, String[][] tableData) {    
