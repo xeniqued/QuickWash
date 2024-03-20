@@ -269,6 +269,7 @@ public class WelcomeScreen extends JFrame {
         public void actionPerformed(ActionEvent e) {
             //error message on invalid inputs
             
+            // when appointment database class is implemented pass it into this to give it access
             resGUI = new ResidentGUI(thisUserData);
         }
 
