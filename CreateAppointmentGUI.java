@@ -7,7 +7,7 @@ import org.w3c.dom.ranges.Range;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MakeAppointmentGUI extends JFrame {
+public class CreateAppointmentGUI extends JFrame {
 
     /**
      * This class creates a screen in which the user can add a trip to the arraylist.
@@ -32,12 +32,12 @@ public class MakeAppointmentGUI extends JFrame {
     private Color successGreen = new Color(68, 218, 103);
 
     private static ResidentGUI thisRGUI; //previous screen
-    private MakeAppointmentGUI thisAddGUI; //current screen instance
+    private CreateAppointmentGUI thisAddGUI; //current screen instance
 
     /**
      * This class creates a screen in which the user can schedule an appointment.
      */
-    public MakeAppointmentGUI(ResidentGUI res){
+    public CreateAppointmentGUI(ResidentGUI res){
 
         /**
          * This sets up attributes to ensure that the window instances are linked
@@ -326,7 +326,7 @@ public class MakeAppointmentGUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true); 
 
-    } //public MakeAppointmentGUI() end (constructor)
+    } //public CreateAppointmentGUI() end (constructor)
 
 
     
@@ -362,4 +362,4 @@ public class MakeAppointmentGUI extends JFrame {
 
     }
 
-} //public class MakeAppointmentGUI() end 
+} //public class CreateAppointmentGUI() end 

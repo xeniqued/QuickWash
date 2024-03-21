@@ -39,7 +39,7 @@ public class ResidentGUI extends JFrame {
 
     private WelcomeScreen thisWS; //previous screen
     private static ResidentGUI thisResGUI; //current screen instance
-    private MakeAppointmentGUI thisMkAptGUI = null; //MakeAppointmentGUI popup screen instance
+    private CreateAppointmentGUI thisMkAptGUI = null; //CreateAppointmentGUI popup screen instance
     private EditAppointmentGUI thisEdAptGUI = null; //EditAppointmentGUI popup screen instance
     
 
@@ -357,7 +357,7 @@ public class ResidentGUI extends JFrame {
      */
     private class MkAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            thisMkAptGUI = new MakeAppointmentGUI(thisResGUI);
+            thisMkAptGUI = new CreateAppointmentGUI(thisResGUI);
         }
 
     }
