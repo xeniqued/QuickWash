@@ -394,4 +394,4 @@ public class ResidentGUI extends JFrame {
     }
 
 
-} // public class ResidentGUI() end
+} // public class ResidentGUI() end 
