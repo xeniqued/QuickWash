@@ -276,7 +276,7 @@ public class ResidentGUI extends JFrame {
             {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"}
         };
 
-        //Rendering table with data above
+        //Rendering appointment table with data above
         apptTable = new TableRenderer(apptinner2Pnl, new Dimension(826, 425), apptColumnNames, apptData);
         apptPnl.add(apptinner2Pnl);
 
