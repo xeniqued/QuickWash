@@ -1,190 +1,299 @@
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.*;
+
 /**
- * @author Xenique Daize 620156463
- *Description:
-    * 
-    * Class WelcomeScreen is the introductory screen users will interact with upon opening the QuickWash program.
-    * This preliminary GUI offers navigation to the 'CreateUserScreen' where the user can create a new account of their specified type
-    * or the 'LoginScreen' if they already have an account. The WelcomeScreen is where the user will be rerouted to upon loging out of 
-    * their profile.
-   
+ * Main Window upon loading the program. Allows Sign Up & Login of Accounts in system.
 */
+public class WelcomeScreen extends JFrame {
 
-public class WelcomeScreen extends javax.swing.JFrame {
+    private JPanel disPnl; // (display panel) entire panel on the left  
+    private JPanel inptPnl; // (input panel) entire panel on the right 
+    private JPanel innerPnl; // For username and password fields inside input panel
+    private JPanel btnPnl; // (button panel) for buttons on bottom right
 
-    /**
-     * Creates new form WelcomeScreen
-     */
-    public WelcomeScreen() {
-        initComponents();
-    }
+    private JTextField username; // accepts input for username
+    private JPasswordField pass; // accepts input for password
+    private JLabel userLbl, passLbl;
+    private JLabel verifyLbl; // used for error msgs (set text to give feedback on login attempts)
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     */
+    private JButton btnLogin, btnSignup, btnExit; // Login, Signup, Quit buttons
 
-    
-    /* Method to customize the frame */
-    private void initComponents() {
+    // commonly used colors
+    private Color mainBlue = new Color(10, 87, 162);
+    private Color mainWhite = new Color(255, 255, 255);
+    private Color lessBlue = new Color(43, 90, 137);
+    private Color errorRed = new Color(239, 66, 66);    
+    private Color successGreen = new Color(68, 218, 103);
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
+    private static WelcomeScreen thisUserData; //current screen instance
+    private ResidentGUI resGUI; //resident screen instance
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    public WelcomeScreen() {    
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        jPanel2.setBackground(new java.awt.Color(0, 102, 204));
-
-        /* Setting the page title to QuickWash */
-        jLabel2.setFont(new java.awt.Font("Franklin Gothic Heavy", 0, 18)); 
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("QuickWash");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jLabel1.setFont(new java.awt.Font("Lucida Fax", 1, 12)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("WELCOME!");
-
-        /* Creating "Create New Account" and "Login" buttons to reroute the user to the specified page */
-        jButton1.setText("Create a New Account");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Login");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        /* Setting the company logo on the Welcome page */
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/QuickWashLogo1.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(159, 159, 159)
-                        .addComponent(jLabel3))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(328, 328, 328)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(220, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addGap(0, 145, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        pack();
-    }// </editor-fold>                        
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        /* Creating a new CreateUserScreen so that to user can create a new account */
-        new CreateUserScreen().setVisible(true);
-
-        dispose();
-    }                                        
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        /* Creating a new LoginScreen so that the user can login */
-        new LoginScreen().setVisible(true);
-        dispose();
-    }                                        
-
-    /**
-     * @param args the command line arguments
-     */
-
-    /* Establishing the driver function */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(WelcomeScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(WelcomeScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(WelcomeScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(WelcomeScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        /*Setting up window*/
+        setTitle("Welcome To QuickWash");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        try {        
+            // Setting up program icon (make sure the 'pics' folder is downloaded and in the
+            // active folder)
+            ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/pics/appicon.png");
+            Image iconimg = icon.getImage();
+            setIconImage(iconimg);
+            System.out.println("QuickWash icon has loaded.");
+        } catch (NullPointerException e) {
+            System.out.println("QuickWash icon did not load.");
         }
+
+        // Declaring layout for window
+        setLayout(new BorderLayout());
+
+
+        //==================================================//
+        //=                                                =//
+        //=               SETTING UP PANELS                =//
+        //=                                                =//
+        //==================================================//
+
+
+        //==================================================//
+        //=  STRUCTURING & CREATING DISPLAY PANEL TO LEFT  =//
+        //==================================================//
+        
+        disPnl = new JPanel(new GridBagLayout());
+        disPnl.setBackground(mainWhite);
+        disPnl.setPreferredSize(new Dimension(700, 500));
+
+        // creating quick wash logo, putting in try catch in case of retrieval error
+        try {
+
+            ImageIcon logo = new ImageIcon(System.getProperty("user.dir") + "/pics/quickwashlogo.png");
+            JLabel picLbl = new JLabel(logo);
+            disPnl.add(picLbl);
+        } catch (Exception ioe) {
+            System.out.println("QuickWash banner not found.");
+        }
+
+
+
+        //=================================================//
+        //=  STRUCTURING & CREATING INPUT PANEL TO RIGHT  =//
+        //=================================================//        
+        
+        inptPnl = new JPanel(new BorderLayout());
+        inptPnl.setBorder(new EmptyBorder(0, 50, 100, 50));
+        inptPnl.setBackground(mainBlue);
+        //inptPnl.setBackground(new Color(43, 90, 137));
+        inptPnl.setPreferredSize(new Dimension(307,720));
+
+        // For username and password fields inside input panel
+        innerPnl = new JPanel();
+        //GridLayout(int rows, int columns, int hgap, int vgap)
+        innerPnl.setLayout(new GridLayout(3, 1, 20, 30));
+        innerPnl.setBorder(new EmptyBorder(120, 0, 0, 0));
+        innerPnl.setOpaque(false);
+
+        
+        //FLATLAF Textfield stylings
+        UIManager.put( "TextComponent.arc", 27);
+
+
+        // CREATING AND ALLIGNING USERNAME INPUT FIELD //               
+        //(innerpanel1) holds both username label and textfield for easy styling inside inner panel above
+        JPanel i1Pnl = new JPanel(); i1Pnl.setLayout(new GridLayout(2, 1, 20, 10));
+        i1Pnl.setOpaque(false);
+
+        userLbl = new JLabel(); //Username Label
+        try {
+            //creating user icon, putting in try catch in case of retrieval error
+            userLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/usericon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
+        } catch (Exception ioe) {
+            System.out.println("Username icon not found.");
+        }                
+        userLbl.setText("Username:");
+        userLbl.setForeground(Color.WHITE);
+        userLbl.setFont(new Font(userLbl.getFont().getFontName(), Font.BOLD, 15));
+        username = new JTextField(10); //Username Field
+        // adding the label and textfield to innerpanel1
+        i1Pnl.add(userLbl);
+        i1Pnl.add(username);
+        innerPnl.add(i1Pnl, BorderLayout.EAST); //adding innerpanel1 to innner panel
         
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        // CREATING AND ALLIGNING PASSWORD INPUT FIELD //   
+        //(innerpanel2) holds both password label and textfield for easy styling inside inner panel above
+        JPanel i2Pnl = new JPanel();
+        i2Pnl.setLayout(new GridLayout(2, 1, 20, 10));
+        i2Pnl.setOpaque(false);
+        
+        passLbl = new JLabel(); //Password Label
+        try {
+            //creating password icon, putting in try catch in case of retrieval error
+            passLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/passicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
+        } catch (Exception ioe) {
+            System.out.println("Password icon not found.");
+        }      
+        passLbl.setText("Password:");
+        passLbl.setForeground(Color.WHITE);        
+        passLbl.setFont(new Font(passLbl.getFont().getFontName(), Font.BOLD, 15));
+        pass = new JPasswordField(10); //Username Field        
+        // adding the label and textfield to innerpanel2
+        i2Pnl.add(passLbl);
+        i2Pnl.add(pass);
+        innerPnl.add(i2Pnl, BorderLayout.EAST); //adding innerpanel2 to innner panel
+
+
+        // CREATING LABEL FOR DISPLAYING ERROR/SUCCESS MESSAGES //   
+        //(innerpanel3) holds error message label
+        JPanel i3Pnl = new JPanel();
+        i3Pnl.setOpaque(false);
+
+        verifyLbl = new JLabel(); // error message label
+        //creating either error or success icon, putting in try catch in case of retrieval error
+        // this will have to be implemented in login listener to select the right icon and style
+        try {
+            //error icon
+            //verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
+            //success icon
+            verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+        } catch (Exception ioe) {
+            System.out.println("Error/Success icon not found.");
+        }      
+        //verifyLbl.setText("<html>" +
+                        //"Incorrect Username <br> or Password. <br> Please Try Again." +
+                        //"</html>"); //error message
+        verifyLbl.setText("<html>" + "Login Successful." + "</div></html>"); //success message
+        //verifyLbl.setForeground(errorRed);  //error red    
+        verifyLbl.setForeground(successGreen);  //success green    
+        verifyLbl.setFont(new Font(passLbl.getFont().getFontName(), Font.BOLD, 15));
+        i3Pnl.add(verifyLbl); // adding the label to innerpanel3
+        innerPnl.add(i3Pnl, BorderLayout.EAST); //adding innerpanel3 to innner panel
+
+        //adding the inner panel itself into the input panel
+        inptPnl.add(innerPnl, BorderLayout.CENTER);
+
+
+        //===============================================//
+        //=    CREATING THE BUTTONS AT BOTTOM RIGHT     =//
+        //===============================================//
+
+        //FLATLAF Button stylings
+        UIManager.put( "Button.arc", 27);
+
+        
+        //(button panel) For holding buttons inside input panel
+        btnPnl = new JPanel();
+        btnPnl.setLayout(new GridLayout(3, 1, 20, 28));
+        btnPnl.setBorder(new EmptyBorder(10, 0, 0, 0));
+        btnPnl.setBackground(mainBlue);
+        btnPnl.setOpaque(false);
+
+        // CREATING AND ALLIGNING LOGIN BUTTON // 
+        btnLogin = new JButton("Login");
+        btnLogin.setFont(new Font(btnLogin.getFont().getFontName(), Font.BOLD, 16));
+        btnLogin.setForeground(lessBlue);
+        btnLogin.setPreferredSize(new Dimension(40, 32));
+        btnLogin.addActionListener(new LoginBtnListener());
+
+        // CREATING AND ALLIGNING SIGN UP BUTTON // 
+        btnSignup = new JButton("Create Account");
+        btnSignup.setFont(new Font(btnSignup.getFont().getFontName(), Font.BOLD, 16));
+        btnSignup.setForeground(lessBlue);
+        btnSignup.addActionListener(new SignUpBtnListener());
+        
+        // CREATING AND ALLIGNING QUIT BUTTON // 
+        btnExit = new JButton("Quit");
+        btnExit.setFont(new Font(btnExit.getFont().getFontName(), Font.BOLD, 16));
+        btnExit.setForeground(lessBlue);
+        btnExit.addActionListener(new ExitBtnListener());
+        
+        //adding the button panel itself into the input panel
+        inptPnl.add(btnPnl, BorderLayout.SOUTH);
+
+        // Adding buttons to button panel
+        btnPnl.add(btnLogin);
+        btnPnl.add(btnSignup);
+        btnPnl.add(btnExit);
+
+
+        //==============================================//
+        //=        ADDING MAIN PANELS TO FRAME         =//
+        //==============================================//
+        add(disPnl, BorderLayout.WEST);
+        add(inptPnl, BorderLayout.EAST);
+
+        //Extra frame/window settings
+        pack();
+        setSize(1024, 720);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setVisible(true);
+
+    }// public WelcomeScreen() end (constructor)
+
+
+    public static void main(String[] args) {      
+        
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new WelcomeScreen().setVisible(true);
+                try {
+                    //initializing FLATLAF
+                    UIManager.setLookAndFeel( new FlatLightLaf() );
+                } catch( Exception ex ) {
+                    System.err.println( "Failed to initialize LaF" );
+                }
+
+                // Creating welcome screen
+                thisUserData = new WelcomeScreen();
             }
         });
+
     }
 
-    // Variables declaration                  
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-                    
-}
+    //=========================================================//
+    //=          BUTTON LISTENING FUNCTIONALITIES             =//
+    //=========================================================//
+
+    /**
+     * This implements Login Button functionalities
+     */
+    private class LoginBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            //error message on invalid inputs
+            
+            // when appointment database class is implemented pass it into this to give it access
+            resGUI = new ResidentGUI(thisUserData);
+        }
+
+    }
+
+    /**
+     * This implements Sign Up Button functionalities
+     */
+    private class SignUpBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            //error message on invalid inputs
+        }
+
+    }
+
+    /**
+     * This exits the application
+     */
+    private class ExitBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
+
+    }
+
+
+} // public class WelcomeScreen() end
