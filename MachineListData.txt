@@ -1,0 +1,12 @@
+1 Washer 18 0 false
+2 Washer 17 0 false
+3 Washer 16 0 false
+4 Washer 14 0 false
+5 Washer 19 0 false
+6 Washer 13 0 false
+7 Dryer 17 0 false
+8 Dryer 18 0 false
+9 Dryer 15 0 false
+10 Dryer 15 0 false
+11 Dryer 13 0 false
+12 Dryer 19 0 false
