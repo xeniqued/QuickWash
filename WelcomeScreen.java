@@ -9,6 +9,11 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 /**
  * Main Window upon loading the program. Allows Sign Up & Login of Accounts in system.
@@ -26,6 +31,9 @@ public class WelcomeScreen extends JFrame {
     private JLabel verifyLbl; // used for error msgs (set text to give feedback on login attempts)
 
     private JButton btnLogin, btnSignup, btnExit; // Login, Signup, Quit buttons
+
+    String dbName;
+    String dbPass;
 
     // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
@@ -163,17 +171,17 @@ public class WelcomeScreen extends JFrame {
             //error icon
             //verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
             //success icon
-            verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+            //verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
         } catch (Exception ioe) {
             System.out.println("Error/Success icon not found.");
         }      
         //verifyLbl.setText("<html>" +
                         //"Incorrect Username <br> or Password. <br> Please Try Again." +
                         //"</html>"); //error message
-        verifyLbl.setText("<html>" + "Login Successful." + "</div></html>"); //success message
+        //verifyLbl.setText("<html>" + "Login Successful." + "</div></html>"); //success message
         //verifyLbl.setForeground(errorRed);  //error red    
-        verifyLbl.setForeground(successGreen);  //success green    
-        verifyLbl.setFont(new Font(passLbl.getFont().getFontName(), Font.BOLD, 15));
+        //verifyLbl.setForeground(successGreen);  //success green    
+        verifyLbl.setFont(new Font(verifyLbl.getFont().getFontName(), Font.BOLD, 15));
         i3Pnl.add(verifyLbl); // adding the label to innerpanel3
         innerPnl.add(i3Pnl, BorderLayout.EAST); //adding innerpanel3 to innner panel
 
@@ -268,9 +276,70 @@ public class WelcomeScreen extends JFrame {
     private class LoginBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             //error message on invalid inputs
+            String txtName = username.getText();
+            String txtPass = String.valueOf(pass.getPassword());
+            System.out.println(txtName);
+            System.out.println(txtPass);
+
+
+
+            Scanner ascan = null;
+            File f = new File(System.getProperty("user.dir") + "/database/" +  "users.txt");
             
-            // when appointment database class is implemented pass it into this to give it access
-            resGUI = new ResidentGUI(thisUserData);
+            try {
+                ascan = new Scanner(f);
+                while (ascan.hasNext()) {
+                    // System.out.print(ascan.nextLine());
+                    String[] nextLine = ascan.nextLine().split(" ");
+
+                    for (String x : nextLine) {
+                        System.out.print(x + ", ");
+                    }
+                    System.out.print("\n");
+
+                    if (nextLine[0].equals("Username:")) {
+                        dbName = nextLine[1];
+                    } else if (nextLine[0].equals("Password:")) {
+                        dbPass = nextLine[1];                    
+                    }
+                    System.out.println(dbName);
+                    System.out.println(dbPass);                   
+
+                }
+
+                ascan.close();
+            } catch (IOException ex) {
+            }
+            
+            if (dbName.equals(txtName) && dbPass.equals(txtPass)) {
+                //success icon
+                verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+                verifyLbl.setText("<html>" + "Login Successful." + "</div></html>"); //success message
+                verifyLbl.setForeground(successGreen);  //success green    
+                
+                //try{
+                    //Thread.sleep(5000);
+                //} catch (InterruptedException exe) {
+                //}
+                
+                // when appointment database class is implemented pass it into this to give it access
+                resGUI = new ResidentGUI(thisUserData);
+            } else if ((txtName.length() == 0 || txtPass.length() == 0)) {
+                //error icon
+                verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
+                verifyLbl.setText("<html>" + "Please fill out all fields." +
+                        "</html>"); //error message
+                verifyLbl.setForeground(errorRed);  //error red
+            } else {
+                username.setText("");
+                pass.setText("");
+                //error icon
+                verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
+                verifyLbl.setText("<html>" +
+                        "Incorrect Username <br> or Password. <br> Please Try Again." +
+                        "</html>"); //error message
+                verifyLbl.setForeground(errorRed);  //error red  
+            }
         }
 
     }
