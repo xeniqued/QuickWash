@@ -1,2 +1,2 @@
-Username: johndoe
+Username: adminuser
 Password: 1234
