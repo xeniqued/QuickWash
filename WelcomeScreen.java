@@ -32,9 +32,6 @@ public class WelcomeScreen extends JFrame {
 
     private JButton btnLogin, btnSignup, btnExit; // Login, Signup, Quit buttons
 
-    String dbName;
-    String dbPass;
-
     // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
     private Color mainWhite = new Color(255, 255, 255);
@@ -44,6 +41,9 @@ public class WelcomeScreen extends JFrame {
 
     private static WelcomeScreen thisUserData; //current screen instance
     private ResidentGUI resGUI; //resident screen instance
+    private StaffGUI staffGUI; //resident screen instance
+
+    private Database db;
 
     public WelcomeScreen() {    
 
@@ -281,56 +281,30 @@ public class WelcomeScreen extends JFrame {
             System.out.println(txtName);
             System.out.println(txtPass);
 
-
-
-            Scanner ascan = null;
-            File f = new File(System.getProperty("user.dir") + "/database/" +  "users.txt");
+            db = new Database();
             
-            try {
-                ascan = new Scanner(f);
-                while (ascan.hasNext()) {
-                    // System.out.print(ascan.nextLine());
-                    String[] nextLine = ascan.nextLine().split(" ");
-
-                    for (String x : nextLine) {
-                        System.out.print(x + ", ");
-                    }
-                    System.out.print("\n");
-
-                    if (nextLine[0].equals("Username:")) {
-                        dbName = nextLine[1];
-                    } else if (nextLine[0].equals("Password:")) {
-                        dbPass = nextLine[1];                    
-                    }
-                    System.out.println(dbName);
-                    System.out.println(dbPass);                   
-
-                }
-
-                ascan.close();
-            } catch (IOException ex) {
-            }
-            
-            if (dbName.equals(txtName) && dbPass.equals(txtPass)) {
+            if (db.getUserUsername().equals(txtName) && db.getUserPassword().equals(txtPass)) {
+                
+                username.setText("");
+                pass.setText("");
                 //success icon
                 verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
                 verifyLbl.setText("<html>" + "Login Successful." + "</div></html>"); //success message
                 verifyLbl.setForeground(successGreen);  //success green    
                 
-                //try{
-                    //Thread.sleep(5000);
-                //} catch (InterruptedException exe) {
-                //}
                 
                 // when appointment database class is implemented pass it into this to give it access
                 resGUI = new ResidentGUI(thisUserData);
-            } else if ((txtName.length() == 0 || txtPass.length() == 0)) {
+            } 
+            else if ((txtName.length() == 0 || txtPass.length() == 0)) {
+
                 //error icon
                 verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
                 verifyLbl.setText("<html>" + "Please fill out all fields." +
                         "</html>"); //error message
                 verifyLbl.setForeground(errorRed);  //error red
             } else {
+
                 username.setText("");
                 pass.setText("");
                 //error icon
