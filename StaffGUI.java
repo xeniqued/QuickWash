@@ -217,7 +217,7 @@ public class StaffGUI extends JFrame {
         apptinner2Pnl.setOpaque(false); 
         apptinner2Pnl.setBorder(new EmptyBorder(0, 0, 5, 0));
 
-        apptColumnNames = new String[]{ "Date D/M/Y", "Time", "Username", "Full Name", "Room #", "Machine #", "Confirmed?"};
+        apptColumnNames = new String[]{ "Date D/M/Y", "Time", "Resident ID", "Full Name", "Room #", "Machine #", "Confirmed?"};
 
         //Update this value, should be sorted by upcoming date
         apptData = new String[][] {
