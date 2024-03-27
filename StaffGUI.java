@@ -29,7 +29,7 @@ public class StaffGUI extends JFrame {
     private JLabel detailsLbl;
 
     // Make Appointment, Edit Appointment, Mark Attend, Logout buttons
-    private JButton btnMakeAppt, btnEditAppt, btnAttend, btnLogout; 
+    private JButton btnConfirm, btnMakeReport, btnLogout; 
     
     // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
@@ -39,9 +39,6 @@ public class StaffGUI extends JFrame {
 
     private WelcomeScreen thisWS; //previous screen
     private static StaffGUI thisStaffGUI; //current screen instance
-    private CreateAppointmentGUI thisMkAptGUI = null; //CreateAppointmentGUI popup screen instance
-    private EditAppointmentGUI thisEdAptGUI = null; //EditAppointmentGUI popup screen instance
-    
 
     public StaffGUI(WelcomeScreen ws) {
 
@@ -99,76 +96,56 @@ public class StaffGUI extends JFrame {
             System.out.println("User icon not found.");
         }      
         // replace <Resident> with the variable storing the the user's name
-        navLbl.setText("Hello, " + "<Resident>"); 
+        navLbl.setText("Hello, " + "<Employee>"); 
         navLbl.setForeground(mainWhite);  
         navLbl.setHorizontalAlignment(JLabel.CENTER);
         navLbl.setFont(new Font(navLbl.getFont().getFontName(), Font.BOLD, 19));
         
 
 
-        //===============================================//
-        //=    CREATING THE BUTTONS AT BOTTOM RIGHT     =//
-        //===============================================//
+        //==============================================//
+        //=      CREATING THE BUTTONS AT TOP LEFT      =//
+        //==============================================//
+    
         
-        
-        // CREATING AND ALLIGNING MAKE APPOINTMENT BUTTON // 
-        ImageIcon MkAptIcon = null;      
+        // CREATING AND ALLIGNING ONFIRM ATTEND APPOINTMENT BUTTON // 
+        ImageIcon ConfirmAptIcon = null;      
         try {
-            MkAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/createicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+            ConfirmAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/confirmicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
         } catch (Exception ioe) {
             System.out.println("Create icon not found.");
         }      
-        btnMakeAppt = new JButton(MkAptIcon);
-        btnMakeAppt.setText(" Make Appointment");
-        btnMakeAppt.setFont(new Font(btnMakeAppt.getFont().getFontName(), Font.BOLD, 16));
-        btnMakeAppt.setForeground(mainWhite);
-        btnMakeAppt.setBackground(mainBlue);
-        btnMakeAppt.setHorizontalAlignment(SwingConstants.LEFT);
-        btnMakeAppt.setBorderPainted(false); 
-        btnMakeAppt.setMargin(new Insets(7, 20, 7, 0));
-        btnMakeAppt.addActionListener(new MkAptBtnListener());
+        btnConfirm = new JButton(ConfirmAptIcon);
+        btnConfirm.setText(" Confirm Attended");
+        btnConfirm.setFont(new Font(btnConfirm.getFont().getFontName(), Font.BOLD, 16));
+        btnConfirm.setForeground(mainWhite);
+        btnConfirm.setBackground(mainBlue);
+        btnConfirm.setHorizontalAlignment(SwingConstants.LEFT);
+        btnConfirm.setBorderPainted(false);
+        btnConfirm.setMargin(new Insets(7, 20, 7, 0));
+        btnConfirm.addActionListener(new ConfirmBtnListener());
 
-        
+
         // CREATING AND ALLIGNING EDIT APPOINTMENT BUTTON // 
-        ImageIcon EditAptIcon = null;      
+        ImageIcon MkReportIcon = null;      
         try {
-            EditAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/editicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+            MkReportIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/reporticon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
         } catch (Exception ioe) {
             System.out.println("Create icon not found.");
         }      
-        btnEditAppt = new JButton(EditAptIcon);
-        btnEditAppt.setText(" Edit Appointment");
-        btnEditAppt.setFont(new Font(btnEditAppt.getFont().getFontName(), Font.BOLD, 16));
-        btnEditAppt.setForeground(mainWhite);
-        btnEditAppt.setBackground(mainBlue);
-        btnEditAppt.setHorizontalAlignment(SwingConstants.LEFT);
-        btnEditAppt.setBorderPainted(false);
-        btnEditAppt.setMargin(new Insets(7, 20, 7, 0));
-        btnEditAppt.addActionListener(new EditAptBtnListener());
-        
-        
-        // CREATING AND ALLIGNING MARK ATTEND APPOINTMENT BUTTON // 
-        ImageIcon AttendAptIcon = null;      
-        try {
-            AttendAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/confirmicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
-        } catch (Exception ioe) {
-            System.out.println("Create icon not found.");
-        }      
-        btnAttend = new JButton(AttendAptIcon);
-        btnAttend.setText(" Mark As Attended");
-        btnAttend.setFont(new Font(btnAttend.getFont().getFontName(), Font.BOLD, 16));
-        btnAttend.setForeground(mainWhite);
-        btnAttend.setBackground(mainBlue);
-        btnAttend.setHorizontalAlignment(SwingConstants.LEFT);
-        btnAttend.setBorderPainted(false);
-        btnAttend.setMargin(new Insets(7, 20, 7, 0));
-        btnAttend.addActionListener(new ConfirmBtnListener());
-
+        btnMakeReport = new JButton(MkReportIcon);
+        btnMakeReport.setText(" Make A Report");
+        btnMakeReport.setFont(new Font(btnMakeReport.getFont().getFontName(), Font.BOLD, 16));
+        btnMakeReport.setForeground(mainWhite);
+        btnMakeReport.setBackground(mainBlue);
+        btnMakeReport.setHorizontalAlignment(SwingConstants.LEFT);
+        btnMakeReport.setBorderPainted(false);
+        btnMakeReport.setMargin(new Insets(7, 20, 7, 0));
+        btnMakeReport.addActionListener(new MakeReportListener());
                         
         navinner1Pnl.add(navLbl);
-        navinner1Pnl.add(btnMakeAppt);
-        navinner1Pnl.add(btnEditAppt);
-        navinner1Pnl.add(btnAttend);
+        navinner1Pnl.add(btnConfirm);
+        navinner1Pnl.add(btnMakeReport);
 
 
 
@@ -216,14 +193,14 @@ public class StaffGUI extends JFrame {
         apptinner1Pnl.setOpaque(false);      
 
         apptLbl = new JLabel();        
-        apptLbl.setText("Scheduled Wash Appointments");
+        apptLbl.setText("All Scheduled Wash Appointments");
         apptLbl.setHorizontalAlignment(JLabel.CENTER);
         apptLbl.setForeground(mainBlue);
         apptLbl.setFont(new Font(apptLbl.getFont().getFontName(), Font.BOLD, 20));        
         apptinner1Pnl.add(apptLbl, BorderLayout.NORTH);        
         
         infoLbl = new JLabel();        
-        infoLbl.setText("<html>" + "Click on any Appointment to Edit" + "</html>");
+        infoLbl.setText("<html>" + "Click on any Appointment to View" + "</html>");
         infoLbl.setHorizontalAlignment(JLabel.CENTER);
         infoLbl.setForeground(mainBlue);
         infoLbl.setFont(new Font(infoLbl.getFont().getFontName(), Font.PLAIN, 16));        
@@ -237,43 +214,38 @@ public class StaffGUI extends JFrame {
         JPanel apptinner2Pnl = new JPanel();        
         apptinner2Pnl.setOpaque(false); 
         apptinner2Pnl.setBorder(new EmptyBorder(0, 0, 5, 0));
-            
-        apptColumnNames = new String[]{ "Date D/M/Y", "Time", "Wash Load #", "Dry Load #", "Machine #", "Attended?", "Confirmed?"};
+
+        apptColumnNames = new String[]{ "Date D/M/Y", "Time", "Resident", "Room #", "Machine #", "Confirmed?"};
 
         //Update this value, should be sorted by upcoming date
         apptData = new String[][] {
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"},
-            {"20/03/2024", "16:00", "3", "2", "1", "No", "No"},
-            {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"}
+            {"20/03/2024", "12:00", "Selena Gomez", "108", "3", "No"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "Selena Gomez", "108", "4", "No"},
+            {"20/03/2024", "10:00", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "Selena Gomez", "108", "4", "No"},
+            {"20/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "Selena Gomez", "108", "3", "No"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "Selena Gomez", "108", "4", "No"},
+            {"29/03/2024", "10:00", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "Selena Gomez", "108", "4", "No"},
+            {"23/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
+            {"25/03/2024", "10:00", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
+            {"27/03/2024", "10:00", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "Selena Gomez", "108", "3", "No"},
+            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"}
         };
 
         //Rendering appointment table with data above
@@ -309,11 +281,11 @@ public class StaffGUI extends JFrame {
         detsinner2Pnl.setOpaque(false);    
         detsinner2Pnl.setSize(new Dimension(885, 30)); 
 
-        detsColumnNames = new String[]{ "Time", "Weekday", "Month", "Day",  "Year"};
+        detsColumnNames = new String[]{ "Time", "Weekday", "Month", "Day",  "Year", "Wash #", "Dry #"};
 
         //Update this value
         detsData = new String[][] {
-            {"12:00", "Wednesday", "March", "13",  "2024", }
+            {"12:00", "Wednesday", "March", "13",  "2024", "2", "1"}
         };
 
         //Rendering details table with data above
@@ -343,7 +315,7 @@ public class StaffGUI extends JFrame {
         setResizable(false);
         setVisible(true);
 
-    }// public ResidentGUI() end (constructor)
+    }// public StaffGUI() end (constructor)
 
 
 
@@ -352,22 +324,12 @@ public class StaffGUI extends JFrame {
     //=          BUTTON LISTENING FUNCTIONALITIES             =//
     //=========================================================//
 
-    /**
-     * This implements Make Appointment Button functionalities
-     */
-    private class MkAptBtnListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            //thisMkAptGUI = new CreateAppointmentGUI(thisEmpGUI);
-        }
-
-    }
 
     /**
      * This implements Edit Appointment Button functionalities
      */
-    private class EditAptBtnListener implements ActionListener {
+    private class MakeReportListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            //thisEdAptGUI = new EditAppointmentGUI(thisEmpGUI);
         }
 
     }
@@ -394,4 +356,4 @@ public class StaffGUI extends JFrame {
     }
 
 
-} // public class ResidentGUI() end 
+} // public class StaffGUI() end 

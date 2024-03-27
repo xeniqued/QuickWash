@@ -106,15 +106,15 @@ public class ResidentGUI extends JFrame {
         
 
 
-        //===============================================//
-        //=    CREATING THE BUTTONS AT BOTTOM RIGHT     =//
-        //===============================================//
+        //==============================================//
+        //=      CREATING THE BUTTONS AT TOP LEFT      =//
+        //==============================================//
         
         
         // CREATING AND ALLIGNING MAKE APPOINTMENT BUTTON // 
         ImageIcon MkAptIcon = null;      
         try {
-            MkAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/createicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+            MkAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/createicon.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
         } catch (Exception ioe) {
             System.out.println("Create icon not found.");
         }      
@@ -216,7 +216,7 @@ public class ResidentGUI extends JFrame {
         apptinner1Pnl.setOpaque(false);      
 
         apptLbl = new JLabel();        
-        apptLbl.setText("Scheduled Wash Appointments");
+        apptLbl.setText("Your Scheduled Wash Appointments");
         apptLbl.setHorizontalAlignment(JLabel.CENTER);
         apptLbl.setForeground(mainBlue);
         apptLbl.setFont(new Font(apptLbl.getFont().getFontName(), Font.BOLD, 20));        

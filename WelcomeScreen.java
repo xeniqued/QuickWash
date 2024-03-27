@@ -294,7 +294,8 @@ public class WelcomeScreen extends JFrame {
                 
                 
                 // when appointment database class is implemented pass it into this to give it access
-                resGUI = new ResidentGUI(thisUserData);
+                //resGUI = new ResidentGUI(thisUserData);
+                staffGUI = new StaffGUI(thisUserData);
             } 
             else if ((txtName.length() == 0 || txtPass.length() == 0)) {
 
