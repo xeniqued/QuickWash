@@ -3,13 +3,15 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.*;
-
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * This displays the main resident screen of the system where appointments are displayed 
@@ -215,37 +217,37 @@ public class StaffGUI extends JFrame {
         apptinner2Pnl.setOpaque(false); 
         apptinner2Pnl.setBorder(new EmptyBorder(0, 0, 5, 0));
 
-        apptColumnNames = new String[]{ "Date D/M/Y", "Time", "Resident", "Room #", "Machine #", "Confirmed?"};
+        apptColumnNames = new String[]{ "Date D/M/Y", "Time", "Username", "Full Name", "Room #", "Machine #", "Confirmed?"};
 
         //Update this value, should be sorted by upcoming date
         apptData = new String[][] {
-            {"20/03/2024", "12:00", "Selena Gomez", "108", "3", "No"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "Selena Gomez", "108", "4", "No"},
-            {"20/03/2024", "10:00", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "Selena Gomez", "108", "4", "No"},
-            {"20/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "Selena Gomez", "108", "3", "No"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "Selena Gomez", "108", "4", "No"},
-            {"29/03/2024", "10:00", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "Selena Gomez", "108", "4", "No"},
-            {"23/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
-            {"25/03/2024", "10:00", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"},
-            {"27/03/2024", "10:00", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "Selena Gomez", "108", "3", "No"},
-            {"20/03/2024", "18:00", "Alex Russo", "117", "1", "Yes"}
+            {"20/03/2024", "12:00", "620125439", "Selena Gomez", "108", "3", "No"},
+            {"20/03/2024", "18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "620165222", "Selena Gomez", "108", "4", "No"},
+            {"20/03/2024", "10:00", "620125439", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "620149451", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "620165222", "Selena Gomez", "108", "4", "No"},
+            {"20/03/2024", "12:00", "620125439", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "620165222", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "620125439", "Selena Gomez", "108", "3", "No"},
+            {"20/03/2024", "18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "620165222", "Selena Gomez", "108", "4", "No"},
+            {"29/03/2024", "10:00", "620165222", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "620149451", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "620149451", "Alex Russo", "117", "1", "Yes"},
+            {"20/03/2024", "10:00", "620125439", "Selena Gomez", "108", "4", "No"},
+            {"23/03/2024", "12:00", "620165222", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "620149451", "Alex Russo", "117", "1", "Yes"},
+            {"25/03/2024", "10:00", "620125439", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "620165222", "Rebecca Friday", "248", "3", "No"},
+            {"20/03/2024", "18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
+            {"27/03/2024", "10:00", "620149451", "Harry Black", "108", "4", "No"},
+            {"20/03/2024", "12:00", "620125439", "Selena Gomez", "108", "3", "No"},
+            {"20/03/2024", "18:00", "620149451", "Alex Russo", "117", "1", "Yes"}
         };
 
         //Rendering appointment table with data above
@@ -330,8 +332,21 @@ public class StaffGUI extends JFrame {
      */
     private class MakeReportListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-        }
+            String url = "https://studentliving.managerpluscloud.com/v16/WorkOrders/WorkRequest/qRRequestPage.aspx?asset_key=p4zqNkLI8A1NVP0ELnXSig==&entity_key=9iuf4dpF3mCUsv2x4R2N4g==";
 
+            int ans = JOptionPane.showConfirmDialog(thisStaffGUI, "You will be redirected to your browser to \nfill out the report. Continue?");  
+            
+            if(ans == JOptionPane.YES_OPTION){   
+                if(Desktop.isDesktopSupported()){
+                    Desktop desktop = Desktop.getDesktop();
+                    try {
+                        desktop.browse(new URI(url));
+                    } catch (IOException | URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                }  
+            }  
+        } 
     }
 
 
@@ -343,6 +358,7 @@ public class StaffGUI extends JFrame {
         }
 
     }
+
 
     /**
      * This exits the current screen and returns the user to the previous screen
