@@ -195,7 +195,7 @@ public class StaffGUI extends JFrame {
         apptinner1Pnl.setOpaque(false);      
 
         apptLbl = new JLabel();        
-        apptLbl.setText("All Scheduled Wash Appointments");
+        apptLbl.setText("All Wash Appointments for <March 20, 2024>");
         apptLbl.setHorizontalAlignment(JLabel.CENTER);
         apptLbl.setForeground(mainBlue);
         apptLbl.setFont(new Font(apptLbl.getFont().getFontName(), Font.BOLD, 20));        
@@ -217,37 +217,37 @@ public class StaffGUI extends JFrame {
         apptinner2Pnl.setOpaque(false); 
         apptinner2Pnl.setBorder(new EmptyBorder(0, 0, 5, 0));
 
-        apptColumnNames = new String[]{ "Date D/M/Y", "Time", "Resident ID", "Full Name", "Room #", "Machine #", "Confirmed?"};
+        apptColumnNames = new String[]{ "Time", "Resident ID", "Resident Name", "Room #", "Machine #", "Confirmed?"};
 
         //Update this value, should be sorted by upcoming date
         apptData = new String[][] {
-            {"20/03/2024", "12:00", "620125439", "Selena Gomez", "108", "3", "No"},
-            {"20/03/2024", "18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "620165222", "Selena Gomez", "108", "4", "No"},
-            {"20/03/2024", "10:00", "620125439", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "620149451", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "620165222", "Selena Gomez", "108", "4", "No"},
-            {"20/03/2024", "12:00", "620125439", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "620165222", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "620125439", "Selena Gomez", "108", "3", "No"},
-            {"20/03/2024", "18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "620165222", "Selena Gomez", "108", "4", "No"},
-            {"29/03/2024", "10:00", "620165222", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "620149451", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "620149451", "Alex Russo", "117", "1", "Yes"},
-            {"20/03/2024", "10:00", "620125439", "Selena Gomez", "108", "4", "No"},
-            {"23/03/2024", "12:00", "620165222", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "620149451", "Alex Russo", "117", "1", "Yes"},
-            {"25/03/2024", "10:00", "620125439", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "620165222", "Rebecca Friday", "248", "3", "No"},
-            {"20/03/2024", "18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
-            {"27/03/2024", "10:00", "620149451", "Harry Black", "108", "4", "No"},
-            {"20/03/2024", "12:00", "620125439", "Selena Gomez", "108", "3", "No"},
-            {"20/03/2024", "18:00", "620149451", "Alex Russo", "117", "1", "Yes"}
+            {"12:00", "620125439", "Selena Gomez", "108", "3", "No"},
+            {"18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
+            {"18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
+            {"10:00", "620165222", "Selena Gomez", "108", "4", "No"},
+            {"10:00", "620125439", "Harry Black", "108", "4", "No"},
+            {"12:00", "620149451", "Rebecca Friday", "248", "3", "No"},
+            {"18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
+            {"10:00", "620165222", "Selena Gomez", "108", "4", "No"},
+            {"12:00", "620125439", "Rebecca Friday", "248", "3", "No"},
+            {"18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
+            {"10:00", "620165222", "Harry Black", "108", "4", "No"},
+            {"12:00", "620125439", "Selena Gomez", "108", "3", "No"},
+            {"18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
+            {"18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
+            {"10:00", "620165222", "Selena Gomez", "108", "4", "No"},
+            {"10:00", "620165222", "Harry Black", "108", "4", "No"},
+            {"12:00", "620149451", "Rebecca Friday", "248", "3", "No"},
+            {"18:00", "620149451", "Alex Russo", "117", "1", "Yes"},
+            {"10:00", "620125439", "Selena Gomez", "108", "4", "No"},
+            {"12:00", "620165222", "Rebecca Friday", "248", "3", "No"},
+            {"18:00", "620149451", "Alex Russo", "117", "1", "Yes"},
+            {"10:00", "620125439", "Harry Black", "108", "4", "No"},
+            {"12:00", "620165222", "Rebecca Friday", "248", "3", "No"},
+            {"18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
+            {"10:00", "620149451", "Harry Black", "108", "4", "No"},
+            {"12:00", "620125439", "Selena Gomez", "108", "3", "No"},
+            {"18:00", "620149451", "Alex Russo", "117", "1", "Yes"}
         };
 
         //Rendering appointment table with data above
