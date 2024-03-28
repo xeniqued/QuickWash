@@ -1,0 +1,11 @@
+Admin%Chris%Black%cblack@gmail.com%1111111%pass
+Resident%John%Doe%johndoe@example.com%1234567%password123
+Staff%Emily%Smith%emilysmith@example.com%2345678%staffpass456
+Resident%Michael%Johnson%michaeljohnson@example.com%3456789%residentpass789
+Staff%Sarah%Brown%sarahbrown@example.com%4567890%staffpass789
+Resident%David%Williams%davidwilliams@example.com%5678901%password456
+Staff%Jessica%Davis%jessicadavis@example.com%6789012%staffpass123
+Resident%Christopher%Wilson%christopherwilson@example.com%7890123%password789
+Resident%Jennifer%Martinez%jennifermartinez@example.com%8901234%password234
+Staff%Daniel%Anderson%danielanderson@example.com%9012345%staffpass234
+Resident%Amanda%Taylor%amandataylor@example.com%0123456%password567
