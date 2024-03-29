@@ -36,12 +36,14 @@ public class WelcomeScreen extends JFrame {
     private Color mainBlue = new Color(10, 87, 162);
     private Color mainWhite = new Color(255, 255, 255);
     private Color lessBlue = new Color(43, 90, 137);
-    private Color errorRed = new Color(239, 66, 66);    
+    private Color errorRed = new Color(239, 66, 66);  
     private Color successGreen = new Color(68, 218, 103);
+    private Color waitBlue = new Color(56, 182, 255);
 
     private static WelcomeScreen thisUserData; //current screen instance
     private ResidentGUI resGUI; //resident screen instance
-    private StaffGUI staffGUI; //resident screen instance
+    private StaffGUI staffGUI; //staff screen instance
+    private AdminGUI adminGUI; //staff screen instance
 
     private Database db;
 
@@ -165,22 +167,6 @@ public class WelcomeScreen extends JFrame {
         i3Pnl.setOpaque(false);
 
         verifyLbl = new JLabel(); // error message label
-        //creating either error or success icon, putting in try catch in case of retrieval error
-        // this will have to be implemented in login listener to select the right icon and style
-        try {
-            //error icon
-            //verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
-            //success icon
-            //verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
-        } catch (Exception ioe) {
-            System.out.println("Error/Success icon not found.");
-        }      
-        //verifyLbl.setText("<html>" +
-                        //"Incorrect Username <br> or Password. <br> Please Try Again." +
-                        //"</html>"); //error message
-        //verifyLbl.setText("<html>" + "Login Successful." + "</div></html>"); //success message
-        //verifyLbl.setForeground(errorRed);  //error red    
-        //verifyLbl.setForeground(successGreen);  //success green    
         verifyLbl.setFont(new Font(verifyLbl.getFont().getFontName(), Font.BOLD, 15));
         i3Pnl.add(verifyLbl); // adding the label to innerpanel3
         innerPnl.add(i3Pnl, BorderLayout.EAST); //adding innerpanel3 to innner panel
@@ -275,46 +261,65 @@ public class WelcomeScreen extends JFrame {
      */
     private class LoginBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            //error message on invalid inputs
-            String txtName = username.getText();
+            thisUserData.setWaitingMessage("Verifying...");
+            verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+
+            String txtName = username.getText();                            
             String txtPass = String.valueOf(pass.getPassword());
             System.out.println(txtName);
             System.out.println(txtPass);
 
-            db = new Database();
+            //Accessing the database
+            Database db = new Database();
+            System.out.println("Line 289");
             
-            if (db.getUserUsername().equals(txtName) && db.getUserPassword().equals(txtPass)) {
-                
+            try {
+                if ((txtName.length() == 0 || txtPass.length() == 0)) {
+                    username.setText("");
+                    pass.setText("");
+                    thisUserData.setErrorMessage("Please fill out all fields.");
+                    
+                } else if (db.selectUserById(Integer.parseInt(txtName)) != null){
+                        System.out.println("Line 297");
+                        thisUserData.setWaitingMessage("Verifying...");
+                        verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+        
+                        UserType user = db.selectUserById(Integer.parseInt(txtName));
+                        String dbName = user.getPassword();
+                        String dbPassword = user.getPassword();
+                        System.out.println(dbPassword);
+        
+                        if(txtPass.equals(dbPassword)){
+                            System.out.println("Line 305");
+                            
+                            thisUserData.setSuccessMessage("Login Successful.");
+                            verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+                            username.setText("");
+                            pass.setText("");
+                        
+                            //If password is correct, open one of below screens
+                            resGUI = new ResidentGUI(thisUserData, txtName, dbName); // uncomment to launch ResidentGUI
+                            //staffGUI = new StaffGUI(thisUserData); // uncomment to lauch StaffGUI
+                            //adminGUI = new AdminGUI(thisUserData); // uncomment to lauch adminGUI
+                        } else {
+                            pass.setText("");
+                            thisUserData.setErrorMessage("Incorrect Password. <br> Please Try Again.");
+                        }
+
+                } else {
+                    System.out.println("Line 315");
+                    
+                    username.setText("");
+                    pass.setText("");
+                    thisUserData.setErrorMessage("Could not find Username. <br> Please Try Again");
+                }
+            } catch (Exception ex) {
                 username.setText("");
                 pass.setText("");
-                //success icon
-                verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
-                verifyLbl.setText("<html>" + "Login Successful." + "</div></html>"); //success message
-                verifyLbl.setForeground(successGreen);  //success green    
                 
-                
-                // when appointment database class is implemented pass it into this to give it access
-                //resGUI = new ResidentGUI(thisUserData); // use this to launch ResidentGUI
-                staffGUI = new StaffGUI(thisUserData); // use this to lauch StaffGUI
-            } 
-            else if ((txtName.length() == 0 || txtPass.length() == 0)) {
-
-                //error icon
-                verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
-                verifyLbl.setText("<html>" + "Please fill out all fields." +
-                        "</html>"); //error message
-                verifyLbl.setForeground(errorRed);  //error red
-            } else {
-
-                username.setText("");
-                pass.setText("");
-                //error icon
-                verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
-                verifyLbl.setText("<html>" +
-                        "Incorrect Username <br> or Password. <br> Please Try Again." +
-                        "</html>"); //error message
-                verifyLbl.setForeground(errorRed);  //error red  
+                thisUserData.setErrorMessage("Invalid Username. <br> Please Try Again.");
             }
+            
         }
 
     }
@@ -336,6 +341,85 @@ public class WelcomeScreen extends JFrame {
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
         }
+
+    }
+
+
+
+    //=========================================================//
+    //=                   FUNCTIONALITIES                     =//
+    //=========================================================//
+
+
+    // Function to set wait message
+    public void setWaitingMessage(String waitMsg) {
+        try {
+            //wait icon
+            verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/waiticon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+        } catch (Exception ioe) {
+            System.out.println("Wait icon not found.");
+        }  
+
+        verifyLbl.setText("<html>" + waitMsg + "</html>"); //wait message
+        verifyLbl.setForeground(waitBlue);  //wait blue 
+    }
+    
+    // Function to set error message
+    public void setErrorMessage(String errorMsg) {
+        try {
+            //error icon
+            verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
+        } catch (Exception ioe) {
+            System.out.println("Error icon not found.");
+        }     
+
+        verifyLbl.setText("<html>" + errorMsg + "</html>"); //error message
+        verifyLbl.setForeground(errorRed);  //error red
+    }
+
+    // Function to set error message
+    public void setSuccessMessage(String successMsg) {
+        try {
+            //success icon
+            verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+        } catch (Exception ioe) {
+            System.out.println("Success icon not found.");
+        }  
+
+        verifyLbl.setText("<html>" + successMsg + "</html>"); //success message
+        verifyLbl.setForeground(successGreen);  //success green   
+    }
+
+
+
+    private ArrayList<Resident> tableData(String file){
+        Scanner sscan = null;
+        ArrayList<Resident> residentList = new ArrayList<Resident>();
+
+        try{
+            sscan  = new Scanner(new File(file));
+            while(sscan.hasNext()){
+                String data = sscan.nextLine(); 
+                String[] nextLine = data.split("%");
+                //Output: FirstName Lastname CustomerID Date TotalAmount-Wash TotalAmount-Dry $Amount
+                String type=nextLine[0];
+                String fName=nextLine[1];
+                String lName=nextLine[2];
+                String email=nextLine[3];
+                int residentId=Integer.parseInt(nextLine[4]);
+                String pword=nextLine[5];
+                
+                Resident r=new Resident(fName,lName,residentId,pword,email,type);
+                residentList.add(r);
+            }
+            sscan.close();
+        }
+        catch(IOException e){
+            System.out.println("An error has occured with reading the DATABASE");
+        }
+
+        return residentList;
+
 
     }
 

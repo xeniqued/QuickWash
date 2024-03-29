@@ -1,8 +1,10 @@
 import javax.swing.*;
 import javax.swing.table.*;  
 import javax.swing.border.*;
+
 import java.awt.*;
-import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * This class generates a table for displaying the trip data.
@@ -13,11 +15,12 @@ public class TableRenderer {
     private DefaultTableModel model;
     private JScrollPane scrollPane;
     private String[] columnNames;
-    private String[][] tableData;
+    private ArrayList<String[]> tableData;
 
     private Color mainBlue = new Color(10, 87, 162);
     private Color mainWhite = new Color(255, 255, 255);
 
+    
     /**
      * This sets up the table to put in the given panel.
      * @param pnl is the panel where the table will be displayed.
@@ -25,15 +28,15 @@ public class TableRenderer {
      * @param columnNames is a string array for the names of the table's columns.
      * @param tableData a 2D string array featuring the table's data.
      */
-    public TableRenderer(JPanel pnl, Dimension displaySize, String[] columnNames, String[][] tableData) {    
+    public TableRenderer(JPanel pnl, Dimension displaySize, String[] columnNames, ArrayList<String[]> tableData) {    
         
         //storing the data in the class for later
         this.tableData = tableData;
         this.columnNames = columnNames;
 
         model = new DefaultTableModel(this.columnNames, 0);
-        for (int i = 0; i < this.tableData.length; i++) {
-            model.addRow(this.tableData[i]);  
+        for (int i = 0; i < this.tableData.size(); i++) {
+            model.addRow(this.tableData.get(i));  
         }
 
         //FLATLAF table styling
@@ -89,5 +92,33 @@ public class TableRenderer {
     public DefaultTableModel getModel(){
         return model;
     }    
+
+    public JTable getTable(){
+        return table;
+    }    
     
+    public int getSelectedRow(){
+        //System.out.print(table.getSelectedRow());
+        return table.getSelectedRow();
+    }
+
+    public String[] getTimeDateData(){
+        int rowNum = getSelectedRow();
+        String[] tableTimeandDate = new String[2];
+        
+        for (int i = 0; i <= 1; i++) {
+            System.out.println(table.getValueAt(rowNum, i).toString());
+            tableTimeandDate[i] = table.getValueAt(rowNum, i).toString();
+        }
+        
+        return tableTimeandDate;
+        
+    }
+
+    public void updateRow(String[] data, int row, int columnNum){        
+        for (int i = 0; i <= columnNum; i++) {
+            model.setValueAt(data[i], row, i);            
+        }
+    }
+
 }

@@ -251,7 +251,7 @@ public class StaffGUI extends JFrame {
         };
 
         //Rendering appointment table with data above
-        apptTable = new TableRenderer(apptinner2Pnl, new Dimension(826, 425), apptColumnNames, apptData);
+        //apptTable = new TableRenderer(apptinner2Pnl, new Dimension(826, 425), apptColumnNames, apptData);
         apptPnl.add(apptinner2Pnl);
 
 
@@ -291,7 +291,7 @@ public class StaffGUI extends JFrame {
         };
 
         //Rendering details table with data above
-        detsTable = new TableRenderer(detsinner2Pnl, new Dimension(826, 35), detsColumnNames, detsData);
+        //detsTable = new TableRenderer(detsinner2Pnl, new Dimension(826, 35), detsColumnNames, detsData);
 
         detailsPnl.add(detsinner2Pnl);
 

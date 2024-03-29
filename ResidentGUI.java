@@ -9,7 +9,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
+import java.util.List;
 
 /**
  * This displays the main resident screen of the system where appointments are displayed 
@@ -43,7 +47,7 @@ public class ResidentGUI extends JFrame {
     private EditAppointmentGUI thisEdAptGUI = null; //EditAppointmentGUI popup screen instance
     
 
-    public ResidentGUI(WelcomeScreen ws) {
+    public ResidentGUI(WelcomeScreen ws, String idString, String name) {
 
         /**
          * This sets up attributes to ensure that the window instances are linked
@@ -276,8 +280,30 @@ public class ResidentGUI extends JFrame {
             {"11/03/2024", "9:00", "3", "2", "4", "Yes", "No"}
         };
 
+        //New Code
+        Database db = new Database();
+        List<Appointment> appointments=db.getAppointmentsById(Integer.parseInt(idString));
+        ArrayList<String[]> tableData = new ArrayList<String[]>();
+        System.out.println("line 293");
+        for (Appointment appointment : appointments) {
+            String dateString = appointment.getDay() + "/" + appointment.getMonth() + "/" + appointment.getYear();
+            String hourString = appointment.getTime() + ":00";
+            String washNum = Integer.toString(appointment.getWashNum());
+            String dryNum = Integer.toString(appointment.getDryNum());
+            String machineNum = Integer.toString(appointment.getMachineNum());
+            String confirmedByResident = appointment.isConfirmedByResident() ? "Yes" : "No";
+            String confirmedByStaff = appointment.isConfirmedByStaff() ? "Yes" : "No";
+           
+            //System.out.println(dateString+ " " +hourString+ " " +washNum+ " " +dryNum+ " " + machineNum+ " " +confirmedByResident+ " " +confirmedByStaff);
+            String [] row = {dateString, hourString, washNum, dryNum, machineNum, confirmedByResident, confirmedByStaff};
+            tableData.add(row);
+        }
+        System.out.println("line 307");
+        
+
+
         //Rendering appointment table with data above
-        apptTable = new TableRenderer(apptinner2Pnl, new Dimension(826, 425), apptColumnNames, apptData);
+        apptTable = new TableRenderer(apptinner2Pnl, new Dimension(826, 425), apptColumnNames, tableData);
         apptPnl.add(apptinner2Pnl);
 
 
@@ -312,9 +338,8 @@ public class ResidentGUI extends JFrame {
         detsColumnNames = new String[]{ "Time", "Weekday", "Month", "Day",  "Year"};
 
         //Update this value
-        detsData = new String[][] {
-            {"12:00", "Wednesday", "March", "13",  "2024", }
-        };
+        ArrayList<String[]> detsData = new ArrayList<String[]>();
+        detsData.add(new String[]{ "", "", "", "", ""});
 
         //Rendering details table with data above
         detsTable = new TableRenderer(detsinner2Pnl, new Dimension(826, 35), detsColumnNames, detsData);
@@ -344,8 +369,6 @@ public class ResidentGUI extends JFrame {
         setVisible(true);
 
     }// public ResidentGUI() end (constructor)
-
-
 
 
     //=========================================================//
@@ -378,6 +401,16 @@ public class ResidentGUI extends JFrame {
      */
     private class ConfirmBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            System.out.println(apptTable.getSelectedRow());
+            String[] data = apptTable.getTimeDateData();
+            String time = data[1];
+            String[] date = data[0].split("/");
+            String weekday = getWeekday(Integer.parseInt(date[2]), Integer.parseInt(date[1]), Integer.parseInt(date[0]));
+            String month = getMonthName(Integer.parseInt(date[1]));
+            String day =  date[0];
+            String year = date[2];
+
+            detsTable.updateRow(new String[]{time, weekday, month, day, year}, 0, 4);
         }
 
     }
@@ -391,6 +424,27 @@ public class ResidentGUI extends JFrame {
             thisWS.setVisible(true); //makes welcome screen visible again
         }
 
+    }
+
+
+    
+    //======================================================//
+    //=                  FUNCTIONALITIES                   =//
+    //======================================================//
+
+
+    private String getWeekday(int year, int month, int day) {
+        LocalDate date = LocalDate.of(year, month, day);
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek.name();
+    }
+
+    // Function to get month name from month number
+    public static String getMonthName(int monthNumber) {
+        if (monthNumber < 1 || monthNumber > 12) {
+            throw new IllegalArgumentException("Invalid month number");
+        }
+        return Month.of(monthNumber).name();
     }
 
 
