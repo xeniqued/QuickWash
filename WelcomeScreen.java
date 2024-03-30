@@ -283,6 +283,8 @@ public class WelcomeScreen extends JFrame {
                         UserType user = db.selectUserById(Integer.parseInt(txtName));
                         String dbName = user.getName();
                         String dbPassword = user.getPassword();
+
+                        
         
                         if(txtPass.equals(dbPassword)){
                             
@@ -292,9 +294,13 @@ public class WelcomeScreen extends JFrame {
                             pass.setText("");
                         
                             //If password is correct, open one of below screens
-                            resGUI = new ResidentGUI(thisUserData, txtName, dbName); // uncomment to launch ResidentGUI
-                            //staffGUI = new StaffGUI(thisUserData); // uncomment to lauch StaffGUI
-                            //adminGUI = new AdminGUI(thisUserData); // uncomment to lauch adminGUI
+                            if(user.getType_user().equals("resident")){
+                                resGUI = new ResidentGUI(thisUserData, txtName, dbName);
+                            }else if(user.getType_user().equals("staff")){
+                               staffGUI = new StaffGUI(thisUserData,txtName,dbName); 
+                            }else if(user.getType_user().equals("admin")){
+                                adminGUI = new AdminGUI(thisUserData); 
+                             }
                         } else {
                             pass.setText("");
                             thisUserData.setErrorMessage("Incorrect Password. <br> Please Try Again.");

@@ -111,6 +111,42 @@ public class Database {
         }
         return appointments;
     }
+    //get appointments for a specific day for staff
+    public List<Appointment> getAppointments(int year,int month, int day) {
+        List<Appointment> appointments = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
+            String query = "SELECT * FROM appointments WHERE month = ? AND day = ? AND year = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, month);
+            statement.setInt(2, day);
+            statement.setInt(3, year);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int appointmentNum = resultSet.getInt("appointment_num");
+                int idNum = resultSet.getInt("id_num");
+                String name = resultSet.getString("name");
+                int washNum = resultSet.getInt("wash_num");
+                int dryNum = resultSet.getInt("dry_num");
+                boolean confirmedByResident = resultSet.getBoolean("confirmed_by_resident");
+                boolean confirmedByStaff = resultSet.getBoolean("confirmed_by_staff");
+                String washer_id=resultSet.getString("washer_id");
+                String dryer_id=resultSet.getString("dryer_id");
+                int time=resultSet.getInt("time");
+                Appointment appointment = new Appointment(appointmentNum, idNum, name, washNum, dryNum, month, day,year, time, confirmedByResident, confirmedByStaff,washer_id,dryer_id);
+                appointments.add(appointment);
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return appointments;
+    }
     
 
     // Method to add an appointment

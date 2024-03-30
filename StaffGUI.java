@@ -2,6 +2,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.*;
@@ -9,9 +11,14 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.List;
 
 /**
  * This displays the main resident screen of the system where appointments are displayed 
@@ -42,8 +49,13 @@ public class StaffGUI extends JFrame {
     private WelcomeScreen thisWS; //previous screen
     private static StaffGUI thisStaffGUI; //current screen instance
 
-    public StaffGUI(WelcomeScreen ws) {
+    private String nameVar;
+    private String idStringVar;
 
+    public StaffGUI(WelcomeScreen ws,String idString,String name) {
+        //initialize variable
+        this.nameVar=name;
+        this.idStringVar=idString;
         /**
          * This sets up attributes to ensure that the window instances are linked
          */        
@@ -96,9 +108,12 @@ public class StaffGUI extends JFrame {
             navLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/user2icon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
         } catch (Exception ioe) {
             System.out.println("User icon not found.");
-        }      
+        }
+        //Get firstname
+        String[]fullname=name.split(" ");
+        String fname=fullname[0];       
         // replace <Resident> with the variable storing the the user's name
-        navLbl.setText("Hello, " + "<Employee>"); 
+        navLbl.setText("Hello, " + fname); 
         navLbl.setForeground(mainWhite);  
         navLbl.setHorizontalAlignment(JLabel.CENTER);
         navLbl.setFont(new Font(navLbl.getFont().getFontName(), Font.BOLD, 19));
@@ -217,41 +232,34 @@ public class StaffGUI extends JFrame {
         apptinner2Pnl.setOpaque(false); 
         apptinner2Pnl.setBorder(new EmptyBorder(0, 0, 5, 0));
 
-        apptColumnNames = new String[]{ "Time", "Resident ID", "Resident Name", "Room #", "Machine #", "Confirmed?"};
+        apptColumnNames = new String[]{ "Appointment #","Resident Name","Time", "Wash Load #", "Dry Load #", "Washer ID","Dryer ID","Attended?", "Confirmed?"};
 
-        //Update this value, should be sorted by upcoming date
-        apptData = new String[][] {
-            {"12:00", "620125439", "Selena Gomez", "108", "3", "No"},
-            {"18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
-            {"18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
-            {"10:00", "620165222", "Selena Gomez", "108", "4", "No"},
-            {"10:00", "620125439", "Harry Black", "108", "4", "No"},
-            {"12:00", "620149451", "Rebecca Friday", "248", "3", "No"},
-            {"18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
-            {"10:00", "620165222", "Selena Gomez", "108", "4", "No"},
-            {"12:00", "620125439", "Rebecca Friday", "248", "3", "No"},
-            {"18:00", "620125439", "Alex Russo", "117", "1", "Yes"},
-            {"10:00", "620165222", "Harry Black", "108", "4", "No"},
-            {"12:00", "620125439", "Selena Gomez", "108", "3", "No"},
-            {"18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
-            {"18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
-            {"10:00", "620165222", "Selena Gomez", "108", "4", "No"},
-            {"10:00", "620165222", "Harry Black", "108", "4", "No"},
-            {"12:00", "620149451", "Rebecca Friday", "248", "3", "No"},
-            {"18:00", "620149451", "Alex Russo", "117", "1", "Yes"},
-            {"10:00", "620125439", "Selena Gomez", "108", "4", "No"},
-            {"12:00", "620165222", "Rebecca Friday", "248", "3", "No"},
-            {"18:00", "620149451", "Alex Russo", "117", "1", "Yes"},
-            {"10:00", "620125439", "Harry Black", "108", "4", "No"},
-            {"12:00", "620165222", "Rebecca Friday", "248", "3", "No"},
-            {"18:00", "620165222", "Alex Russo", "117", "1", "Yes"},
-            {"10:00", "620149451", "Harry Black", "108", "4", "No"},
-            {"12:00", "620125439", "Selena Gomez", "108", "3", "No"},
-            {"18:00", "620149451", "Alex Russo", "117", "1", "Yes"}
-        };
+        //New Code
+        Database db = new Database();
+        List<Integer> dateListInt=getCurrentDateTimeInfo();
+        List<Appointment> appointments=db.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2));
+        ArrayList<String[]> tableData = new ArrayList<String[]>();
+        for (Appointment appointment : appointments) {
+            String appNumString=Integer.toString(appointment.getAppointmentNum());
+            String fullNameString=appointment.getName();
+            String hourString = appointment.getTime() + ":00";
+            String washNum = Integer.toString(appointment.getWashNum());
+            String dryNum = Integer.toString(appointment.getDryNum());
+            String washerID = appointment.getWasherId();
+            String dryerID = appointment.getDryerId();
+            String confirmedByResident = appointment.isConfirmedByResident() ? "Yes" : "No";
+            String confirmedByStaff = appointment.isConfirmedByStaff() ? "Yes" : "No";
+           
+            String [] row = {appNumString,fullNameString, hourString, washNum, dryNum, washerID,dryerID, confirmedByResident, confirmedByStaff};
+            tableData.add(row);
+        }
+        
+
 
         //Rendering appointment table with data above
-        //apptTable = new TableRenderer(apptinner2Pnl, new Dimension(826, 425), apptColumnNames, apptData);
+        apptTable = new TableRenderer(apptinner2Pnl, new Dimension(826, 425), apptColumnNames, tableData);
+        JTable appointmentsTable=apptTable.getTable();
+        appointmentsTable.getSelectionModel().addListSelectionListener(new TableSelectionListener());
         apptPnl.add(apptinner2Pnl);
 
 
@@ -283,15 +291,14 @@ public class StaffGUI extends JFrame {
         detsinner2Pnl.setOpaque(false);    
         detsinner2Pnl.setSize(new Dimension(885, 30)); 
 
-        detsColumnNames = new String[]{ "Time", "Weekday", "Month", "Day",  "Year", "Wash #", "Dry #"};
+        detsColumnNames = new String[]{ "Time", "Resident Name", "Wash #", "Dry #"};
 
         //Update this value
-        detsData = new String[][] {
-            {"12:00", "Wednesday", "March", "13",  "2024", "2", "1"}
-        };
+        ArrayList<String[]> detsData = new ArrayList<String[]>();
+        detsData.add(new String[]{ "", "", "", "", "","",""});
 
         //Rendering details table with data above
-        //detsTable = new TableRenderer(detsinner2Pnl, new Dimension(826, 35), detsColumnNames, detsData);
+        detsTable = new TableRenderer(detsinner2Pnl, new Dimension(826, 35), detsColumnNames, detsData);
 
         detailsPnl.add(detsinner2Pnl);
 
@@ -318,6 +325,45 @@ public class StaffGUI extends JFrame {
         setVisible(true);
 
     }// public StaffGUI() end (constructor)
+
+    public static List<Integer> getCurrentDateTimeInfo() {
+        // Create a Calendar instance
+        Calendar calendar = Calendar.getInstance();
+        
+        // Get current year, month, day, and hour
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1; // Months start from 0, so we add 1
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY); // 24-hour format
+        
+        // Create a list to store year, month, day, and hour
+        List<Integer> dateTimeInfo = new ArrayList<>();
+        dateTimeInfo.add(year);
+        dateTimeInfo.add(month);
+        dateTimeInfo.add(day);
+        dateTimeInfo.add(hour);
+        
+        return dateTimeInfo;
+    }
+
+    private String getWeekday(int year, int month, int day) {
+        LocalDate date = LocalDate.of(year, month, day);
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek.name();
+    }
+
+    // Function to get month name from month number
+    public static String getMonthName(int monthNumber) {
+        if (monthNumber < 1 || monthNumber > 12) {
+            throw new IllegalArgumentException("Invalid month number");
+        }
+        return Month.of(monthNumber).name();
+    }
+
+    public String[] getRowSelectedData(){
+        return apptTable.getSelectedRowData();
+        
+    }
 
 
 
@@ -355,6 +401,15 @@ public class StaffGUI extends JFrame {
      */
     private class ConfirmBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            Database db=new Database();
+            try {
+                db.updateConfirmedByStaff(Integer.parseInt(getRowSelectedData()[0]),true);
+                System.out.println("Confirmed by Resident");
+                JOptionPane.showMessageDialog(null, "Confirmed Appointment!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error. Could not confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
+                System.out.println("Error. Could not confirm Appointment.");
+            }
         }
 
     }
@@ -369,6 +424,21 @@ public class StaffGUI extends JFrame {
             thisWS.setVisible(true); //makes welcome screen visible again
         }
 
+    }
+
+    private class TableSelectionListener implements ListSelectionListener {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                String[] data = apptTable.getSelectedRowData();
+                String time = data[2];
+                String name = data[1];
+                String washNum = data[3];
+                String dryNum  = data[4];
+
+                detsTable.updateRow(new String[]{time, name, washNum, dryNum}, 0, 3);
+            }
+        }
     }
 
 
