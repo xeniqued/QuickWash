@@ -102,16 +102,15 @@ public class TableRenderer {
         return table.getSelectedRow();
     }
 
-    public String[] getTimeDateData(){
+    public String[] getSelectedRowData(){
         int rowNum = getSelectedRow();
-        String[] tableTimeandDate = new String[2];
+        String[] selRow = new String[5];
         
-        for (int i = 0; i <= 1; i++) {
-            System.out.println(table.getValueAt(rowNum, i).toString());
-            tableTimeandDate[i] = table.getValueAt(rowNum, i).toString();
+        for (int i = 0; i <= 4; i++) {
+            selRow[i] = table.getValueAt(rowNum, i).toString();
         }
         
-        return tableTimeandDate;
+        return selRow;
         
     }
 

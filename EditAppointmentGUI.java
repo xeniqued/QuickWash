@@ -40,8 +40,16 @@ public class EditAppointmentGUI extends JFrame {
     private static ResidentGUI thisRGUI; //previous screen
     private EditAppointmentGUI thisEditGUI; //current screen instance
 
+    private String idStringVar;
+    private String nameVar;
+    private String[]selectedRowDataArray;
 
-    public EditAppointmentGUI(ResidentGUI res){
+
+    public EditAppointmentGUI(ResidentGUI res,String name,String idString,String[]selectedRowData){
+
+        this.nameVar=name;
+        this.idStringVar=idString;
+        this.selectedRowDataArray=selectedRowData;
 
         /**
          * This sets up attributes to ensure that the window instances are linked
@@ -110,9 +118,9 @@ public class EditAppointmentGUI extends JFrame {
         washLbl.setFont(new Font(washLbl.getFont().getFontName(), Font.BOLD, 15));        
         
         disinner2i1Pnl.add(washLbl, BorderLayout.NORTH);
-        SpinnerModel washSpinModel = new SpinnerNumberModel(1, //initial value
-         1, //min
-         10, //max
+        SpinnerModel washSpinModel = new SpinnerNumberModel(Integer.parseInt(selectedRowDataArray[3]), //initial value
+         0, //min
+         4, //max
          1);//step
         washSpinner = new JSpinner(washSpinModel);
         washSpinner.setPreferredSize(new Dimension(110,35));
@@ -132,9 +140,9 @@ public class EditAppointmentGUI extends JFrame {
         disinner2Pnl.add(dryLbl);
         disinner2i2Pnl.add(dryLbl, BorderLayout.NORTH);
 
-        SpinnerModel drySpinModel = new SpinnerNumberModel(0, //initial value
+        SpinnerModel drySpinModel = new SpinnerNumberModel(Integer.parseInt(selectedRowDataArray[4]), //initial value
          0, //min
-         10, //max
+         4, //max
          1);//step
         drySpinner = new JSpinner(drySpinModel);
         drySpinner.setPreferredSize(new Dimension(110,35));
@@ -186,6 +194,21 @@ public class EditAppointmentGUI extends JFrame {
                             "5 - May", "6 - June", "7 - July", "8 - Aug", "9 - Sept",
                             "10 - Oct", "11 - Nov", "12 - Dec"};        
         monthDropBox = new JComboBox<String>(months);
+        //new code
+        String[] date=selectedRowDataArray[1].split("/");
+        String mth=date[1];
+        String apptMth="";
+        for (String m : months) {
+            // Check if the element contains the search string
+            if (m.contains(mth)) {
+                apptMth=m;
+                break; // Break the loop if found
+            }
+        }
+        monthDropBox.setSelectedItem(apptMth);
+
+
+        //Set selected month
         monthDropBox.setFont(new Font(monthDropBox.getFont().getFontName(), Font.BOLD, 15));        
         monthDropBox.setForeground(mainBlue);
         monthDropBox.setPreferredSize(new Dimension(120,35));
@@ -200,7 +223,7 @@ public class EditAppointmentGUI extends JFrame {
         dayLbl.setForeground(mainBlue); 
         dayLbl.setFont(new Font(dayLbl.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i3Pnl.add(dayLbl, BorderLayout.NORTH);  
-        SpinnerModel daySpinModel = new SpinnerNumberModel(1, //initial value
+        SpinnerModel daySpinModel = new SpinnerNumberModel(Integer.parseInt(date[0]), //initial value
          1, //min
          31, //max
          1);//step
@@ -260,6 +283,8 @@ public class EditAppointmentGUI extends JFrame {
             count++;
         };               
         timeDropBox = new JComboBox<String>(times); 
+        //new Code
+        timeDropBox.setSelectedItem(selectedRowDataArray[2]);
         timeDropBox.setFont(new Font(timeDropBox.getFont().getFontName(), Font.BOLD, 15));        
         timeDropBox.setForeground(mainBlue);
         timeDropBox.setPreferredSize(new Dimension(118,35));
@@ -363,6 +388,7 @@ public class EditAppointmentGUI extends JFrame {
     } //public EditAppointmentGUI() end (constructor)
 
 
+
     
     //=========================================================//
     //=           BUTTON LISTENING FUNCTIONALITIES            =//
@@ -376,6 +402,33 @@ public class EditAppointmentGUI extends JFrame {
         public void actionPerformed(ActionEvent e)
         {
             //open dialog window with appointment details and ask for confirmation before updating database
+            int washValueInt = (int) washSpinner.getValue();
+            int dryValueInt = (int) drySpinner.getValue();
+            int dayValueInt = (int) daySpinner.getValue();
+            String monthValue = (String) monthDropBox.getSelectedItem();
+            int monthInt=Integer.parseInt(String.valueOf(monthValue.charAt(0)));
+
+            String yearValue = (String) yearDropBox.getSelectedItem();
+            int yearInt=Integer.parseInt(yearValue);
+            String timeValue = (String) timeDropBox.getSelectedItem();
+            String[] timeParts = timeValue.split(":");
+            int hourInt=Integer.parseInt(timeParts[0]);
+            MachineList mList=new MachineList();
+            String washer_id=mList.assignWasherUpdate(Integer.parseInt(selectedRowDataArray[0]),washValueInt,yearInt,monthInt,dayValueInt,hourInt);
+            String dryer_id=mList.assignDryerUpdate(Integer.parseInt(selectedRowDataArray[0]),washValueInt,yearInt,monthInt,dayValueInt,hourInt);
+            Boolean attend =attendedCheck.isSelected();
+            try{
+                Database db=new Database();
+
+                db.updateAppointment(Integer.parseInt(selectedRowDataArray[0]),washValueInt, dryValueInt, monthInt, dayValueInt, yearInt, hourInt,washer_id,dryer_id,attend);
+                setVisible(false);
+                System.out.println("Appointment Edited");
+            }catch(Exception ex){
+                ex.printStackTrace();
+
+                System.out.println("Could not add to Appoinment to the database");
+                setVisible(false);
+            }
         }
 
     }
@@ -388,6 +441,18 @@ public class EditAppointmentGUI extends JFrame {
         public void actionPerformed(ActionEvent e)
         {
             //ask for confirmation here before deleting
+            try {
+                Database db=new Database();
+                db.deleteAppointment(Integer.parseInt(selectedRowDataArray[0]));
+                System.out.println("Appointment Deleted!");
+                setVisible(false);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "An Error occured.", "Error", JOptionPane.ERROR_MESSAGE);
+                System.out.println("Could not delete appointment");
+                ex.printStackTrace();
+                setVisible(false);
+
+            }
         }
 
     }
@@ -407,5 +472,7 @@ public class EditAppointmentGUI extends JFrame {
         }
 
     }
+
+    
 
 } //public class EditAppointmentGUI() end 

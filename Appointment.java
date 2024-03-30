@@ -12,9 +12,11 @@ public class Appointment {
     private boolean confirmedByStaff;
     private int machineNum;
     private int appointment_num;
+    private String washer_id;
+    private String dryer_id;
 
     // Constructor
-    public Appointment( int appointment_num,int idNum, String name, int washNum, int dryNum, int month, int day, int year, int time, boolean confirmedByResident, boolean confirmedByStaff, int machineNum) {
+    public Appointment( int appointment_num,int idNum, String name, int washNum, int dryNum, int month, int day, int year, int time, boolean confirmedByResident, boolean confirmedByStaff, String washer_id,String dryer_id) {
         this.idNum = idNum;
         this.name = name;
         this.washNum = washNum;
@@ -25,7 +27,24 @@ public class Appointment {
         this.time = time;
         this.confirmedByResident = confirmedByResident;
         this.confirmedByStaff = confirmedByStaff;
-        this.machineNum = machineNum;
+        this.washer_id = washer_id;
+        this.dryer_id = dryer_id;
+        this.appointment_num=appointment_num;
+    }
+
+    public Appointment(int idNum, String name, int washNum, int dryNum, int month, int day, int year, int time, boolean confirmedByResident, boolean confirmedByStaff, String washer_id,String dryer_id) {
+        this.idNum = idNum;
+        this.name = name;
+        this.washNum = washNum;
+        this.dryNum = dryNum;
+        this.month = month;
+        this.day = day;
+        this.year = year;
+        this.time = time;
+        this.confirmedByResident = confirmedByResident;
+        this.confirmedByStaff = confirmedByStaff;
+        this.washer_id = washer_id;
+        this.dryer_id = dryer_id;
         this.appointmentNum=appointment_num;
     }
 
@@ -40,7 +59,7 @@ public class Appointment {
     }
 
     public int getAppointmentNum() {
-        return appointment_num;
+        return this.appointment_num;
     }
 
     public void setAppointmentNum(int idNum) {
@@ -119,13 +138,14 @@ public class Appointment {
         this.confirmedByStaff = confirmedByStaff;
     }
 
-    public int getMachineNum() {
-        return machineNum;
+    public String getWasherId() {
+        return washer_id;
     }
 
-    public void setMachineNum(int machineNum) {
-        this.machineNum = machineNum;
+    public String getDryerId() {
+        return dryer_id;
     }
+    
 
     // toString method
     @Override

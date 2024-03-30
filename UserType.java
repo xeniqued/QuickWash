@@ -26,6 +26,18 @@ public class UserType {
         return name;
     }
 
+    public String getfName() {
+        String[]fullname=name.split(" ");
+        String fname=fullname[0];
+        return fname;
+    }
+
+    public String getlName() {
+        String[]fullname=name.split(" ");
+        String lname=fullname[1];
+        return lname;
+    }
+
     public int getId_num() {
         return id_num;
     }

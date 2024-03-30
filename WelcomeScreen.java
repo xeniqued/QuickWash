@@ -266,12 +266,9 @@ public class WelcomeScreen extends JFrame {
 
             String txtName = username.getText();                            
             String txtPass = String.valueOf(pass.getPassword());
-            System.out.println(txtName);
-            System.out.println(txtPass);
 
             //Accessing the database
             Database db = new Database();
-            System.out.println("Line 289");
             
             try {
                 if ((txtName.length() == 0 || txtPass.length() == 0)) {
@@ -280,17 +277,14 @@ public class WelcomeScreen extends JFrame {
                     thisUserData.setErrorMessage("Please fill out all fields.");
                     
                 } else if (db.selectUserById(Integer.parseInt(txtName)) != null){
-                        System.out.println("Line 297");
                         thisUserData.setWaitingMessage("Verifying...");
                         verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
         
                         UserType user = db.selectUserById(Integer.parseInt(txtName));
-                        String dbName = user.getPassword();
+                        String dbName = user.getName();
                         String dbPassword = user.getPassword();
-                        System.out.println(dbPassword);
         
                         if(txtPass.equals(dbPassword)){
-                            System.out.println("Line 305");
                             
                             thisUserData.setSuccessMessage("Login Successful.");
                             verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
@@ -307,7 +301,6 @@ public class WelcomeScreen extends JFrame {
                         }
 
                 } else {
-                    System.out.println("Line 315");
                     
                     username.setText("");
                     pass.setText("");
@@ -388,39 +381,6 @@ public class WelcomeScreen extends JFrame {
 
         verifyLbl.setText("<html>" + successMsg + "</html>"); //success message
         verifyLbl.setForeground(successGreen);  //success green   
-    }
-
-
-
-    private ArrayList<Resident> tableData(String file){
-        Scanner sscan = null;
-        ArrayList<Resident> residentList = new ArrayList<Resident>();
-
-        try{
-            sscan  = new Scanner(new File(file));
-            while(sscan.hasNext()){
-                String data = sscan.nextLine(); 
-                String[] nextLine = data.split("%");
-                //Output: FirstName Lastname CustomerID Date TotalAmount-Wash TotalAmount-Dry $Amount
-                String type=nextLine[0];
-                String fName=nextLine[1];
-                String lName=nextLine[2];
-                String email=nextLine[3];
-                int residentId=Integer.parseInt(nextLine[4]);
-                String pword=nextLine[5];
-                
-                Resident r=new Resident(fName,lName,residentId,pword,email,type);
-                residentList.add(r);
-            }
-            sscan.close();
-        }
-        catch(IOException e){
-            System.out.println("An error has occured with reading the DATABASE");
-        }
-
-        return residentList;
-
-
     }
 
 

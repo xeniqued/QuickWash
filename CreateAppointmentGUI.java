@@ -6,6 +6,8 @@ import org.w3c.dom.ranges.Range;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateAppointmentGUI extends JFrame {
 
@@ -34,14 +36,23 @@ public class CreateAppointmentGUI extends JFrame {
     private static ResidentGUI thisRGUI; //previous screen
     private CreateAppointmentGUI thisAddGUI; //current screen instance
 
+    private String idStringVar;
+    private String nameVar;
+    private Database db;
+
     /**
      * This class creates a screen in which the user can schedule an appointment.
      */
-    public CreateAppointmentGUI(ResidentGUI res){
+    public CreateAppointmentGUI(ResidentGUI res,String name,String idString){
+        //instiantiate variables
+        this.nameVar=name;
+        this.idStringVar=idString;
+
 
         /**
          * This sets up attributes to ensure that the window instances are linked
-         */        
+         */   
+        
         thisRGUI = res;
         thisAddGUI = this;
         setFocusable(true);
@@ -231,7 +242,6 @@ public class CreateAppointmentGUI extends JFrame {
         int count = 0;    
         for (int y = 2024; y < 2031; y++) {
             years[count] = Integer.toString(y);  
-            //System.out.print(y + "\n"); 
             count++;
         };        
         yearDropBox = new JComboBox<String>(years); 
@@ -249,11 +259,22 @@ public class CreateAppointmentGUI extends JFrame {
         timeLbl.setForeground(mainBlue); 
         timeLbl.setFont(new Font(timeLbl.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i5Pnl.add(timeLbl, BorderLayout.NORTH);  
+        
+        // Create a list of integers
+        List<Integer> allTimes = new ArrayList<>();
+
+        // Add numbers 9 to 18 to the list
+        for (int i = 9; i <= 18; i++) {
+            allTimes .add(i);
+        }
+        //db.getBookedTimes();
+
+        //end of new code
+
         String[] times = new String[10];    
         count = 0;
         for (int t = 9; t < 19; t++) {
             times[count] = Integer.toString(t) + ":00";
-            //System.out.print(t + "\n"); 
             count++;
         };               
         timeDropBox = new JComboBox<String>(times); 
@@ -262,6 +283,7 @@ public class CreateAppointmentGUI extends JFrame {
         timeDropBox.setPreferredSize(new Dimension(118,35));
         disinner3i5Pnl.add(timeDropBox, BorderLayout.SOUTH);    
         
+
         disinner3div2Pnl.add(disinner3i5Pnl, BorderLayout.LINE_END);    
 
         disinner3Pnl.add(disinner3div2Pnl);  
@@ -328,6 +350,22 @@ public class CreateAppointmentGUI extends JFrame {
 
     } //public CreateAppointmentGUI() end (constructor)
 
+    public void createAppointment(int washValueInt,int dryValueInt,int monthInt,int dayValueInt,int yearInt,int hourInt){
+        int id=Integer.parseInt(idStringVar);
+        String fullName=nameVar;
+        boolean confimedResident=false;
+        boolean confimedStaff=false;
+        MachineList mList=new MachineList();
+        String washer_id=mList.assignWasher(washValueInt,yearInt,monthInt,dayValueInt,hourInt);
+        String dryer_id=mList.assignDryer(washValueInt,yearInt,monthInt,dayValueInt,hourInt);
+        Database db=new Database();
+        db.addAppointment(id, fullName, washValueInt, dryValueInt, monthInt, dayValueInt, yearInt, hourInt, confimedResident, confimedStaff,washer_id,dryer_id);
+
+    }
+
+
+    
+
 
     
     //=========================================================//
@@ -342,8 +380,29 @@ public class CreateAppointmentGUI extends JFrame {
         public void actionPerformed(ActionEvent e)
         {
             //open dialog window with appointment details and ask for confirmation before adding to database
-        }
+            
+            int washValueInt = (int) washSpinner.getValue();
+            int dryValueInt = (int) drySpinner.getValue();
+            int dayValueInt = (int) daySpinner.getValue();
+            String monthValue = (String) monthDropBox.getSelectedItem();
+            int monthInt=Integer.parseInt(String.valueOf(monthValue.charAt(0)));
 
+            String yearValue = (String) yearDropBox.getSelectedItem();
+            int yearInt=Integer.parseInt(yearValue);
+            String timeValue = (String) timeDropBox.getSelectedItem();
+            String[] timeParts = timeValue.split(":");
+            int hourInt=Integer.parseInt(timeParts[0]);
+            try{
+                createAppointment(washValueInt,dryValueInt,monthInt,dayValueInt,yearInt,hourInt);
+                setVisible(false);
+                System.out.println("Appointment Made!");
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                System.out.println("Could not add to Appoinment to the database");
+                ex.printStackTrace();
+                setVisible(false);
+            }
+        }    
     }
     
 
@@ -361,5 +420,7 @@ public class CreateAppointmentGUI extends JFrame {
         }
 
     }
+
+    
 
 } //public class CreateAppointmentGUI() end 
