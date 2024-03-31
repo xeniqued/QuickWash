@@ -374,7 +374,6 @@ public class ResidentGUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Please select an Appointment!", "Error", JOptionPane.ERROR_MESSAGE); 
             }else{
                 thisEdAptGUI = new EditAppointmentGUI(thisResGUI,nameVar,idStringVar,getRowSelectedData());
-
             }
         }
 
