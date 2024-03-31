@@ -17,6 +17,8 @@ public class TableRenderer {
     private String[] columnNames;
     private ArrayList<String[]> tableData;
 
+    private int hiddenColCount = 0;
+
     private Color mainBlue = new Color(10, 87, 162);
     private Color mainWhite = new Color(255, 255, 255);
 
@@ -96,29 +98,61 @@ public class TableRenderer {
     public JTable getTable(){
         return table;
     }    
+
+    public void setColumnWidth(int columnIndex, int width){        
+        table.getColumnModel().getColumn(columnIndex).setPreferredWidth(width);
+    }
+
+    public void hideLastColumn(int columnNum) {
+        table.removeColumn(table.getColumnModel().getColumn(columnNum-1));
+        hiddenColCount ++;
+    }
+
+    public int getColumnNum(){
+        return table.getColumnCount();
+    }
     
     public int getSelectedRow(){
         //System.out.print(table.getSelectedRow());
         return table.getSelectedRow();
     }
 
-    public String[] getTimeDateData(){
+    public ArrayList<String> getSelectedRowData(int columnNum){
         int rowNum = getSelectedRow();
-        String[] tableTimeandDate = new String[2];
+        ArrayList<String> selRow = new ArrayList<String>();
         
-        for (int i = 0; i <= 1; i++) {
-            System.out.println(table.getValueAt(rowNum, i).toString());
-            tableTimeandDate[i] = table.getValueAt(rowNum, i).toString();
+        for (int i = 0; i <= columnNum-1; i++) {
+            selRow.add(table.getValueAt(rowNum, i).toString());
+            System.out.println(selRow.get(i));
         }
         
-        return tableTimeandDate;
+        if (hiddenColCount > 0) {
+            int count = hiddenColCount;
+            System.out.println(columnNum);
+            int modelColNum = table.getModel().getColumnCount();
+            System.out.println(modelColNum);
+            for (int i = 1; i <= hiddenColCount; i++) {
+                selRow.add(table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), modelColNum-count).toString());
+                System.out.println(selRow.get(modelColNum-count));
+                count--;
+            }
+        }
         
+        return selRow;        
     }
 
     public void updateRow(String[] data, int row, int columnNum){        
-        for (int i = 0; i <= columnNum; i++) {
+        for (int i = 0; i <= columnNum-1; i++) {
             model.setValueAt(data[i], row, i);            
         }
     }
 
+    public void populateTable(ArrayList<String[]> data, int row, int columnNum){
+        model.setRowCount(0);
+        for (int i = 0; i <= data.size(); i++) {
+            updateRow(data.get(i), row, columnNum);            
+        }
+    }
+    
+    
 }

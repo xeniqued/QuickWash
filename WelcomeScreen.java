@@ -1,19 +1,10 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.*;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.*;
-import java.nio.file.Paths;
-import java.nio.file.Path;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 /**
  * Main Window upon loading the program. Allows Sign Up & Login of Accounts in system.
@@ -44,8 +35,6 @@ public class WelcomeScreen extends JFrame {
     private ResidentGUI resGUI; //resident screen instance
     private StaffGUI staffGUI; //staff screen instance
     private AdminGUI adminGUI; //staff screen instance
-
-    private Database db;
 
     public WelcomeScreen() {    
 
@@ -166,7 +155,7 @@ public class WelcomeScreen extends JFrame {
         JPanel i3Pnl = new JPanel();
         i3Pnl.setOpaque(false);
 
-        verifyLbl = new JLabel(); // error message label
+        verifyLbl = new JLabel(""); // error message label
         verifyLbl.setFont(new Font(verifyLbl.getFont().getFontName(), Font.BOLD, 15));
         i3Pnl.add(verifyLbl); // adding the label to innerpanel3
         innerPnl.add(i3Pnl, BorderLayout.EAST); //adding innerpanel3 to innner panel
@@ -260,64 +249,59 @@ public class WelcomeScreen extends JFrame {
      * This implements Login Button functionalities
      */
     private class LoginBtnListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            thisUserData.setWaitingMessage("Verifying...");
-            verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+        public void actionPerformed(ActionEvent e) {            
 
             String txtName = username.getText();                            
             String txtPass = String.valueOf(pass.getPassword());
-            System.out.println(txtName);
-            System.out.println(txtPass);
-
-            //Accessing the database
-            Database db = new Database();
-            System.out.println("Line 289");
             
             try {
+                setWaitingMessage("Verifying Input.", "Verification");
                 if ((txtName.length() == 0 || txtPass.length() == 0)) {
                     username.setText("");
                     pass.setText("");
-                    thisUserData.setErrorMessage("Please fill out all fields.");
+                    setErrorMessage("Please fill out all fields.");
                     
-                } else if (db.selectUserById(Integer.parseInt(txtName)) != null){
-                        System.out.println("Line 297");
-                        thisUserData.setWaitingMessage("Verifying...");
-                        verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+                } else if (Database.selectUserById(Integer.parseInt(txtName)) != null){
+                        
         
-                        UserType user = db.selectUserById(Integer.parseInt(txtName));
-                        String dbName = user.getPassword();
+                        UserType user = Database.selectUserById(Integer.parseInt(txtName));
+                        String dbName = user.getName();
                         String dbPassword = user.getPassword();
-                        System.out.println(dbPassword);
+                        
         
-                        if(txtPass.equals(dbPassword)){
-                            System.out.println("Line 305");
-                            
-                            thisUserData.setSuccessMessage("Login Successful.");
+                        if(txtPass.equals(dbPassword)){                            
+                            setSuccessMessage("Login Successful.");
                             verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+
+                            setWaitingMessage("Login Successful!\nLoading QuickWash.", null);
+
                             username.setText("");
                             pass.setText("");
                         
                             //If password is correct, open one of below screens
-                            resGUI = new ResidentGUI(thisUserData, txtName, dbName); // uncomment to launch ResidentGUI
-                            //staffGUI = new StaffGUI(thisUserData); // uncomment to lauch StaffGUI
-                            //adminGUI = new AdminGUI(thisUserData); // uncomment to lauch adminGUI
+                            if(user.getType_user().equals("resident")){
+                                resGUI = new ResidentGUI(thisUserData, txtName, dbName);
+                            }else if(user.getType_user().equals("staff")){
+                               staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
+                            }else if(user.getType_user().equals("admin")){
+                                adminGUI = new AdminGUI(thisUserData); 
+                            }
                         } else {
                             pass.setText("");
-                            thisUserData.setErrorMessage("Incorrect Password. <br> Please Try Again.");
+                            setErrorMessage("Incorrect Password. <br> Please Try Again.");
                         }
 
-                } else {
-                    System.out.println("Line 315");
-                    
+                } else {                    
                     username.setText("");
                     pass.setText("");
-                    thisUserData.setErrorMessage("Could not find Username. <br> Please Try Again");
+
+                    setErrorMessage("Could not find Username. <br> Please Try Again");
                 }
             } catch (Exception ex) {
                 username.setText("");
                 pass.setText("");
                 
-                thisUserData.setErrorMessage("Invalid Username. <br> Please Try Again.");
+                setErrorMessage("Invalid Username. <br> Please Try Again.");
             }
             
         }
@@ -352,16 +336,9 @@ public class WelcomeScreen extends JFrame {
 
 
     // Function to set wait message
-    public void setWaitingMessage(String waitMsg) {
-        try {
-            //wait icon
-            verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/waiticon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
-        } catch (Exception ioe) {
-            System.out.println("Wait icon not found.");
-        }  
-
-        verifyLbl.setText("<html>" + waitMsg + "</html>"); //wait message
-        verifyLbl.setForeground(waitBlue);  //wait blue 
+    public void setWaitingMessage(String waitMsg, String title) {        
+        JOptionPane.showMessageDialog(null, waitMsg, 
+        title, JOptionPane.INFORMATION_MESSAGE);
     }
     
     // Function to set error message
@@ -388,39 +365,6 @@ public class WelcomeScreen extends JFrame {
 
         verifyLbl.setText("<html>" + successMsg + "</html>"); //success message
         verifyLbl.setForeground(successGreen);  //success green   
-    }
-
-
-
-    private ArrayList<Resident> tableData(String file){
-        Scanner sscan = null;
-        ArrayList<Resident> residentList = new ArrayList<Resident>();
-
-        try{
-            sscan  = new Scanner(new File(file));
-            while(sscan.hasNext()){
-                String data = sscan.nextLine(); 
-                String[] nextLine = data.split("%");
-                //Output: FirstName Lastname CustomerID Date TotalAmount-Wash TotalAmount-Dry $Amount
-                String type=nextLine[0];
-                String fName=nextLine[1];
-                String lName=nextLine[2];
-                String email=nextLine[3];
-                int residentId=Integer.parseInt(nextLine[4]);
-                String pword=nextLine[5];
-                
-                Resident r=new Resident(fName,lName,residentId,pword,email,type);
-                residentList.add(r);
-            }
-            sscan.close();
-        }
-        catch(IOException e){
-            System.out.println("An error has occured with reading the DATABASE");
-        }
-
-        return residentList;
-
-
     }
 
 

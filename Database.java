@@ -99,10 +99,11 @@ public class Database {
                 int time = resultSet.getInt("time");
                 boolean confirmed_by_resident = resultSet.getBoolean("confirmed_by_resident");
                 boolean confirmed_by_staff = resultSet.getBoolean("confirmed_by_staff");
-                int machine_num = resultSet.getInt("machine_num");
+                String washer_id = resultSet.getString("washer_id");
+                String dryer_id = resultSet.getString("dryer_id");
 
                 // Create an Appointment object and add it to the list
-                Appointment appointment = new Appointment(appointment_num, id_num, name, wash_num, dry_num, month, day, year, time, confirmed_by_resident, confirmed_by_staff, machine_num);
+                Appointment appointment = new Appointment(appointment_num, id_num, name, wash_num, dry_num, month, day, year, time, confirmed_by_resident, confirmed_by_staff, washer_id,dryer_id);
                 appointments.add(appointment);
             }
         } catch (SQLException e) {
@@ -110,11 +111,47 @@ public class Database {
         }
         return appointments;
     }
+    //get appointments for a specific day for staff
+    public static List<Appointment> getAppointments(int year,int month, int day) {
+        List<Appointment> appointments = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
+            String query = "SELECT * FROM appointments WHERE month = ? AND day = ? AND year = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, month);
+            statement.setInt(2, day);
+            statement.setInt(3, year);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int appointmentNum = resultSet.getInt("appointment_num");
+                int idNum = resultSet.getInt("id_num");
+                String name = resultSet.getString("name");
+                int washNum = resultSet.getInt("wash_num");
+                int dryNum = resultSet.getInt("dry_num");
+                boolean confirmedByResident = resultSet.getBoolean("confirmed_by_resident");
+                boolean confirmedByStaff = resultSet.getBoolean("confirmed_by_staff");
+                String washer_id=resultSet.getString("washer_id");
+                String dryer_id=resultSet.getString("dryer_id");
+                int time=resultSet.getInt("time");
+                Appointment appointment = new Appointment(appointmentNum, idNum, name, washNum, dryNum, month, day,year, time, confirmedByResident, confirmedByStaff,washer_id,dryer_id);
+                appointments.add(appointment);
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return appointments;
+    }
     
 
     // Method to add an appointment
-    public static void addAppointment(int id_num, String name, int wash_num, int dry_num, int month, int day, int year, int time, boolean confirmed_by_resident, boolean confirmed_by_staff,int machine_num) {
-        String sql = "INSERT INTO appointments (id_num, name, wash_num, dry_num, month, day, year, time, confirmed_by_resident, confirmed_by_staff) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static void addAppointment(int id_num, String name, int wash_num, int dry_num, int month, int day, int year, int time, boolean confirmed_by_resident, boolean confirmed_by_staff, String washer_id,String dryer_id) {
+        String sql = "INSERT INTO appointments (id_num, name, wash_num, dry_num, month, day, year, time, confirmed_by_resident, confirmed_by_staff,washer_id,dryer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id_num);
@@ -127,7 +164,8 @@ public class Database {
             preparedStatement.setInt(8, time);
             preparedStatement.setBoolean(9, confirmed_by_resident);
             preparedStatement.setBoolean(10, confirmed_by_staff);
-            preparedStatement.setInt(11, machine_num);
+            preparedStatement.setString(11, washer_id);
+            preparedStatement.setString(12, dryer_id);
             preparedStatement.executeUpdate();
             System.out.println("Appointment added successfully.");
         } catch (SQLException e) {
@@ -153,8 +191,8 @@ public class Database {
     }
 
     // Method to update an appointment
-    public static void updateAppointment(int appointment_num, int wash_num, int dry_num, int month, int day, int year, int time) {
-        String sql = "UPDATE appointments SET wash_num = ?, dry_num = ?, month = ?, day = ?, year = ?, time = ? WHERE appointment_num = ?";
+    public static void updateAppointment(int appointment_num, int wash_num, int dry_num, int month, int day, int year, int time,String washer_id,String dryer_id,boolean confirmRes) {
+        String sql = "UPDATE appointments SET wash_num = ?, dry_num = ?, month = ?, day = ?, year = ?, time = ?, washer_id = ?, dryer_id = ?, confirmed_by_resident=? WHERE appointment_num = ?";
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, wash_num);
@@ -163,7 +201,10 @@ public class Database {
             preparedStatement.setInt(4, day);
             preparedStatement.setInt(5, year);
             preparedStatement.setInt(6, time);
-            preparedStatement.setInt(7, appointment_num);
+            preparedStatement.setString(7, washer_id);
+            preparedStatement.setString(8, dryer_id);
+            preparedStatement.setBoolean(9, confirmRes);
+            preparedStatement.setInt(10, appointment_num);
             int updatedRows = preparedStatement.executeUpdate();
             if (updatedRows > 0) {
                 System.out.println("Appointment updated successfully.");
@@ -244,8 +285,36 @@ public class Database {
     }
 
     // Method to select all machine IDs that are not booked during the same year, month, day, and time
-    public static List<String> getAvailableMachineIds(int year, int month, int day, int time) {
-        String sql = "SELECT machine_num FROM appointments WHERE year = ? AND month = ? AND day = ? AND time = ?";
+    public static List<String> getWasherMachineIds(int year, int month, int day, int time) {
+        String sql = "SELECT washer_id FROM appointments WHERE year = ? AND month = ? AND day = ? AND time = ?";
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, year);
+            preparedStatement.setInt(2, month);
+            preparedStatement.setInt(3, day);
+            preparedStatement.setInt(4, time);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            // Get all booked machine IDs
+            List<String> bookedMachineIds = new ArrayList<>();
+            
+            while (resultSet.next()) {
+                
+                bookedMachineIds.add(resultSet.getString("washer_id"));
+                
+            } 
+            /*MachineList availableMachines= new MachineList();
+            List<String> machineIds=availableMachines.getAllMachineIds();
+            machineIds.removeAll(bookedMachineIds);*/
+            
+            return bookedMachineIds;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<String> getDryerMachineIds(int year, int month, int day, int time) {
+        String sql = "SELECT dryer_id FROM appointments WHERE year = ? AND month = ? AND day = ? AND time = ?";
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, year);
@@ -256,11 +325,91 @@ public class Database {
             // Get all booked machine IDs
             List<String> bookedMachineIds = new ArrayList<>();
             while (resultSet.next()) {
-                bookedMachineIds.add(resultSet.getString("machine_num"));
+                bookedMachineIds.add(resultSet.getString("dryer_id"));
             } 
-            MachineList availableMachines= new MachineList();
+            /*MachineList availableMachines= new MachineList();
             List<String> machineIds=availableMachines.getAllMachineIds();
-            machineIds.removeAll(bookedMachineIds);
+            machineIds.removeAll(bookedMachineIds);*/
+            
+            return bookedMachineIds;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<String> getDryerMachineIdsUpdate(int appointment_num,int year, int month, int day, int time) {
+        String sql = "SELECT dryer_id FROM appointments WHERE appointment_num <>? AND year = ? AND month = ? AND day = ? AND time = ?";
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, appointment_num);
+            preparedStatement.setInt(2, year);
+            preparedStatement.setInt(3, month);
+            preparedStatement.setInt(4, day);
+            preparedStatement.setInt(5, time);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            // Get all booked machine IDs
+            List<String> bookedMachineIds = new ArrayList<>();
+            while (resultSet.next()) {
+                bookedMachineIds.add(resultSet.getString("dryer_id"));
+            } 
+            /*MachineList availableMachines= new MachineList();
+            List<String> machineIds=availableMachines.getAllMachineIds();
+            machineIds.removeAll(bookedMachineIds);*/
+            
+            return bookedMachineIds;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+
+    // Method to select all machine IDs that are not booked during the same year, month, day, and time
+    public static List<String> getWasherMachineIdsUpdate(int appointment_num,int year, int month, int day, int time) {
+        String sql = "SELECT washer_id FROM appointments WHERE appointment_num <>? AND year = ? AND month = ? AND day = ? AND time = ?";
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, appointment_num);
+            preparedStatement.setInt(2, year);
+            preparedStatement.setInt(3, month);
+            preparedStatement.setInt(4, day);
+            preparedStatement.setInt(5, time);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            // Get all booked machine IDs
+            List<String> bookedMachineIds = new ArrayList<>();
+            while (resultSet.next()) {
+                bookedMachineIds.add(resultSet.getString("washer_id"));
+            } 
+            /*MachineList availableMachines= new MachineList();
+            List<String> machineIds=availableMachines.getAllMachineIds();
+            machineIds.removeAll(bookedMachineIds);*/
+            
+            return bookedMachineIds;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<String> getBookedTimes(int year, int month, int day, int time) {
+        String sql="SELECT time FROM appointments WHERE month=? AND day=? GROUP BY month, day,time";
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, month);
+            preparedStatement.setInt(2, day);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            // Get all booked machine IDs
+            List<String> bookedTimes = new ArrayList<>();
+            while (resultSet.next()) {
+                bookedTimes.add(resultSet.getString("time"));
+            } 
+            /*MachineList availableMachines= new MachineList();
+            List<String> machineIds=availableMachines.getAllMachineIds();
+            machineIds.removeAll(bookedTimes);*/
+            for (String str : bookedTimes) {
+            }
+            return bookedTimes;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -269,6 +418,11 @@ public class Database {
 
 
 }
+
+
+
+
+
 
 
 
