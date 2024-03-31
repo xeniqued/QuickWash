@@ -189,6 +189,7 @@ public class ResidentGUI extends JFrame {
         navinner2Pnl.setOpaque(false);  
         navinner2Pnl.setBorder(new EmptyBorder(50, 50, 70, 50));
 
+        // CREATING AND ALLIGNING LOGOUT BUTTON // 
         btnLogout = new JButton("Logout");
         btnLogout.setFont(new Font(btnLogout.getFont().getFontName(), Font.BOLD, 16));
         btnLogout.setForeground(mainBlue);

@@ -68,6 +68,14 @@ public class AdminGUI extends JFrame {
         // Declaring layout for window
         setLayout(new BorderLayout());
 
+
+        //==================================================//
+        //=                                                =//
+        //=               SETTING UP PANELS                =//
+        //=                                                =//
+        //==================================================//
+
+
         //=======================================================//
         //=   STRUCTURING & CREATING NAVIGATION PANEL TO LEFT   =//
         //=======================================================//
@@ -89,7 +97,6 @@ public class AdminGUI extends JFrame {
         } catch (Exception ioe) {
             System.out.println("User icon not found.");
         }      
-        // replace <Resident> with the variable storing the the user's name
         navLbl.setText("Hello, Administrator"); 
         navLbl.setForeground(mainWhite);  
         navLbl.setHorizontalAlignment(JLabel.CENTER);
@@ -124,10 +131,12 @@ public class AdminGUI extends JFrame {
         navinner1Pnl.add(btnSettings);
 
 
+
         JPanel navinner2Pnl = new JPanel();        
         navinner2Pnl.setOpaque(false);  
         navinner2Pnl.setBorder(new EmptyBorder(50, 50, 70, 50));
 
+        // CREATING AND ALLIGNING LOGOUT BUTTON // 
         btnLogout = new JButton("Logout");
         btnLogout.setFont(new Font(btnLogout.getFont().getFontName(), Font.BOLD, 16));
         btnLogout.setForeground(mainBlue);
@@ -155,7 +164,7 @@ public class AdminGUI extends JFrame {
 
 
 
-        // CREATING AND ALLIGNING INCOME GENERATOR INPUT PANEL // 
+        // CREATING AND ALLIGNING INCOME GENERATOR INPUT PANEL AT TOP RIGHT// 
         inptPnl = new JPanel();   
         inptPnl.setLayout(new BoxLayout (inptPnl, BoxLayout.Y_AXIS));   
         inptPnl.setOpaque(false);            
@@ -196,6 +205,9 @@ public class AdminGUI extends JFrame {
         inptinner2Pnl.add(infoLbl, BorderLayout.NORTH);
 
 
+        //=================================================================//
+        //=   STRUCTURING & CREATING INPUT AREAS AND FIELDS INSIDE THEM   =//
+        //=================================================================//
         JPanel inptinner2i1Pnl = new JPanel();
         inptinner2i1Pnl.setLayout(new BoxLayout(inptinner2i1Pnl, BoxLayout.X_AXIS));     
         //inptinner2i1Pnl.setBackground(errorRed);
@@ -211,12 +223,14 @@ public class AdminGUI extends JFrame {
         inptinner2i1div1Pnl.setPreferredSize(new Dimension(220, 216));
         inptinner2i1div1Pnl.setBorder(new EmptyBorder(6, 15, 12, 15)); 
 
+        
+        // CREATING AND ALLIGNING START DATE SECTION // 
+
         frDateLbl = new JLabel("START DATE");  
         frDateLbl.setHorizontalAlignment(JLabel.CENTER);
         frDateLbl.setForeground(mainBlue); 
         frDateLbl.setFont(new Font(frDateLbl.getFont().getFontName(), Font.BOLD, 15));        
         inptinner2i1div1Pnl.add(frDateLbl);   
-
 
         JPanel inptinner2i1div1monPnl = new JPanel(new BorderLayout());
         inptinner2i1div1monPnl.setOpaque(false);
@@ -284,6 +298,8 @@ public class AdminGUI extends JFrame {
         inptinner2i1Pnl.add(inptinner2i1div1Pnl);
 
 
+
+        // CREATING AND ALLIGNING END DATE SECTION // 
 
         JPanel inptinner2i1div2Pnl = new JPanel(new GridLayout(4, 1, 0, 9));
         //inptinner2i1div2Pnl.setBackground(Color.ORANGE);
@@ -362,7 +378,7 @@ public class AdminGUI extends JFrame {
         inptinner2i1div3Pnl.setBorder(new EmptyBorder(103, 25, 63, 17)); 
 
 
-        // CREATING AND ALLIGNING MARK ATTEND APPOINTMENT BUTTON // 
+        // CREATING AND ALLIGNING MARK GENERATE REPORTS BUTTON // 
         ImageIcon GenRptIcon = null;      
         try {
             GenRptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/starticon.png").getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH)));
@@ -386,6 +402,12 @@ public class AdminGUI extends JFrame {
         
         inptPnl.add(inptinner2Pnl);
 
+
+
+
+        //==========================================================//
+        //=   STRUCTURING & CREATING THE GENERATED REPORT PANELS   =//
+        //==========================================================//
 
 
         reptPnl = new JPanel(new BorderLayout()); 
@@ -412,6 +434,7 @@ public class AdminGUI extends JFrame {
         
         sumLbl = new JLabel();    
         sumLbl.setBorder(new EmptyBorder(1, 0, 5, 0)); 
+        //Update this value, replace [26,000] with the value computed
         sumLbl.setText("<html>" + "Total Income in Range: $" + "[26,000]" + "</html>");
         sumLbl.setHorizontalAlignment(JLabel.CENTER);
         sumLbl.setForeground(mainBlue);
@@ -427,7 +450,7 @@ public class AdminGUI extends JFrame {
 
         incomeColumnNames = new String[]{ "Weeks", "Total Wash Loads", "Total Dry Loads", "Total Income"};
 
-        //Update this value, should be sorted by upcoming date
+        //Update this value, should be sorted by earlier weeks to later weeksj
         incomeData = new ArrayList<String[]>(){
             {
                 add(new String[]{ "Week 1", "23", "16", "$15000"});
@@ -440,7 +463,7 @@ public class AdminGUI extends JFrame {
         };
 
 
-        //Rendering appointment table with data above
+        //Rendering income table with data above
         incomeTable = new TableRenderer(reptinner2Pnl, new Dimension(678, 195), incomeColumnNames, incomeData);
         
         reptPnl.add(reptinner2Pnl, BorderLayout.SOUTH);
@@ -474,7 +497,7 @@ public class AdminGUI extends JFrame {
     //=========================================================//
 
     /**
-     * This implements Make Appointment Button functionalities
+     * This implements QuickWash Settings Button functionalities
      */
     private class SettingsBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -483,7 +506,7 @@ public class AdminGUI extends JFrame {
     }
 
     /**
-     * This implements Edit Appointment Button functionalities
+     * This implements Income Report Generation Button functionalities
      */
     private class GenReportBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -503,4 +526,4 @@ public class AdminGUI extends JFrame {
     }
 
 
-} // public class WelcomeScreen() end
+} // public class AdminGUI() end
