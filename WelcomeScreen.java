@@ -273,7 +273,7 @@ public class WelcomeScreen extends JFrame {
                             setSuccessMessage("Login Successful.");
                             verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
 
-                            setWaitingMessage("Login Successful!\nLoading QuickWash.", null);
+                            setWaitingMessage("Launching QuickWash.", null);
 
                             username.setText("");
                             pass.setText("");
