@@ -255,7 +255,11 @@ public class WelcomeScreen extends JFrame {
             String txtPass = String.valueOf(pass.getPassword());
             
             try {
-                setWaitingMessage("Verifying Input.", "Verification");
+                setWaitingMessage("Verifying...");
+                verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+                
+                setNotification("Beginning Verification.", null);
+
                 if ((txtName.length() == 0 || txtPass.length() == 0)) {
                     username.setText("");
                     pass.setText("");
@@ -267,25 +271,26 @@ public class WelcomeScreen extends JFrame {
                         UserType user = Database.selectUserById(Integer.parseInt(txtName));
                         String dbName = user.getName();
                         String dbPassword = user.getPassword();
-                        
-        
+                                
+                        //Error message on invalid inputs
                         if(txtPass.equals(dbPassword)){                            
                             setSuccessMessage("Login Successful.");
                             verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
 
-                            setWaitingMessage("Launching QuickWash.", null);
+                            setNotification("Launching QuickWash.", null);
 
                             username.setText("");
                             pass.setText("");
-                        
+
                             //If password is correct, open one of below screens
                             if(user.getType_user().equals("resident")){
                                 resGUI = new ResidentGUI(thisUserData, txtName, dbName);
-                            }else if(user.getType_user().equals("staff")){
+                            } else if(user.getType_user().equals("staff")){
                                staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
-                            }else if(user.getType_user().equals("admin")){
+                            } else if(user.getType_user().equals("admin")){
                                 adminGUI = new AdminGUI(thisUserData); 
-                            }
+                            }                                                        
+
                         } else {
                             pass.setText("");
                             setErrorMessage("Incorrect Password. <br> Please Try Again.");
@@ -295,7 +300,7 @@ public class WelcomeScreen extends JFrame {
                     username.setText("");
                     pass.setText("");
 
-                    setErrorMessage("Could not find Username. <br> Please Try Again");
+                    setErrorMessage("Could not find Username. <br> Please Try Again.");
                 }
             } catch (Exception ex) {
                 username.setText("");
@@ -313,7 +318,7 @@ public class WelcomeScreen extends JFrame {
      */
     private class SignUpBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            //error message on invalid inputs
+            new CreateUserGUI(thisUserData).setVisible(true);
         }
 
     }
@@ -335,14 +340,34 @@ public class WelcomeScreen extends JFrame {
     //=========================================================//
 
 
-    // Function to set wait message
-    public void setWaitingMessage(String waitMsg, String title) {        
+    // Function to set notification message
+    public void setNotification(String waitMsg, String title) {        
         JOptionPane.showMessageDialog(null, waitMsg, 
         title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // Function to toggle hiding message
+    public void hideVerifyMessage(Boolean hide) {
+        verifyLbl.setVisible(hide);
+    }
+
+    // Function to set wait message
+    public void setWaitingMessage(String waitMsg) {
+        hideVerifyMessage(true);
+        try {
+            //wait icon
+            verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/waiticon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+        } catch (Exception ioe) {
+            System.out.println("Wait icon not found.");
+        }  
+
+        verifyLbl.setText("<html>" + waitMsg + "</html>"); //wait message
+        verifyLbl.setForeground(waitBlue);  //wait blue 
     }
     
     // Function to set error message
     public void setErrorMessage(String errorMsg) {
+        hideVerifyMessage(true);
         try {
             //error icon
             verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
@@ -356,6 +381,7 @@ public class WelcomeScreen extends JFrame {
 
     // Function to set error message
     public void setSuccessMessage(String successMsg) {
+        hideVerifyMessage(true);
         try {
             //success icon
             verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
