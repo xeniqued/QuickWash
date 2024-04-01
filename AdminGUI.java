@@ -585,6 +585,7 @@ public class AdminGUI extends JFrame {
                     totWeeklyIncomeCal+=weekWashNum+weekDryNum;
                     totIncomeCal+=totWeeklyIncomeCal;
                     weekNumber1=weekNumber2;
+                    indexCounter++;
                     if (indexCounter == appDatesandCycles.size() - 1){
                         String weekNumString="Week "+weekCounter;
                         String totWashNumString=Integer.toString(weekWashNum);
@@ -606,6 +607,8 @@ public class AdminGUI extends JFrame {
                     weekCounter++;
                 }
             }
+            
+            
             incomeTable.populateTable2(incomeDataList);
         }else{
             System.out.println("One report");
@@ -623,6 +626,9 @@ public class AdminGUI extends JFrame {
             }
             incomeTable.populateTable2(incomeDataList);
 
+        }
+        for (String[] i:incomeDataList){
+            System.out.println("StringList"+i);
         }
         setSumLbl(totIncomeCal);
     }
@@ -671,7 +677,7 @@ public class AdminGUI extends JFrame {
                 System.out.println("Admin GUI: "+frDate+" to "+toDate);
                 System.out.println("AdminGUI: Before Method excuted");
                 genReport(Database.selectTotCylesWithinRange(frDate, toDate),frDate,toDate);
-                setVisible(false);
+                
                 System.out.println("Report Made!");
             }catch(Exception ex){
                 JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);
