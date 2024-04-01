@@ -29,8 +29,12 @@ public class CreateAccount extends JFrame {
         initComponents();
     }
 
+    /* Panels */
     private JPanel disPnl; // (display panel) entire panel on the left  
-    private JPanel inptPnl; // (input panel) entire panel on the right 
+    private JPanel rightPnl; // (input panel) entire panel on the right 
+    private JPanel btnPnl; // button panel 
+    private JPanel usertypePnl; // inner panel for User type selection
+    private JPanel inptPnl; // input panel for Resident data fields
 
     /* Buttons */
     private JButton btnLogin;
@@ -43,6 +47,7 @@ public class CreateAccount extends JFrame {
     private JComboBox<String> RoomNumber;
 
     /* Labels */
+    private JLabel verifyLbl;
     private JLabel picLbl;
     private JLabel nameLbl;
     private JLabel blockLbl;
@@ -69,17 +74,18 @@ public class CreateAccount extends JFrame {
     
     private void initComponents() {
 
+        /* Setting up the window */
         setTitle("Create a New Account");
-
-        /* Panels */
-        disPnl = new JPanel();
-        inptPnl = new JPanel();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         /* Logo */
         picLbl = new JLabel();
 
         /* User Type */
         UserType = new JComboBox<>();
+
+        /* Verification Components */
+        verifyLbl = new JLabel();
 
         /* Name input field */
         Name = new JTextField();
@@ -126,328 +132,226 @@ public class CreateAccount extends JFrame {
 
         }
 
+        // Declaring layout for window
+        setLayout(new BorderLayout());
+
+
+        //==================================================//
+        //=                                                =//
+        //=               SETTING UP PANELS                =//
+        //=                                                =//
+        //==================================================//
+
+        disPnl = new JPanel(new BorderLayout());
         disPnl.setBackground(mainWhite);
         disPnl.setPreferredSize(new Dimension(700, 500));
 
+
+        // creating quick wash logo, putting in try catch in case of retrieval error
         try {
             picLbl.setIcon(new ImageIcon(getClass().getResource("/pics/quickwashlogo.png"))); 
-            picLbl.setPreferredSize(new Dimension(300, 300));
+            picLbl.setPreferredSize(new Dimension(700, 300));
+            picLbl.setHorizontalAlignment(SwingConstants.CENTER);
         } catch (Exception ioe) {
             System.out.println("QuickWash banner not found.");
         }
-        
+         
+
+        usertypePnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        usertypePnl.setBackground(mainWhite);
+        usertypePnl.setPreferredSize(new Dimension(700, 100));
 
         UserType.setBackground(mainGrey);
+        UserType.setPreferredSize(new Dimension(170,28));
         UserType.setModel(new DefaultComboBoxModel<>(new String[] { "Select User Type", "Resident", "Employee" }));
-        UserType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UserTypeActionPerformed(evt);
-            }
-        });
+        UserType.addActionListener(new UserTypeListener());
 
-        toggleNoUserType(true);
-        toggleResidentFields(false);
-        toggleEmployeeFields(false);
-
+    
+        //Adding the UserType JComboBox to the userTypePanel
+        usertypePnl.add(UserType);
         
+        //==================================================//
+        //=    STRUCTURING & CREATING THE INPUT PANEL      =//
+        //==================================================//
 
         nameLbl.setText("Name");
         Name.setBackground(mainGrey);
         Name.setPreferredSize(new Dimension(121, 22));
-        Name.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NameActionPerformed(evt);
-            }
-        });
-
-
-        blockLbl.setText("Block");
-
-        BlockSelection.setBackground(mainGrey);
-        BlockSelection.setModel(new DefaultComboBoxModel<>(new String[] { "Select a Block", "Block J ", "Block I", "Block G", "Block H" }));
-        BlockSelection.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BlockSelectionActionPerformed(evt);
-            }
-        });
 
         idLbl.setText("ID Number");
         IDNumber.setBackground(mainGrey);
         IDNumber.setPreferredSize(new java.awt.Dimension(170, 28));
 
-        roomLbl.setText("Room Number");
-        RoomNumber.setBackground(mainGrey);
-        RoomNumber.setModel(new DefaultComboBoxModel<>(new String[] { "Select a Room Number", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124", "201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "213", "214", "215", "216", "217", "218", "219", "220", "221", "222", "223", "224", "301", "302", "303", "304", "305", "306", "307", "308", "309", "310", "311", "312", "313", "314", "315", "316", "317", "318", "319", "320", "321", "322", "323", "324", "401", "402", "403", "404", "405", "406", "407", "408", "409", "410", "411", "412", "413", "414", "415", "416", "417", "418", "419", "420", "421", "422", "423", "424", "501", "502", "503", "504", "505", "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519", "520", "521", "522", "523", "524", "601", "602", "603", "604", "605", "606", "607", "608", "609", "610", "611", "612", "613", "614", "615", "616", "617", "618", "619", "620", "621", "622", "623", "624" }));
-
-
         emailLbl.setText("Email");
         Email.setBackground(mainGrey);
-        Email.setPreferredSize(new Dimension(170, 28));
-        Email.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EmailActionPerformed(evt);
-            }
-        });
-
-       
+        Email.setPreferredSize(new Dimension(43, 28));
 
         passwordLbl.setText("Password");
         passwordfield.setBackground(mainGrey);
 
-    
-        GroupLayout disPnlLayout = new GroupLayout(disPnl);
-        disPnl.setLayout(disPnlLayout);
-        disPnlLayout.setHorizontalGroup(
-            disPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(disPnlLayout.createSequentialGroup()
-                .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(disPnlLayout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(picLbl, GroupLayout.PREFERRED_SIZE, 587, GroupLayout.PREFERRED_SIZE))
-                    .addGroup(disPnlLayout.createSequentialGroup()
-                        .addGap(250, 250, 250)
-                        .addComponent(UserType, GroupLayout.PREFERRED_SIZE, 172, GroupLayout.PREFERRED_SIZE))
-                    .addGroup(disPnlLayout.createSequentialGroup()
-                        .addGap(115, 115, 115)
-                        .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                .addComponent(nameLbl, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(Name, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(idLbl, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(IDNumber, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(emailLbl, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE))
-                                .addComponent(Email, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(102, 102, 102)
-                        .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                            .addComponent(BlockSelection, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(blockLbl, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(roomLbl, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(RoomNumber, 0, 170, Short.MAX_VALUE)
-                            .addComponent(passwordLbl, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(passwordfield, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap(58, Short.MAX_VALUE))
-        );
-        disPnlLayout.setVerticalGroup(
-            disPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(disPnlLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(picLbl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(UserType, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
-                .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameLbl)
-                    .addComponent(blockLbl))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addComponent(Name, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BlockSelection, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(roomLbl)
-                    .addComponent(idLbl))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                    .addComponent(RoomNumber)
-                    .addComponent(IDNumber, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(emailLbl)
-                    .addComponent(passwordLbl))
-                .addGap(10, 10, 10)
-                .addGroup(disPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                    .addComponent(passwordfield, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Email, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        blockLbl.setText("Block");
+        BlockSelection.setBackground(mainGrey);
+        BlockSelection.setModel(new DefaultComboBoxModel<>(new String[]{"Select a Block", "Block J ", "Block I", "Block G", "Block H"}));
+
+        roomLbl.setText("Room Number");
+        RoomNumber.setBackground(mainGrey);
+        RoomNumber.setModel(new DefaultComboBoxModel<>(new String[]{"Select a Room Number", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124", "201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "213", "214", "215", "216", "217", "218", "219", "220", "221", "222", "223", "224", "301", "302", "303", "304", "305", "306", "307", "308", "309", "310", "311", "312", "313", "314", "315", "316", "317", "318", "319", "320", "321", "322", "323", "324", "401", "402", "403", "404", "405", "406", "407", "408", "409", "410", "411", "412", "413", "414", "415", "416", "417", "418", "419", "420", "421", "422", "423", "424", "501", "502", "503", "504", "505", "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519", "520", "521", "522", "523", "524", "601", "602", "603", "604", "605", "606", "607", "608", "609", "610", "611", "612", "613", "614", "615", "616", "617", "618", "619", "620", "621", "622", "623", "624"}));
+
+
+        inptPnl = new JPanel();
+        inptPnl.setBackground(mainWhite);
+        inptPnl.setPreferredSize(new Dimension(479,340));
+        
+        GroupLayout inptPnlLayout = new GroupLayout(inptPnl);
+        inptPnl.setLayout(inptPnlLayout);
+        inptPnlLayout.setHorizontalGroup(
+            inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(inptPnlLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BlockSelection, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RoomNumber, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(inptPnlLayout.createSequentialGroup()
+                        .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(Name, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                                .addComponent(emailLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(blockLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Email))
+                            .addComponent(nameLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(83, 83, 83)
+                        .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(idLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(passwordLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(IDNumber)
+                            .addComponent(passwordfield, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                            .addComponent(roomLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
-        inptPnl.setBackground(mainBlue);
-        inptPnl.setBorder(BorderFactory.createEmptyBorder(0, 50, 100, 50));
-        inptPnl.setPreferredSize(new Dimension(307, 720));
+        inptPnlLayout.setVerticalGroup(
+            inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(inptPnlLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameLbl)
+                    .addComponent(idLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(Name, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(IDNumber))
+                .addGap(18, 18, 18)
+                .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(emailLbl)
+                    .addComponent(passwordLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(Email, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(passwordfield))
+                .addGap(18, 18, 18)
+                .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(blockLbl)
+                    .addComponent(roomLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(inptPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(BlockSelection, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(RoomNumber))
+                .addContainerGap(43, Short.MAX_VALUE))
+        );
+
+
+
+        // Setting Up toggle functions for the User Type Listener
+        toggleNoUserType(true);
+
+
+        // Adding the logo and User type dropdown to the panel.
+        disPnl.setLayout(new BorderLayout());
+        disPnl.add(picLbl, BorderLayout.NORTH);
+        disPnl.add(usertypePnl, BorderLayout.CENTER);
+
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        centerPanel.setBackground(mainWhite);
+        centerPanel.add(inptPnl);
+
+        disPnl.add(centerPanel, BorderLayout.SOUTH);
+
+
+        //=================================================//
+        //=  STRUCTURING & CREATING INPUT PANEL TO RIGHT  =//
+        //=================================================//
+
+        rightPnl = new JPanel(new BorderLayout());
+        rightPnl.setBorder(new EmptyBorder(0, 50, 100, 50));
+        rightPnl.setBackground(mainBlue);
+        rightPnl.setPreferredSize(new Dimension(307,720));
+
+        
+        
+        //===============================================//
+        //=    CREATING THE BUTTONS AT RIGHT            =//
+        //===============================================//
 
         //FLATLAF Button stylings
         UIManager.put( "Button.arc", 27);
 
-        btnLogin.setFont(new Font(btnLogin.getFont().getFontName(), Font.BOLD, 16)); 
-        btnLogin.setForeground(lessBlue);
-        btnLogin.setText("Login");
-        btnLogin.setPreferredSize(new java.awt.Dimension(40, 32));
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
-            }
-        });
+        //(button panel) For holding buttons inside input panel
+        btnPnl = new JPanel();
+        btnPnl.setLayout(new GridLayout(4, 1, 20, 28));
+        btnPnl.setBorder(new EmptyBorder(10, 0, 0, 0));
+        btnPnl.setBackground(mainBlue);
+        btnPnl.setOpaque(false);
 
-        btnExit.setFont(new Font(btnExit.getFont().getFontName(), Font.BOLD, 16)); 
-        btnExit.setForeground(lessBlue);
-        btnExit.setText("Quit");
-        btnExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExitActionPerformed(evt);
-            }
-        });
-
-        registeredLbl.setForeground(new java.awt.Color(255, 255, 255));
+        // 'ALREADY REGISTERED' TEXT //
+        registeredLbl.setForeground(mainWhite);
         registeredLbl.setText("Already Registered? ");
+        registeredLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
-        btnSignup.setFont(new Font(btnSignup.getFont().getFontName(), Font.BOLD, 16)); 
+        // CREATING AND ALLIGNING LOGIN BUTTON // 
+        btnLogin = new JButton("Login");
+        btnLogin.setFont(new Font(btnLogin.getFont().getFontName(), Font.BOLD, 16));
+        btnLogin.setForeground(lessBlue);
+        btnLogin.setPreferredSize(new Dimension(40, 32));
+        btnLogin.addActionListener(new LoginBtnListener());
+
+        // CREATING AND ALLIGNING QUIT BUTTON // 
+        btnExit = new JButton("Quit");
+        btnExit.setFont(new Font(btnExit.getFont().getFontName(), Font.BOLD, 16));
+        btnExit.setForeground(lessBlue);
+        btnExit.addActionListener(new ExitBtnListener());
+
+
+        // CREATING AND ALLIGNING SIGN UP BUTTON // 
+        btnSignup = new JButton("Create Account");
+        btnSignup.setFont(new Font(btnSignup.getFont().getFontName(), Font.BOLD, 16));
         btnSignup.setForeground(lessBlue);
-        btnSignup.setText("Create Account");
-        btnSignup.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExitActionPerformed(evt);
-            }
-        });
+        btnSignup.addActionListener(new SignUpBtnListener());
 
-        GroupLayout inptPnlLayout = new GroupLayout(inptPnl);
-        inptPnl.setLayout(inptPnlLayout);
-        inptPnlLayout.setHorizontalGroup(
-            inptPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(inptPnlLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(inptPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(inptPnlLayout.createSequentialGroup()
-                        .addComponent(btnSignup, GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(inptPnlLayout.createSequentialGroup()
-                        .addGroup(inptPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(btnLogin, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnExit, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addGroup(GroupLayout.Alignment.TRAILING, inptPnlLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(registeredLbl)
-                        .addGap(46, 46, 46))))
-        );
-        inptPnlLayout.setVerticalGroup(
-            inptPnlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(GroupLayout.Alignment.TRAILING, inptPnlLayout.createSequentialGroup()
-                .addContainerGap(272, Short.MAX_VALUE)
-                .addComponent(btnSignup, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
-                .addGap(139, 139, 139)
-                .addComponent(registeredLbl)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(btnExit, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                .addGap(55, 55, 55))
-        );
+        //adding the button panel itself into the input panel
+        rightPnl.add(btnPnl, BorderLayout.SOUTH);
 
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(disPnl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inptPnl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(disPnl, GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(inptPnl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+        // Adding buttons to button panel
+        btnPnl.add(btnSignup);
+        btnPnl.add(registeredLbl);
+        btnPnl.add(btnLogin);
+        btnPnl.add(btnExit);
 
+
+         //==============================================//
+        //=        ADDING MAIN PANELS TO FRAME         =//
+        //==============================================//
+        add(disPnl, BorderLayout.WEST);
+        add(rightPnl, BorderLayout.EAST);
+
+        //Extra frame/window settings
         pack();
-    }
+        setSize(1024, 720);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setVisible(true);
 
-    private void UserTypeActionPerformed(java.awt.event.ActionEvent evt) {
-        String selectedType = (String) UserType.getSelectedItem();
+    } // public CreateAccount() end (constructor)
 
-        if (selectedType.equals("Select User Type")) {
-            toggleNoUserType(true);
-        } 
-        else if (selectedType.equals("Resident")) {
-            toggleResidentFields(true);
-            
-        }
-        else if (selectedType.equals("Employee")) {
-            toggleResidentFields(false);
-            toggleEmployeeFields(true);
-            
-        }
-    }
-
-
-    private void toggleNoUserType(boolean show){
-        nameLbl.setVisible(false);
-        Name.setVisible(false);
-        blockLbl.setVisible(false);
-        BlockSelection.setVisible(false);
-        idLbl.setVisible(false);
-        IDNumber.setVisible(false);
-        roomLbl.setVisible(false);
-        RoomNumber.setVisible(false);
-        emailLbl.setVisible(false);
-        Email.setVisible(false);
-        passwordLbl.setVisible(false);
-        passwordfield.setVisible(false);
-
-        disPnl.revalidate();
-        disPnl.repaint();
-
-    }
-    private void toggleResidentFields(boolean show) {
-        nameLbl.setVisible(show);
-        Name.setVisible(show);
-        blockLbl.setVisible(show);
-        BlockSelection.setVisible(show);
-        roomLbl.setVisible(show);
-        RoomNumber.setVisible(show);
-        idLbl.setVisible(show);
-        IDNumber.setVisible(show);
-        emailLbl.setVisible(show);
-        Email.setVisible(show);
-        
-        passwordLbl.setVisible(show);
-        passwordfield.setVisible(show);
-
-        disPnl.revalidate();
-        disPnl.repaint();
-        
-    }
-
-    private void toggleEmployeeFields(boolean show) {
-        nameLbl.setVisible(show);
-        Name.setVisible(show);
-        idLbl.setVisible(show);
-        IDNumber.setVisible(show);
-        emailLbl.setVisible(show);
-        Email.setVisible(show);
-        passwordLbl.setVisible(show);
-        passwordfield.setVisible(show);
-
-        disPnl.revalidate();
-        disPnl.repaint();
-        
-    }
-
-    private void NameActionPerformed(java.awt.event.ActionEvent evt) {
-        // Error handling
-    }
-
-    private void BlockSelectionActionPerformed(java.awt.event.ActionEvent evt) {
-        // Error Handling
-    }
-
-    private void EmailActionPerformed(java.awt.event.ActionEvent evt) {
-        // Error handling
-    }
-
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
-        // Error Handling
-        
-    }
-
-    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {
-        System.exit(0);
-    }
-
-    private void btnSignUpActionPerformed(java.awt.event.ActionEvent evt) {
-        // Error handling for blank fields
-    }
 
     /**
      * @param args the command line arguments
@@ -468,4 +372,181 @@ public class CreateAccount extends JFrame {
     }
 
     
-}
+     //======================================================================//
+    //= TOGGLING FIELD VISIBILTY BASED ON THE USER TYPE SELECTED            =//
+    //=======================================================================//
+    private void toggleNoUserType(boolean show){
+        nameLbl.setVisible(false);
+        Name.setVisible(false);
+        blockLbl.setVisible(false);
+        BlockSelection.setVisible(false);
+        idLbl.setVisible(false);
+        IDNumber.setVisible(false);
+        roomLbl.setVisible(false);
+        RoomNumber.setVisible(false);
+        emailLbl.setVisible(false);
+        Email.setVisible(false);
+        passwordLbl.setVisible(false);
+        passwordfield.setVisible(false);
+
+        disPnl.revalidate();
+        disPnl.repaint();
+    }
+    
+    private void toggleResidentFields(boolean show) {
+        nameLbl.setVisible(show);
+        Name.setVisible(show);
+        blockLbl.setVisible(show);
+        BlockSelection.setVisible(show);
+        roomLbl.setVisible(show);
+        RoomNumber.setVisible(show);
+        idLbl.setVisible(show);
+        IDNumber.setVisible(show);
+        emailLbl.setVisible(show);
+        Email.setVisible(show);
+        
+        passwordLbl.setVisible(show);
+        passwordfield.setVisible(show);
+
+        disPnl.revalidate();
+        disPnl.repaint();
+    }
+
+    
+    private void toggleEmployeeFields(boolean show) {
+        nameLbl.setVisible(show);
+        Name.setVisible(show);
+        idLbl.setVisible(show);
+        IDNumber.setVisible(show);
+        emailLbl.setVisible(show);
+        Email.setVisible(show);
+        passwordLbl.setVisible(show);
+        passwordfield.setVisible(show);
+
+        blockLbl.setVisible(false);
+        BlockSelection.setVisible(false);
+        roomLbl.setVisible(false);
+        RoomNumber.setVisible(false);
+
+        disPnl.revalidate();
+        disPnl.repaint();
+    }
+    
+
+
+    //=========================================================//
+    //=    BUTTON AND COMBOBOX LISTENING FUNCTIONALITIES      =//
+    //=========================================================//
+
+
+    private class UserTypeListener implements ActionListener{
+        public void actionPerformed (ActionEvent e){
+            String selectedType = (String) UserType.getSelectedItem();
+
+            if (selectedType.equals("Select User Type")) {
+                toggleNoUserType(true);
+
+            } 
+            else if (selectedType.equals("Resident")) {
+                toggleResidentFields(true);
+                
+            }
+            else if (selectedType.equals("Employee")) {
+                toggleEmployeeFields(true);
+            
+        }
+
+        }
+        
+    }
+
+
+
+
+    /**
+     * This implements Login Button functionalities
+     */
+    private class LoginBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            // Returns the user to the Welcome Screen for login
+        }
+    }
+
+    /**
+     * This implements Sign Up Button functionalities
+     */
+    private class SignUpBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+            String selectedType = (String) UserType.getSelectedItem();
+            String name = Name.getText().trim();
+            String email = Email.getText().trim();
+            String idNumber = IDNumber.getText().trim();
+            String password = new String(passwordfield.getPassword());
+            String selectedBlock = (String) BlockSelection.getSelectedItem();
+            String selectedRoom = (String) RoomNumber.getSelectedItem();
+            
+
+            // Blank field validation
+            if(name.isEmpty() || email.isEmpty() || idNumber.isEmpty() || password.isEmpty()){
+                JOptionPane.showMessageDialog(null, "One or more fields are left blank", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            //Name validation
+            if (!name.matches("[a-zA-Z\\s]+")) {
+                JOptionPane.showMessageDialog(null, "Name must only contain alphabetic characters.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Email validation
+            if (!email.contains("@")) {
+                JOptionPane.showMessageDialog(null, "Email must contain an '@' character.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // ID number validation
+            if (!idNumber.matches("\\d+")) {
+                JOptionPane.showMessageDialog(null, "ID Number must only contain numerical values.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+
+            if (selectedType.equals("Resident")){
+                // Block Selection validation
+                if (selectedBlock.equals("Select a Block")) {
+                    JOptionPane.showMessageDialog(null, "Please select a Block.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Room Number selection validation
+                if (selectedRoom.equals("Select a Room Number")) {
+                    JOptionPane.showMessageDialog(null, "Please select a Room Number.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+            }
+            
+
+            else{
+                //Navigate to the Resident/Employee Main screen
+            }
+
+        }
+
+    }
+
+    /**
+     * This exits the application
+     */
+    private class ExitBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
+
+    }
+
+    
+
+    
+} //public class CreateAccount() end
