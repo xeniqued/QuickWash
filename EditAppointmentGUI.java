@@ -7,6 +7,8 @@ import org.w3c.dom.ranges.Range;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 /**
@@ -191,9 +193,9 @@ public class EditAppointmentGUI extends JFrame {
         monLbl.setForeground(mainBlue); 
         monLbl.setFont(new Font(monLbl.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i2Pnl.add(monLbl, BorderLayout.NORTH);   
-        String[] months = {"1 - Jan", "2 - Feb", "3 - Mar", "4 - Apr", 
-                            "5 - May", "6 - June", "7 - July", "8 - Aug", "9 - Sept",
-                            "10 - Oct", "11 - Nov", "12 - Dec"};        
+        String[] months = {"1 -Jan", "2 -Feb", "3 -Mar", "4 -Apr", 
+                            "5 -May", "6 -June", "7 -July", "8 -Aug", "9 -Sept",
+                            "10 -Oct", "11 -Nov", "12 -Dec"};        
         monthDropBox = new JComboBox<String>(months);
         //new code
         String[] date=selectedRowDataArray.get(1).split("/");
@@ -258,7 +260,6 @@ public class EditAppointmentGUI extends JFrame {
         int count = 0;    
         for (int y = 2024; y < 2031; y++) {
             years[count] = Integer.toString(y);  
-            //System.out.print(y + "\n"); 
             count++;
         };        
         yearDropBox = new JComboBox<String>(years); 
@@ -280,7 +281,6 @@ public class EditAppointmentGUI extends JFrame {
         count = 0;
         for (int t = 9; t < 19; t++) {
             times[count] = Integer.toString(t) + ":00";
-            //System.out.print(t + "\n"); 
             count++;
         };               
         timeDropBox = new JComboBox<String>(times); 
@@ -407,7 +407,8 @@ public class EditAppointmentGUI extends JFrame {
             int dryValueInt = (int) drySpinner.getValue();
             int dayValueInt = (int) daySpinner.getValue();
             String monthValue = (String) monthDropBox.getSelectedItem();
-            int monthInt=Integer.parseInt(String.valueOf(monthValue.charAt(0)));
+            String[] monthParts = monthValue.split(" -");
+            int monthInt=Integer.parseInt(monthParts[0]);
 
             String yearValue = (String) yearDropBox.getSelectedItem();
             int yearInt=Integer.parseInt(yearValue);
@@ -418,8 +419,10 @@ public class EditAppointmentGUI extends JFrame {
             String washer_id=mList.assignWasherUpdate(Integer.parseInt(selectedRowDataArray.get(0)),washValueInt,yearInt,monthInt,dayValueInt,hourInt);
             String dryer_id=mList.assignDryerUpdate(Integer.parseInt(selectedRowDataArray.get(0)),washValueInt,yearInt,monthInt,dayValueInt,hourInt);
             Boolean attend =attendedCheck.isSelected();
+            String app_date=yearValue+"-"+monthInt+"-"+dayValueInt;
+
             try{
-                Database.updateAppointment(Integer.parseInt(selectedRowDataArray.get(0)),washValueInt, dryValueInt, monthInt, dayValueInt, yearInt, hourInt,washer_id,dryer_id,attend);
+                Database.updateAppointment(Integer.parseInt(selectedRowDataArray.get(0)),washValueInt, dryValueInt,app_date, monthInt, dayValueInt, yearInt, hourInt,washer_id,dryer_id,attend);
                 setVisible(false);
                 System.out.println("Appointment Edited");
             }catch(Exception ex){

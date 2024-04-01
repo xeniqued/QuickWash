@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class Appointment {
     private int appointmentNum;
     private int idNum;
@@ -14,9 +16,10 @@ public class Appointment {
     private int appointment_num;
     private String washer_id;
     private String dryer_id;
+    private String date;
 
     // Constructor
-    public Appointment( int appointment_num,int idNum, String name, int washNum, int dryNum, int month, int day, int year, int time, boolean confirmedByResident, boolean confirmedByStaff, String washer_id,String dryer_id) {
+    public Appointment( int appointment_num,int idNum, String name, int washNum, int dryNum, String date, int month, int day, int year, int time, boolean confirmedByResident, boolean confirmedByStaff, String washer_id,String dryer_id) {
         this.idNum = idNum;
         this.name = name;
         this.washNum = washNum;
@@ -30,9 +33,10 @@ public class Appointment {
         this.washer_id = washer_id;
         this.dryer_id = dryer_id;
         this.appointment_num=appointment_num;
+        this.date=date;
     }
 
-    public Appointment(int idNum, String name, int washNum, int dryNum, int month, int day, int year, int time, boolean confirmedByResident, boolean confirmedByStaff, String washer_id,String dryer_id) {
+    public Appointment(int idNum, String name, int washNum, int dryNum,String date, int month, int day, int year, int time, boolean confirmedByResident, boolean confirmedByStaff, String washer_id,String dryer_id) {
         this.idNum = idNum;
         this.name = name;
         this.washNum = washNum;
@@ -46,6 +50,13 @@ public class Appointment {
         this.washer_id = washer_id;
         this.dryer_id = dryer_id;
         this.appointmentNum=appointment_num;
+        this.date=date;
+    }
+
+    public Appointment(int washNum, int dryNum, String date) {
+        this.washNum = washNum;
+        this.dryNum = dryNum;
+        this.date = date;
     }
 
     // Getters and Setters
@@ -75,7 +86,7 @@ public class Appointment {
     }
 
     public int getWashNum() {
-        return washNum;
+        return this.washNum;
     }
 
     public void setWashNum(int washNum) {
@@ -83,12 +94,20 @@ public class Appointment {
     }
 
     public int getDryNum() {
-        return dryNum;
+        return this.dryNum;
     }
 
     public void setDryNum(int dryNum) {
         this.dryNum = dryNum;
     }
+    public String getDate() {
+        return this.date;
+    }
+
+    public void setDate(String newDate) {
+        this.date=newDate;
+    }   
+
 
     public int getMonth() {
         return month;

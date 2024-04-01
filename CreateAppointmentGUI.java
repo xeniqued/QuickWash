@@ -190,9 +190,9 @@ public class CreateAppointmentGUI extends JFrame {
         monLbl.setForeground(mainBlue); 
         monLbl.setFont(new Font(monLbl.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i2Pnl.add(monLbl, BorderLayout.NORTH);   
-        String[] months = {"1 - Jan", "2 - Feb", "3 - Mar", "4 - Apr", 
-                            "5 - May", "6 - June", "7 - July", "8 - Aug", "9 - Sept",
-                            "10 - Oct", "11 - Nov", "12 - Dec"};        
+        String[] months = {"1 -Jan", "2 -Feb", "3 -Mar", "4 -Apr", 
+                            "5 -May", "6 -June", "7 -July", "8 -Aug", "9 -Sept",
+                            "10 -Oct", "11 -Nov", "12 -Dec"};        
         monthDropBox = new JComboBox<String>(months);
         monthDropBox.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 15));        
         monthDropBox.setForeground(mainBlue);
@@ -358,8 +358,9 @@ public class CreateAppointmentGUI extends JFrame {
         MachineList mList=new MachineList();
         String washer_id=mList.assignWasher(washValueInt,yearInt,monthInt,dayValueInt,hourInt);
         String dryer_id=mList.assignDryer(washValueInt,yearInt,monthInt,dayValueInt,hourInt);
+        String date=yearInt+"-"+monthInt+"-"+dayValueInt;
         Database db=new Database();
-        db.addAppointment(id, fullName, washValueInt, dryValueInt, monthInt, dayValueInt, yearInt, hourInt, confimedResident, confimedStaff,washer_id,dryer_id);
+        db.addAppointment(id, fullName, washValueInt, dryValueInt,date, monthInt, dayValueInt, yearInt, hourInt, confimedResident, confimedStaff,washer_id,dryer_id);
 
     }
 
@@ -385,7 +386,8 @@ public class CreateAppointmentGUI extends JFrame {
             int dryValueInt = (int) drySpinner.getValue();
             int dayValueInt = (int) daySpinner.getValue();
             String monthValue = (String) monthDropBox.getSelectedItem();
-            int monthInt=Integer.parseInt(String.valueOf(monthValue.charAt(0)));
+            String[] monthParts = monthValue.split(" -");
+            int monthInt=Integer.parseInt(monthParts[0]);
 
             String yearValue = (String) yearDropBox.getSelectedItem();
             int yearInt=Integer.parseInt(yearValue);

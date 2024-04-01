@@ -113,7 +113,6 @@ public class TableRenderer {
     }
     
     public int getSelectedRow(){
-        //System.out.print(table.getSelectedRow());
         return table.getSelectedRow();
     }
 
@@ -123,17 +122,13 @@ public class TableRenderer {
         
         for (int i = 0; i <= columnNum-1; i++) {
             selRow.add(table.getValueAt(rowNum, i).toString());
-            System.out.println(selRow.get(i));
         }
         
         if (hiddenColCount > 0) {
             int count = hiddenColCount;
-            System.out.println(columnNum);
             int modelColNum = table.getModel().getColumnCount();
-            System.out.println(modelColNum);
             for (int i = 1; i <= hiddenColCount; i++) {
                 selRow.add(table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), modelColNum-count).toString());
-                System.out.println(selRow.get(modelColNum-count));
                 count--;
             }
         }
@@ -143,16 +138,28 @@ public class TableRenderer {
 
     public void updateRow(String[] data, int row, int columnNum){        
         for (int i = 0; i <= columnNum-1; i++) {
-            model.setValueAt(data[i], row, i);            
+            model.setValueAt(data[i], row, i);                                       
         }
     }
 
-    public void populateTable(ArrayList<String[]> data, int row, int columnNum){
+    public void populateTable2(ArrayList<String[]> data){
         model.setRowCount(0);
-        for (int i = 0; i <= data.size(); i++) {
-            updateRow(data.get(i), row, columnNum);            
+        for (int i = 0; i <= data.size()-1; i++) {            
+            model.addRow(data.get(i));            
         }
     }
+    /*public void populateTable2(ArrayList<String[]> dataList) {
+        // Iterate through each row data in the dataList
+        System.out.println("Populate Table Size:"+dataList.size());
+        for (int i = 0; i < dataList.size(); i++) {
+            String[] rowData = dataList.get(i);
+            // Update the corresponding row in the table
+            System.out.println("Populate Table Row:"+i);
+            updateRow(rowData, i, model.getColumnCount());
+        }
+    } */
+    
+    
     
     
 }
