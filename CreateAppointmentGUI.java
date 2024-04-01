@@ -361,7 +361,8 @@ public class CreateAppointmentGUI extends JFrame {
         String date=yearInt+"-"+monthInt+"-"+dayValueInt;
         Database db=new Database();
         db.addAppointment(id, fullName, washValueInt, dryValueInt,date, monthInt, dayValueInt, yearInt, hourInt, confimedResident, confimedStaff,washer_id,dryer_id);
-
+        //ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+        //thisRGUI.getApptTable().populateTable(aList);
     }
 
 
@@ -396,6 +397,7 @@ public class CreateAppointmentGUI extends JFrame {
             int hourInt=Integer.parseInt(timeParts[0]);
             try{
                 createAppointment(washValueInt,dryValueInt,monthInt,dayValueInt,yearInt,hourInt);
+                JOptionPane.showMessageDialog(null, "Appointment added!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 setVisible(false);
                 System.out.println("Appointment Made!");
             }catch(Exception ex){

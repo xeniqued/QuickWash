@@ -276,9 +276,8 @@ public class Database {
     }
     // Method to search appointments by month and year[Income Report]
     public static List<Appointment> selectTotCylesWithinRange(String frDateString, String toDateString) {
-        System.out.println("Database Method");
         List<Appointment> appointments = new ArrayList<>();
-        String sql = "SELECT wash_num,dry_num,app_date FROM appointments WHERE app_date >= ? AND app_date <= ?;";
+        String sql = "SELECT wash_num,dry_num,app_date FROM appointments WHERE app_date >= ? AND app_date <= ? ORDER BY app_date;";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date frDateParse,toDateParse;
         try{
@@ -288,25 +287,18 @@ public class Database {
             // Convert java.util.Date to java.sql.Date
             java.sql.Date frDate = new java.sql.Date(frDateParse.getTime());
             java.sql.Date toDate = new java.sql.Date(toDateParse.getTime());
-            System.out.println("Database: Date parsed");
             Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-            System.out.println("Database: Connected to database server");
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setDate(1, frDate);
             preparedStatement.setDate(2, toDate);
             ResultSet resultSet = preparedStatement.executeQuery();
-            System.out.println("Database: Query executed");
             while (resultSet.next()) {
                 int wash_num=resultSet.getInt("wash_num");
                 int dry_num=resultSet.getInt("dry_num");
                 String app_date=resultSet.getDate("app_date").toString();
                 Appointment app=new Appointment(wash_num,dry_num,app_date);
                 appointments.add(app);
-                System.out.println("Wash Number:" + wash_num+
-                                ", Dry Number: " + dry_num+
-                                ", Dry Number: " + app_date);
             }
-            System.out.println("Database: Appointments Info added.");
             return appointments;
         } catch (Exception e) {
             e.printStackTrace();

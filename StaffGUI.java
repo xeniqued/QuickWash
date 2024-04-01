@@ -240,7 +240,7 @@ public class StaffGUI extends JFrame {
 
         //New Code
         List<Integer> dateListInt = getCurrentDateTimeInfo();
-        List<Appointment> appointments = Database.getAppointments(dateListInt.get(0),dateListInt.get(1),30);
+        List<Appointment> appointments = Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2));
         apptData = new ArrayList<String[]>();
         for (Appointment appointment : appointments) {
             String appNumString=Integer.toString(appointment.getAppointmentNum());
@@ -371,6 +371,8 @@ public class StaffGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 Database.updateConfirmedByStaff(Integer.parseInt(getRowSelectedData().get(0)),true);
+                //ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                //getApptTable().populateTable(aList);
                 System.out.println("Confirmed by Resident");
                 JOptionPane.showMessageDialog(null, "Confirmed Appointment!!", "Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception ex) {
@@ -454,6 +456,29 @@ public class StaffGUI extends JFrame {
     public ArrayList<String> getRowSelectedData(){
         return apptTable.getSelectedRowData(apptTable.getColumnNum());
         
+    }
+
+    public ArrayList<String[]> showResidentAppointments(List<Appointment> appList){
+        apptData = new ArrayList<String[]>();
+        for (Appointment appointment : appList) {
+            String appNumString=Integer.toString(appointment.getAppointmentNum());
+            String fullNameString=appointment.getName();
+            String hourString = appointment.getTime() + ":00";
+            String washNum = Integer.toString(appointment.getWashNum());
+            String dryNum = Integer.toString(appointment.getDryNum());
+            String confirmedByResident = appointment.isConfirmedByResident() ? "Yes" : "No";
+            String confirmedByStaff = appointment.isConfirmedByStaff() ? "Yes" : "No";
+            String idNumString=String.valueOf(appointment.getIdNum());
+            String washerID = appointment.getWasherId();
+            String dryerID = appointment.getDryerId();
+           
+            String [] row = {appNumString, fullNameString, hourString, washNum, dryNum, confirmedByResident, confirmedByStaff, idNumString, washerID,dryerID};
+            apptData.add(row);
+        }
+        return apptData;
+    }
+    public TableRenderer getApptTable(){
+        return this.apptTable;
     }
 
 

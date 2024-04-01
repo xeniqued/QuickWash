@@ -423,7 +423,10 @@ public class EditAppointmentGUI extends JFrame {
 
             try{
                 Database.updateAppointment(Integer.parseInt(selectedRowDataArray.get(0)),washValueInt, dryValueInt,app_date, monthInt, dayValueInt, yearInt, hourInt,washer_id,dryer_id,attend);
+                //ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                //thisRGUI.getApptTable().populateTable(aList);
                 setVisible(false);
+                JOptionPane.showMessageDialog(null, "Appointment updated!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 System.out.println("Appointment Edited");
             }catch(Exception ex){
                 ex.printStackTrace();
@@ -445,6 +448,7 @@ public class EditAppointmentGUI extends JFrame {
             //ask for confirmation here before deleting
             try {
                 Database.deleteAppointment(Integer.parseInt(selectedRowDataArray.get(0)));
+                JOptionPane.showMessageDialog(null, "Appointment deleted!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 System.out.println("Appointment Deleted!");
                 setVisible(false);
             } catch (Exception ex) {
