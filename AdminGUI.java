@@ -7,7 +7,14 @@ import javax.swing.border.EmptyBorder;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.WeekFields;
 import java.util.*;
+import java.util.List;
+
 
 
 /**
@@ -29,6 +36,9 @@ public class AdminGUI extends JFrame {
     private TableRenderer incomeTable;
     private String[] incomeColumnNames;
     private ArrayList<String[]> incomeData;
+    private int totWeeklyIncome;
+    private int totIncome;
+    private int rate;
 
     // Make Appointment, Edit Appointment, Mark Attend, Logout buttons
     private JButton btnSettings, btnLogout, btnReportGen; 
@@ -44,7 +54,15 @@ public class AdminGUI extends JFrame {
 
     private Database db;
 
-    public AdminGUI(WelcomeScreen ws) {    
+    
+
+    public AdminGUI(WelcomeScreen ws) {
+        
+        /**
+         * This sets initializes attributes
+         */ 
+        this.totIncome=0;
+        this.rate=400;
 
         /**
          * This sets up attributes to ensure that the window instances are linked
@@ -239,8 +257,8 @@ public class AdminGUI extends JFrame {
         monLbl.setForeground(mainBlue); 
         monLbl.setFont(new Font(monLbl.getFont().getFontName(), Font.BOLD, 15));        
         inptinner2i1div1monPnl.add(monLbl, BorderLayout.WEST);   
-        String[] months = {"1 - Jan", "2 - Feb", "3 - Mar", "4 - Apr", 
-                            "5 - May", "6 - June", "7 - July", "8 - Aug", "9 - Sept",
+        String[] months = {"01 - Jan", "02 - Feb", "03 - Mar", "04 - Apr", 
+                            "05 - May", "06 - June", "07 - July", "08 - Aug", "09 - Sept",
                             "10 - Oct", "11 - Nov", "12 - Dec"};        
         frMonthDropBox = new JComboBox<String>(months);
         frMonthDropBox.setFont(new Font(monLbl.getFont().getFontName(), Font.BOLD, 15));        
@@ -435,7 +453,7 @@ public class AdminGUI extends JFrame {
         sumLbl = new JLabel();    
         sumLbl.setBorder(new EmptyBorder(1, 0, 5, 0)); 
         //Update this value, replace [26,000] with the value computed
-        sumLbl.setText("<html>" + "Total Income in Range: $" + "[26,000]" + "</html>");
+        sumLbl.setText("<html>" + "Total Income in Range: $" + totIncome + "</html>");
         sumLbl.setHorizontalAlignment(JLabel.CENTER);
         sumLbl.setForeground(mainBlue);
         sumLbl.setFont(new Font(sumLbl.getFont().getFontName(), Font.PLAIN, 18));        
@@ -453,12 +471,7 @@ public class AdminGUI extends JFrame {
         //Update this value, should be sorted by earlier weeks to later weeksj
         incomeData = new ArrayList<String[]>(){
             {
-                add(new String[]{ "Week 1", "23", "16", "$15000"});
-                add(new String[]{ "Week 2", "33", "10", "$17000"});
-                add(new String[]{ "Week 3", "12", "5", "$9000"});
-                add(new String[]{ "Week 4", "43", "35", "$33000"});
-                add(new String[]{ "Week 5", "23", "16", "$15000"});
-                add(new String[]{ "Week 6", "23", "16", "$15000"});
+                add(new String[]{ "", "", "", ""});
             }
         };
 
@@ -491,6 +504,135 @@ public class AdminGUI extends JFrame {
 
     }// public AdminGUI() end (constructor)
 
+    private LocalDate formatter(String dateString){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        System.out.println(dateString);
+        String[]dateParts=dateString.split("-");
+        String mth=dateParts[1];
+        String day=dateParts[2];
+        String year=dateParts[0];
+        System.out.println("Year:"+year);
+        System.out.println("Month:"+mth);
+        System.out.println("Day:"+day);
+        if(mth.length()<2){
+            mth="0"+mth;
+            if(Integer.parseInt(day)<10){
+                day="0"+day;
+            }
+        }else if(day.length()<2){
+            day="0"+day;
+        }
+        System.out.println("New Month:"+mth);
+        System.out.println("New Day:"+day);
+        String updatedDateString=year+"-"+mth+"-"+day;
+        // Parse the string into a LocalDate object
+        LocalDate dateFormatted = LocalDate.parse(updatedDateString, formatter);
+        return dateFormatted;
+    }
+
+    public int calculateDaysBetween(String startDate, String endDate) {
+        return (int) ChronoUnit.DAYS.between(formatter(startDate), formatter(endDate));
+    }
+    public boolean isInSameWeek(String date1String, String date2String) {
+        // Get the week number of each date
+        LocalDate date1= formatter(date1String);
+        LocalDate date2=formatter(date2String);
+        WeekFields weekFields = WeekFields.ISO;
+        int weekNumber1 = date1.get(weekFields.weekOfWeekBasedYear());
+        int weekNumber2 = date2.get(weekFields.weekOfWeekBasedYear());
+
+        // Compare the week numbers
+        return weekNumber1 == weekNumber2;
+    }
+
+    public  int getWeekNumber(String date1) {
+        // Get the week number of each date
+        WeekFields weekFields = WeekFields.ISO;
+        int weekNumber1 = formatter(date1).get(weekFields.weekOfWeekBasedYear());
+        // Compare the week numbers
+        return weekNumber1;
+    }
+    
+    public void genReport(List<Appointment> appDatesandCycles, String frDate, String toDate){
+        System.out.println("Admin GUI: Report Processing");
+        ArrayList<String[]>incomeDataList = new ArrayList<String[]>();
+        int weekWashNum=0;
+        int weekDryNum=0;
+        int weekNumber1=0;
+        int totWeeklyIncomeCal=0;
+        int totIncomeCal=0;
+        int weekNumber2;
+        int weekCounter=1;
+        int indexCounter=0;
+        int daysBetween = calculateDaysBetween(frDate, toDate);
+        if(appDatesandCycles.size()==0){
+            System.out.println("No reports");
+            String weekNumString="Week 0";
+            String totWashNumString="0";
+            String totDryNumString="0";
+            String totWeeklyIncomeString="0";
+            String [] row = {weekNumString,totWashNumString,totDryNumString,totWeeklyIncomeString};
+            incomeDataList.add(row);
+            incomeTable.populateTable(incomeDataList);
+        }
+        else if(appDatesandCycles.size()>1){
+            System.out.println("More than 1 report");
+            for(Appointment app :appDatesandCycles){
+                weekNumber2=getWeekNumber(app.getDate());
+                if (weekNumber1==weekNumber2){
+                    weekWashNum+=app.getWashNum();
+                    weekDryNum+=app.getDryNum();
+                    totWeeklyIncomeCal+=weekWashNum+weekDryNum;
+                    totIncomeCal+=totWeeklyIncomeCal;
+                    weekNumber1=weekNumber2;
+                    if (indexCounter == appDatesandCycles.size() - 1){
+                        String weekNumString="Week "+weekCounter;
+                        String totWashNumString=Integer.toString(weekWashNum);
+                        String totDryNumString=Integer.toString(weekDryNum);
+                        String totWeeklyIncomeString=Integer.toString(totWeeklyIncomeCal*rate);
+                        String [] row = {weekNumString,totWashNumString,totDryNumString,totWeeklyIncomeString};
+                        incomeDataList.add(row);
+                        indexCounter++;
+                    }
+                }else{
+                    weekNumber1=weekNumber2;
+                    //String weekNumString="Week "+weekNumber1;
+                    String weekNumString="Week "+weekCounter;
+                    String totWashNumString=Integer.toString(weekWashNum);
+                    String totDryNumString=Integer.toString(weekDryNum);
+                    String totWeeklyIncomeString=Integer.toString(totWeeklyIncomeCal*rate);
+                    String [] row = {weekNumString,totWashNumString,totDryNumString,totWeeklyIncomeString};
+                    incomeDataList.add(row);
+                    weekCounter++;
+                }
+            }
+            incomeTable.populateTable(incomeDataList);
+        }else{
+            System.out.println("One report");
+            for(Appointment app :appDatesandCycles){
+                weekWashNum+=app.getWashNum();
+                weekDryNum+=app.getDryNum();
+                totWeeklyIncomeCal+=weekWashNum+weekDryNum;
+                totIncomeCal+=totWeeklyIncomeCal;
+                String weekNumString="Week "+weekCounter;
+                String totWashNumString=Integer.toString(weekWashNum);
+                String totDryNumString=Integer.toString(weekDryNum);
+                String totWeeklyIncomeString=Integer.toString(totWeeklyIncomeCal*rate);
+                String [] row = {weekNumString,totWashNumString,totDryNumString,totWeeklyIncomeString};
+                incomeDataList.add(row);
+            }
+            incomeTable.populateTable(incomeDataList);
+
+        }
+        setSumLbl(totIncomeCal);
+    }
+
+    public void setSumLbl(int value){
+        this.sumLbl.setText("<html>" + "Total Income in Range: $" + value + "</html>");
+    }
+
+    
+
 
     //=========================================================//
     //=          BUTTON LISTENING FUNCTIONALITIES             =//
@@ -510,6 +652,31 @@ public class AdminGUI extends JFrame {
      */
     private class GenReportBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            //List<String> appDatesandCycles = new ArrayList<>();
+
+            int frDayValue=(int)frDaySpinner.getValue();
+            int toDayValue=(int)toDaySpinner.getValue();
+            String toMonthValue = (String) toMonthDropBox.getSelectedItem();
+            String[] toMonthParts = toMonthValue.split(" -");
+            int toMonthInt=Integer.parseInt(toMonthParts[0]);
+            String frMonthValue = (String) frMonthDropBox.getSelectedItem();
+            String[] frMonthParts = frMonthValue.split(" -");
+            int frMonthInt=Integer.parseInt(frMonthParts[0]);
+            String toYearValue = (String) toYearDropBox.getSelectedItem();
+            String frYearValue = (String) frYearDropBox.getSelectedItem();
+            String frDate=frYearValue+"-"+frMonthInt+"-"+frDayValue;
+            String toDate=toYearValue+"-"+toMonthInt+"-"+toDayValue;
+
+            try{
+                System.out.println("Admin GUI: "+frDate+" to "+toDate);
+                System.out.println("AdminGUI: Before Method excuted");
+                genReport(Database.selectTotCylesWithinRange(frDate, toDate),frDate,toDate);
+                System.out.println("Report Made!");
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                System.out.println("Could not make Report");
+                ex.printStackTrace();
+            }
         }
 
     }

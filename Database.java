@@ -5,6 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Database {
     private static final String JDBC_URL = "jdbc:mysql://sql3.freesqldatabase.com:3306/sql3694739";
@@ -101,9 +104,10 @@ public class Database {
                 boolean confirmed_by_staff = resultSet.getBoolean("confirmed_by_staff");
                 String washer_id = resultSet.getString("washer_id");
                 String dryer_id = resultSet.getString("dryer_id");
+                String app_date= resultSet.getString("app_date");
 
                 // Create an Appointment object and add it to the list
-                Appointment appointment = new Appointment(appointment_num, id_num, name, wash_num, dry_num, month, day, year, time, confirmed_by_resident, confirmed_by_staff, washer_id,dryer_id);
+                Appointment appointment = new Appointment(appointment_num, id_num, name, wash_num, dry_num,app_date, month, day, year, time, confirmed_by_resident, confirmed_by_staff, washer_id,dryer_id);
                 appointments.add(appointment);
             }
         } catch (SQLException e) {
@@ -135,7 +139,8 @@ public class Database {
                 String washer_id=resultSet.getString("washer_id");
                 String dryer_id=resultSet.getString("dryer_id");
                 int time=resultSet.getInt("time");
-                Appointment appointment = new Appointment(appointmentNum, idNum, name, washNum, dryNum, month, day,year, time, confirmedByResident, confirmedByStaff,washer_id,dryer_id);
+                String app_date= resultSet.getString("app_date");
+                Appointment appointment = new Appointment(appointmentNum, idNum, name, washNum, dryNum,app_date, month, day,year, time, confirmedByResident, confirmedByStaff,washer_id,dryer_id);
                 appointments.add(appointment);
             }
 
@@ -150,10 +155,16 @@ public class Database {
     
 
     // Method to add an appointment
-    public static void addAppointment(int id_num, String name, int wash_num, int dry_num, int month, int day, int year, int time, boolean confirmed_by_resident, boolean confirmed_by_staff, String washer_id,String dryer_id) {
-        String sql = "INSERT INTO appointments (id_num, name, wash_num, dry_num, month, day, year, time, confirmed_by_resident, confirmed_by_staff,washer_id,dryer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+    public static void addAppointment(int id_num, String name, int wash_num, int dry_num,String dateString, int month, int day, int year, int time, boolean confirmed_by_resident, boolean confirmed_by_staff, String washer_id,String dryer_id) {
+        String sql = "INSERT INTO appointments (id_num, name, wash_num, dry_num, month, day, year, time, confirmed_by_resident, confirmed_by_staff,washer_id,dryer_id,app_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date;
+        try{
+            date = dateFormat.parse(dateString);
+            // Convert java.util.Date to java.sql.Date
+            java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id_num);
             preparedStatement.setString(2, name);
             preparedStatement.setInt(3, wash_num);
@@ -166,9 +177,10 @@ public class Database {
             preparedStatement.setBoolean(10, confirmed_by_staff);
             preparedStatement.setString(11, washer_id);
             preparedStatement.setString(12, dryer_id);
+            preparedStatement.setDate(13, sqlDate);
             preparedStatement.executeUpdate();
             System.out.println("Appointment added successfully.");
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -191,10 +203,17 @@ public class Database {
     }
 
     // Method to update an appointment
-    public static void updateAppointment(int appointment_num, int wash_num, int dry_num, int month, int day, int year, int time,String washer_id,String dryer_id,boolean confirmRes) {
-        String sql = "UPDATE appointments SET wash_num = ?, dry_num = ?, month = ?, day = ?, year = ?, time = ?, washer_id = ?, dryer_id = ?, confirmed_by_resident=? WHERE appointment_num = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+    public static void updateAppointment(int appointment_num, int wash_num, int dry_num,String dateString, int month, int day, int year, int time,String washer_id,String dryer_id,boolean confirmRes) {
+        // Parse the string into a java.util.Date object
+        String sql = "UPDATE appointments SET wash_num = ?, dry_num = ?, month = ?, day = ?, year = ?, time = ?, washer_id = ?, dryer_id = ?, confirmed_by_resident=?,app_date=? WHERE appointment_num = ?";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date;
+        try {
+            date = dateFormat.parse(dateString);
+            // Convert java.util.Date to java.sql.Date
+            java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, wash_num);
             preparedStatement.setInt(2, dry_num);
             preparedStatement.setInt(3, month);
@@ -204,16 +223,20 @@ public class Database {
             preparedStatement.setString(7, washer_id);
             preparedStatement.setString(8, dryer_id);
             preparedStatement.setBoolean(9, confirmRes);
-            preparedStatement.setInt(10, appointment_num);
+            preparedStatement.setDate(10, sqlDate);
+            preparedStatement.setInt(11, appointment_num);
             int updatedRows = preparedStatement.executeUpdate();
             if (updatedRows > 0) {
                 System.out.println("Appointment updated successfully.");
             } else {
                 System.out.println("No appointment found with appointment_num " + appointment_num);
-            }
-        } catch (SQLException e) {
+            }     
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        
     }
 
     // Method to update the confirmed_by_resident column
@@ -252,36 +275,43 @@ public class Database {
         }
     }
     // Method to search appointments by month and year[Income Report]
-    public static void selectAppointmentsByMonthAndYear(int month, int year) {
-        String sql = "SELECT * FROM appointments WHERE month = ? AND year = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, month);
-            preparedStatement.setInt(2, year);
+    public static List<Appointment> selectTotCylesWithinRange(String frDateString, String toDateString) {
+        System.out.println("Database Method");
+        List<Appointment> appointments = new ArrayList<>();
+        String sql = "SELECT wash_num,dry_num,app_date FROM appointments WHERE app_date >= ? AND app_date <= ?;";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date frDateParse,toDateParse;
+        try{
+            frDateParse = dateFormat.parse(frDateString);
+            toDateParse = dateFormat.parse(toDateString);
+
+            // Convert java.util.Date to java.sql.Date
+            java.sql.Date frDate = new java.sql.Date(frDateParse.getTime());
+            java.sql.Date toDate = new java.sql.Date(toDateParse.getTime());
+            System.out.println("Database: Date parsed");
+            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            System.out.println("Database: Connected to database server");
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setDate(1, frDate);
+            preparedStatement.setDate(2, toDate);
             ResultSet resultSet = preparedStatement.executeQuery();
+            System.out.println("Database: Query executed");
             while (resultSet.next()) {
-                int appointment_num = resultSet.getInt("appointment_num");
-                int id_num = resultSet.getInt("id_num");
-                String name = resultSet.getString("name");
-                int wash_num = resultSet.getInt("wash_num");
-                int dry_num = resultSet.getInt("dry_num");
-                int day = resultSet.getInt("day");
-                int time = resultSet.getInt("time");
-                boolean confirmed_by_resident = resultSet.getBoolean("confirmed_by_resident");
-                boolean confirmed_by_staff = resultSet.getBoolean("confirmed_by_staff");
-                System.out.println("Appointment Number: " + appointment_num +
-                                ", ID Number: " + id_num +
-                                ", Name: " + name +
-                                ", Wash Number: " + wash_num +
-                                ", Dry Number: " + dry_num +
-                                ", Day: " + day +
-                                ", Time: " + time +
-                                ", Confirmed by Resident: " + confirmed_by_resident +
-                                ", Confirmed by Staff: " + confirmed_by_staff);
+                int wash_num=resultSet.getInt("wash_num");
+                int dry_num=resultSet.getInt("dry_num");
+                String app_date=resultSet.getDate("app_date").toString();
+                Appointment app=new Appointment(wash_num,dry_num,app_date);
+                appointments.add(app);
+                System.out.println("Wash Number:" + wash_num+
+                                ", Dry Number: " + dry_num+
+                                ", Dry Number: " + app_date);
             }
-        } catch (SQLException e) {
+            System.out.println("Database: Appointments Info added.");
+            return appointments;
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     // Method to select all machine IDs that are not booked during the same year, month, day, and time
