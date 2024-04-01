@@ -5,6 +5,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.event.ListSelectionListener;
+import java.util.List;
 
 /**
  * This class generates a table for displaying the trip data.
@@ -147,7 +148,14 @@ public class TableRenderer {
         for (int i = 0; i <= data.size()-1; i++) {            
             model.addRow(data.get(i));            
         }
-    }    
+    } 
+    
+    public void populateTable2(List<String[]> data) {
+        model.setRowCount(0);
+        for (String[] rowData : data) {            
+            model.addRow(rowData);            
+        }
+    }
     
     
     

@@ -256,23 +256,7 @@ public class ResidentGUI extends JFrame {
 
         //New Code
         List<Appointment> appointments = Database.getAppointmentsById(Integer.parseInt(idString));
-        apptData = new ArrayList<String[]>();
-        for (Appointment appointment : appointments) {
-            String appNumString = Integer.toString(appointment.getAppointmentNum());
-            String dateString = appointment.getDay() + "/" + appointment.getMonth() + "/" + appointment.getYear();
-            String hourString = appointment.getTime() + ":00";
-            String washNum = Integer.toString(appointment.getWashNum());
-            String dryNum = Integer.toString(appointment.getDryNum());
-            String confirmedByResident = appointment.isConfirmedByResident() ? "Yes" : "No";
-            String confirmedByStaff = appointment.isConfirmedByStaff() ? "Yes" : "No";
-            String washerID = appointment.getWasherId();
-            String dryerID = appointment.getDryerId();
-           
-            String [] row = {appNumString, dateString, hourString, washNum, dryNum, confirmedByResident, confirmedByStaff, washerID, dryerID};
-            apptData.add(row);
-        }
-
-
+        ArrayList<String[]>apptData=showResidentAppointments(appointments);
         //Rendering appointment table with data above
         apptTable = new TableRenderer(apptinner2Pnl, new Dimension(845, 425), apptColumnNames, apptData);
         JTable appointmentsTable = apptTable.getTable();
@@ -388,6 +372,9 @@ public class ResidentGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 Database.updateConfirmedByResident(Integer.parseInt(getRowSelectedData().get(0)),true);
+                //List<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                //System.out.println("Table List formed");
+                //apptTable.populateTable2(aList);
                 System.out.println("Confirmed by Resident");
                 JOptionPane.showMessageDialog(null, "Confirmed Appointment!", "Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception ex) {
@@ -450,6 +437,28 @@ public class ResidentGUI extends JFrame {
 
     public ArrayList<String> getRowSelectedData(){
         return apptTable.getSelectedRowData(apptTable.getColumnNum());        
+    }
+
+    public ArrayList<String[]> showResidentAppointments(List<Appointment> appList){
+        apptData = new ArrayList<String[]>();
+        for (Appointment appointment : appList) {
+            String appNumString = Integer.toString(appointment.getAppointmentNum());
+            String dateString = appointment.getDay() + "/" + appointment.getMonth() + "/" + appointment.getYear();
+            String hourString = appointment.getTime() + ":00";
+            String washNum = Integer.toString(appointment.getWashNum());
+            String dryNum = Integer.toString(appointment.getDryNum());
+            String confirmedByResident = appointment.isConfirmedByResident() ? "Yes" : "No";
+            String confirmedByStaff = appointment.isConfirmedByStaff() ? "Yes" : "No";
+            String washerID = appointment.getWasherId();
+            String dryerID = appointment.getDryerId();
+           
+            String [] row = {appNumString, dateString, hourString, washNum, dryNum, confirmedByResident, confirmedByStaff, washerID, dryerID};
+            apptData.add(row);
+        }
+        return apptData;
+    }
+    public TableRenderer getApptTable(){
+        return apptTable;
     }
 
 } // public class ResidentGUI() end 

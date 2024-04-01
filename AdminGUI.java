@@ -554,81 +554,55 @@ public class AdminGUI extends JFrame {
     }
     
     public void genReport(List<Appointment> appDatesandCycles, String frDate, String toDate){
-        System.out.println("Admin GUI: Report Processing");
-        ArrayList<String[]>incomeDataList = new ArrayList<String[]>();
-        int weekWashNum=0;
-        int weekDryNum=0;
-        int weekNumber1=0;
-        int totWeeklyIncomeCal=0;
-        int totIncomeCal=0;
-        int weekNumber2;
-        int weekCounter=1;
-        int indexCounter=0;
-        int daysBetween = calculateDaysBetween(frDate, toDate);
-        if(appDatesandCycles.size()==0){
-            System.out.println("No reports");
-            String weekNumString="Week 0";
-            String totWashNumString="0";
-            String totDryNumString="0";
-            String totWeeklyIncomeString="0";
-            String [] row = {weekNumString,totWashNumString,totDryNumString,totWeeklyIncomeString};
-            incomeDataList.add(row);
-            incomeTable.populateTable(incomeDataList);
-        }
-        else if(appDatesandCycles.size()>1){
-            System.out.println("More than 1 report");
-            for(Appointment app :appDatesandCycles){
-                weekNumber2=getWeekNumber(app.getDate());
-                if (weekNumber1==weekNumber2){
-                    weekWashNum+=app.getWashNum();
-                    weekDryNum+=app.getDryNum();
-                    totWeeklyIncomeCal+=weekWashNum+weekDryNum;
-                    totIncomeCal+=totWeeklyIncomeCal;
-                    weekNumber1=weekNumber2;
-                    if (indexCounter == appDatesandCycles.size() - 1){
-                        String weekNumString="Week "+weekCounter;
-                        String totWashNumString=Integer.toString(weekWashNum);
-                        String totDryNumString=Integer.toString(weekDryNum);
-                        String totWeeklyIncomeString=Integer.toString(totWeeklyIncomeCal*rate);
-                        String [] row = {weekNumString,totWashNumString,totDryNumString,totWeeklyIncomeString};
-                        incomeDataList.add(row);
-                        indexCounter++;
-                    }
-                }else{
-                    weekNumber1=weekNumber2;
-                    //String weekNumString="Week "+weekNumber1;
-                    String weekNumString="Week "+weekCounter;
-                    String totWashNumString=Integer.toString(weekWashNum);
-                    String totDryNumString=Integer.toString(weekDryNum);
-                    String totWeeklyIncomeString=Integer.toString(totWeeklyIncomeCal*rate);
-                    String [] row = {weekNumString,totWashNumString,totDryNumString,totWeeklyIncomeString};
-                    incomeDataList.add(row);
-                    weekCounter++;
+        List<String[]> weeklyDataList = new ArrayList<>();
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        if (appDatesandCycles.size()==0) {
+            String[] newWeekData = {"No appointments" ,"0", "0", "0"};
+            weeklyDataList.add(newWeekData);
+            getTotalIncomeCal(weeklyDataList);
+            incomeTable.populateTable2(weeklyDataList);
+        }else{
+             // Iterate through appointments
+            for (Appointment appointment : appDatesandCycles) {
+                LocalDate appointmentDate = formatter(appointment.getDate());
+                // Check if appointment date is within the specified date range
+                if (!appointmentDate.isBefore(formatter(frDate)) && !appointmentDate.isAfter(formatter(toDate))) {
+                    int weekNumber = appointmentDate.get(weekFields.weekOfWeekBasedYear()); // Get week number
+                    String[] weekData = getOrCreateWeekData(weeklyDataList, weekNumber); // Get or create week data
+                    int washNum = Integer.parseInt(weekData[1]) + appointment.getWashNum();
+                    int dryNum = Integer.parseInt(weekData[2]) + appointment.getDryNum();
+                    int totalIncome = (washNum + dryNum) * rate;
+                    // Update week data
+                    weekData[1] = String.valueOf(washNum);
+                    weekData[2] = String.valueOf(dryNum);
+                    weekData[3] = String.valueOf(totalIncome);
                 }
             }
-            incomeTable.populateTable(incomeDataList);
-        }else{
-            System.out.println("One report");
-            for(Appointment app :appDatesandCycles){
-                weekWashNum+=app.getWashNum();
-                weekDryNum+=app.getDryNum();
-                totWeeklyIncomeCal+=weekWashNum+weekDryNum;
-                totIncomeCal+=totWeeklyIncomeCal;
-                String weekNumString="Week "+weekCounter;
-                String totWashNumString=Integer.toString(weekWashNum);
-                String totDryNumString=Integer.toString(weekDryNum);
-                String totWeeklyIncomeString=Integer.toString(totWeeklyIncomeCal*rate);
-                String [] row = {weekNumString,totWashNumString,totDryNumString,totWeeklyIncomeString};
-                incomeDataList.add(row);
-            }
-            incomeTable.populateTable(incomeDataList);
-
+            getTotalIncomeCal(weeklyDataList);
+            incomeTable.populateTable2(weeklyDataList);
+    
         }
-        setSumLbl(totIncomeCal);
     }
 
-    public void setSumLbl(int value){
-        this.sumLbl.setText("<html>" + "Total Income in Range: $" + value + "</html>");
+    private static String[] getOrCreateWeekData(List<String[]> weeklyDataList, int weekNumber) {
+        for (String[] weekData : weeklyDataList) {
+            if (weekData[0].equals("Week" + weekNumber)) {
+                return weekData; // Week data already exists
+            }
+        }
+        // Create new week data if not found
+        String[] newWeekData = {"Week" + weekNumber, "0", "0", "0"};
+        weeklyDataList.add(newWeekData);
+        return newWeekData;
+    }
+
+    public void getTotalIncomeCal(List<String[]> weeklyIncomeList){
+        int tot=0;
+        for( String[] wIncome: weeklyIncomeList){
+            tot=Integer.parseInt(wIncome[3])+tot;
+            System.out.println("Accumulating Total: "+tot);
+        }
+        this.sumLbl.setText("<html>" + "Total Income in Range: $" + tot + "</html>");
     }
 
     
