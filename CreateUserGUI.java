@@ -468,7 +468,7 @@ public class CreateUserGUI extends JFrame {
                 hideVerifyMessage(false);
                 
             }
-            else if (selectedType.equals("Employee")) {
+            else if (selectedType.equals("Staff")) {
                 toggleEmployeeFields(true);
                 hideVerifyMessage(false);
             
@@ -548,7 +548,17 @@ public class CreateUserGUI extends JFrame {
                 }            
                 //If user type is an employee and all fields are valid
                 else {
-                    launchQuickWash(selectedType,name,email,Integer.parseInt(idNumber),password,selectedBlock,Integer.parseInt(selectedRoom));
+                    if (selectedBlock.equals("Select a Block")) {
+                        setErrorMessage("Please select a Block.");
+                    }
+                    // Room Number selection validation
+                    else if (selectedRoom.equals("Select a Room #")) {
+                        setErrorMessage("Please select a Room <br> Number.");
+                    }
+                    String blockString="";
+                    int roomInt=0;
+                    launchQuickWash(selectedType,name,email,Integer.parseInt(idNumber),password,blockString,roomInt);
+                    
                 }
             }
 
