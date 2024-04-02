@@ -174,7 +174,7 @@ public class CreateUserGUI extends JFrame {
 
         UserType.setBackground(mainGrey);
         UserType.setPreferredSize(new Dimension(170,28));
-        UserType.setModel(new DefaultComboBoxModel<>(new String[] { "Select User Type", "Resident", "Employee" }));
+        UserType.setModel(new DefaultComboBoxModel<>(new String[] { "Select User Type", "Resident", "Staff" }));
         UserType.addActionListener(new UserTypeListener());
 
     
@@ -542,13 +542,13 @@ public class CreateUserGUI extends JFrame {
                     }
 
                     else {
-                        launchQuickWash();
+                        launchQuickWash(selectedType,name,email,Integer.parseInt(idNumber),password,selectedBlock,Integer.parseInt(selectedRoom));
                     }
 
                 }            
                 //If user type is an employee and all fields are valid
                 else {
-                    launchQuickWash();
+                    launchQuickWash(selectedType,name,email,Integer.parseInt(idNumber),password,selectedBlock,Integer.parseInt(selectedRoom));
                 }
             }
 
@@ -573,9 +573,28 @@ public class CreateUserGUI extends JFrame {
     //=========================================================//
 
     // Function to launch quickwash if all fields are valid
-    public void launchQuickWash() {        
-        setSuccessMessage("Account Created.");
+    public void launchQuickWash(String selectedType,String name,String email,int idNumber,String password,String selectedBlock,int selectedRoom) {        
+        setSuccessMessage("Creating Account...");
         verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+        if (selectedType.equals("Resident")){
+            try {
+                Database.addUser(selectedType,name,idNumber,email,selectedRoom,selectedBlock,password);
+                System.out.println("Resident added to the Databse.");
+            } catch (Exception e) {
+                System.out.println("Error adding resident to the Databse.");
+                e.printStackTrace();
+            }
+        }else{
+            try {
+                int room_num=0;
+                String block="";
+                Database.addUser(selectedType,name,idNumber,email,room_num,block,password);
+                System.out.println("Staff added to the Databse.");
+            } catch (Exception e) {
+                System.out.println("Error adding staff to the Databse.");
+                e.printStackTrace();
+            }
+        }
 
         setNotification("Launching QuickWash.", null);
                     
@@ -586,6 +605,9 @@ public class CreateUserGUI extends JFrame {
         IDNumber.setText("");
         Email.setText("");
         passwordfield.setText("");
+
+        setVisible(false);
+        thisWS=new WelcomeScreen();
 
         // Navigate to the Resident/Employee Main screen below based on account type //
         /*if(user.getType_user().equals("resident")){

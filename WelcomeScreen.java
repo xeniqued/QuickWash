@@ -283,9 +283,9 @@ public class WelcomeScreen extends JFrame {
                             pass.setText("");
 
                             //If password is correct, open one of below screens
-                            if(user.getType_user().equals("resident")){
+                            if(user.getType_user().equals("Resident")){
                                 resGUI = new ResidentGUI(thisUserData, txtName, dbName);
-                            } else if(user.getType_user().equals("staff")){
+                            } else if(user.getType_user().equals("Staff")){
                                staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
                             } else if(user.getType_user().equals("admin")){
                                 adminGUI = new AdminGUI(thisUserData); 
