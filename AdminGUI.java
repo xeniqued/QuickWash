@@ -504,6 +504,19 @@ public class AdminGUI extends JFrame {
 
     }// public AdminGUI() end (constructor)
 
+
+    
+    //=========================================================//
+    //=                   FUNCTIONALITIES                     =//
+    //=========================================================//
+
+   
+    // Function to set notification message
+    public void setNotification(String msg, String title) {        
+        JOptionPane.showMessageDialog(null, msg, 
+        title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private LocalDate formatter(String dateString){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.println(dateString);
@@ -557,7 +570,7 @@ public class AdminGUI extends JFrame {
         List<String[]> weeklyDataList = new ArrayList<>();
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         if (appDatesandCycles.size()==0) {
-            String[] newWeekData = {"No appointments" ,"0", "0", "0"};
+            String[] newWeekData = {"No Appointments" ,"0", "0", "0"};
             weeklyDataList.add(newWeekData);
             getTotalIncomeCal(weeklyDataList);
             incomeTable.populateTable2(weeklyDataList);
@@ -586,12 +599,12 @@ public class AdminGUI extends JFrame {
 
     private static String[] getOrCreateWeekData(List<String[]> weeklyDataList, int weekNumber) {
         for (String[] weekData : weeklyDataList) {
-            if (weekData[0].equals("Week" + weekNumber)) {
+            if (weekData[0].equals("Week " + weekNumber)) {
                 return weekData; // Week data already exists
             }
         }
         // Create new week data if not found
-        String[] newWeekData = {"Week" + weekNumber, "0", "0", "0"};
+        String[] newWeekData = {"Week " + weekNumber, "0", "0", "0"};
         weeklyDataList.add(newWeekData);
         return newWeekData;
     }
@@ -627,6 +640,7 @@ public class AdminGUI extends JFrame {
     private class GenReportBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             //List<String> appDatesandCycles = new ArrayList<>();
+            setNotification("Generating Report...", null);
 
             int frDayValue=(int)frDaySpinner.getValue();
             int toDayValue=(int)toDaySpinner.getValue();
@@ -645,7 +659,9 @@ public class AdminGUI extends JFrame {
                 System.out.println("Admin GUI: "+frDate+" to "+toDate);
                 System.out.println("AdminGUI: Before Method excuted");
                 genReport(Database.selectTotCylesWithinRange(frDate, toDate),frDate,toDate);
+                
                 System.out.println("Report Made!");
+                setNotification("Report Generated.", null);
             }catch(Exception ex){
                 JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);
                 System.out.println("Could not make Report");

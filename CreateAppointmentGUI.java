@@ -350,6 +350,18 @@ public class CreateAppointmentGUI extends JFrame {
 
     } //public CreateAppointmentGUI() end (constructor)
 
+
+
+    //=========================================================//
+    //=                   FUNCTIONALITIES                     =//
+    //=========================================================//
+   
+    // Function to set notification message
+    public void setNotification(String msg, String title) {        
+        JOptionPane.showMessageDialog(null, msg, 
+        title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public void createAppointment(int washValueInt,int dryValueInt,int monthInt,int dayValueInt,int yearInt,int hourInt){
         int id=Integer.parseInt(idStringVar);
         String fullName=nameVar;

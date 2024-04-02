@@ -341,8 +341,8 @@ public class WelcomeScreen extends JFrame {
 
 
     // Function to set notification message
-    public void setNotification(String waitMsg, String title) {        
-        JOptionPane.showMessageDialog(null, waitMsg, 
+    public void setNotification(String msg, String title) {        
+        JOptionPane.showMessageDialog(null, msg, 
         title, JOptionPane.INFORMATION_MESSAGE);
     }
 

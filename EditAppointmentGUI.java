@@ -303,6 +303,10 @@ public class EditAppointmentGUI extends JFrame {
         disinner3div3Pnl.setBorder(new EmptyBorder(0, 0, 40, 0));   
 
         attendedCheck = new JCheckBox(" Attended?");
+        String check = selectedRowDataArray.get(5);
+        if (check.equals("Yes")) {            
+            attendedCheck.setSelected(true);
+        }
         attendedCheck.setHorizontalAlignment(SwingConstants.CENTER);
         attendedCheck.setForeground(mainBlue);
         attendedCheck.setPreferredSize(new Dimension(118,35));
@@ -388,7 +392,16 @@ public class EditAppointmentGUI extends JFrame {
 
     } //public EditAppointmentGUI() end (constructor)
 
+    //=========================================================//
+    //=                   FUNCTIONALITIES                     =//
+    //=========================================================//
 
+   
+    // Function to set notification message
+    public void setNotification(String msg, String title) {        
+        JOptionPane.showMessageDialog(null, msg, 
+        title, JOptionPane.INFORMATION_MESSAGE);
+    }
 
     
     //=========================================================//
@@ -401,7 +414,9 @@ public class EditAppointmentGUI extends JFrame {
     private class ApplyBtnListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
-        {
+        {            
+            setNotification("Updating Appointment...", null);
+
             //open dialog window with appointment details and ask for confirmation before updating database
             int washValueInt = (int) washSpinner.getValue();
             int dryValueInt = (int) drySpinner.getValue();
@@ -426,7 +441,8 @@ public class EditAppointmentGUI extends JFrame {
                 //ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
                 //thisRGUI.getApptTable().populateTable(aList);
                 setVisible(false);
-                JOptionPane.showMessageDialog(null, "Appointment updated!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                setNotification("Appointment Updated.", null);
                 System.out.println("Appointment Edited");
             }catch(Exception ex){
                 ex.printStackTrace();
