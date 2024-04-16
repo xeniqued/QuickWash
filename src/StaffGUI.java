@@ -371,8 +371,8 @@ public class StaffGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 Database.updateConfirmedByStaff(Integer.parseInt(getRowSelectedData().get(0)),true);
-                //ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
-                //getApptTable().populateTable(aList);
+                ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                getApptTable().populateTable(aList);
                 System.out.println("Confirmed by Resident");
                 JOptionPane.showMessageDialog(null, "Confirmed Appointment!!", "Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception ex) {

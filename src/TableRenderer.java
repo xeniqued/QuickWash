@@ -118,22 +118,26 @@ public class TableRenderer {
     }
 
     public ArrayList<String> getSelectedRowData(int columnNum){
-        int rowNum = getSelectedRow();
         ArrayList<String> selRow = new ArrayList<String>();
-        
-        for (int i = 0; i <= columnNum-1; i++) {
-            selRow.add(table.getValueAt(rowNum, i).toString());
-        }
-        
-        if (hiddenColCount > 0) {
-            int count = hiddenColCount;
-            int modelColNum = table.getModel().getColumnCount();
-            for (int i = 1; i <= hiddenColCount; i++) {
-                selRow.add(table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), modelColNum-count).toString());
-                count--;
+        int rowNum = getSelectedRow();
+        if (rowNum==-1){
+            for (int i = 0; i < 7; i++) {
+                selRow.add("");
             }
-        }
-        
+        }else{
+            for (int i = 0; i <= columnNum-1; i++) {
+                selRow.add(table.getValueAt(rowNum, i).toString());
+            }
+            
+            if (hiddenColCount > 0) {
+                int count = hiddenColCount;
+                int modelColNum = table.getModel().getColumnCount();
+                for (int i = 1; i <= hiddenColCount; i++) {
+                    selRow.add(table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), modelColNum-count).toString());
+                    count--;
+                }
+            }
+        }   
         return selRow;        
     }
 

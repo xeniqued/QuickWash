@@ -409,8 +409,10 @@ public class CreateAppointmentGUI extends JFrame {
             int hourInt=Integer.parseInt(timeParts[0]);
             try{
                 createAppointment(washValueInt,dryValueInt,monthInt,dayValueInt,yearInt,hourInt);
-                JOptionPane.showMessageDialog(null, "Appointment added!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 setVisible(false);
+                JOptionPane.showMessageDialog(null, "Appointment added!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                thisRGUI.getApptTable().populateTable(aList);
                 System.out.println("Appointment Made!");
             }catch(Exception ex){
                 JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);

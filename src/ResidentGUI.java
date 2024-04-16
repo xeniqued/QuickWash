@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.sql.Connection;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
@@ -259,8 +260,8 @@ public class ResidentGUI extends JFrame {
         ArrayList<String[]>apptData=showResidentAppointments(appointments);
         //Rendering appointment table with data above
         apptTable = new TableRenderer(apptinner2Pnl, new Dimension(845, 425), apptColumnNames, apptData);
-        JTable appointmentsTable = apptTable.getTable();
-        appointmentsTable.getSelectionModel().addListSelectionListener(new TableSelectionListener());
+        //JTable appointmentsTable = apptTable.getTable();
+        apptTable.getTable().getSelectionModel().addListSelectionListener(new TableSelectionListener());
         apptTable.hideLastColumn(apptTable.getColumnNum());
         apptTable.hideLastColumn(apptTable.getColumnNum());
         apptTable.setColumnWidth(0, 55);        
@@ -372,12 +373,13 @@ public class ResidentGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 Database.updateConfirmedByResident(Integer.parseInt(getRowSelectedData().get(0)),true);
-                //List<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
-                //System.out.println("Table List formed");
-                //apptTable.populateTable2(aList);
+                ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                System.out.println("Table List formed");
+                apptTable.populateTable(aList);
                 System.out.println("Confirmed by Resident");
                 JOptionPane.showMessageDialog(null, "Confirmed Appointment!", "Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error. Could not Confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
                 System.out.println("Error. Could not confirm Appointment.");
             }
@@ -390,6 +392,7 @@ public class ResidentGUI extends JFrame {
      */
     private class LogoutBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            //closeConnection(Database.connection);
             setVisible(false); //stops displaying window/frame
             thisWS.setVisible(true); //makes welcome screen visible again
         }
@@ -399,19 +402,19 @@ public class ResidentGUI extends JFrame {
     private class TableSelectionListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            if (!e.getValueIsAdjusting()) {
-                ArrayList<String> data = getRowSelectedData();
-                String time = data.get(2);
-                String[] date = data.get(1).split("/");
-                String weekday = getWeekday(Integer.parseInt(date[2]), Integer.parseInt(date[1]), Integer.parseInt(date[0]));
-                String month = getMonthName(Integer.parseInt(date[1]));
-                String day =  date[0];
-                String year = date[2];
-                String washerid = data.get(7);
-                String dryerid = data.get(8);
+            // if (!e.getValueIsAdjusting()) {
+            //     ArrayList<String> data = getRowSelectedData();
+            //     String time = data.get(2);
+            //     String[] date = data.get(1).split("/");
+            //     String weekday = getWeekday(Integer.parseInt(date[2]), Integer.parseInt(date[1]), Integer.parseInt(date[0]));
+            //     String month = getMonthName(Integer.parseInt(date[1]));
+            //     String day =  date[0];
+            //     String year = date[2];
+            //     String washerid = data.get(7);
+            //     String dryerid = data.get(8);
 
-                detsTable.updateRow(new String[]{time, weekday, month, day, year, washerid, dryerid}, 0, detsTable.getColumnNum());
-            }
+            //     detsTable.updateRow(new String[]{time, weekday, month, day, year, washerid, dryerid}, 0, detsTable.getColumnNum());
+            // }
         }
     }
 
@@ -459,6 +462,17 @@ public class ResidentGUI extends JFrame {
     }
     public TableRenderer getApptTable(){
         return apptTable;
+    }
+
+    private static void closeConnection(Connection connection) {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Database connection closed.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 } // public class ResidentGUI() end 
