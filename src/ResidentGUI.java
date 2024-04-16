@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
@@ -473,6 +474,27 @@ public class ResidentGUI extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<String> getUpcomingDays() {
+        List<String> upcomingDays = new ArrayList<>();
+        
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        
+        // Format for output
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // Add current day to the list
+        upcomingDays.add(currentDate.format(formatter));
+        
+        // Add the next 7 days to the list
+        for (int i = 1; i <= 7; i++) {
+            LocalDate nextDay = currentDate.plusDays(i);
+            upcomingDays.add(nextDay.format(formatter));
+        }
+
+        return upcomingDays;
     }
 
 } // public class ResidentGUI() end 
