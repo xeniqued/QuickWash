@@ -149,7 +149,7 @@ public class CreateAppointmentGUI extends JFrame {
         disinner2Pnl.add(dryLbl);
         disinner2i2Pnl.add(dryLbl, BorderLayout.NORTH);
 
-        SpinnerModel drySpinModel = new SpinnerNumberModel(0, //initial value
+        SpinnerModel drySpinModel = new SpinnerNumberModel(1, //initial value
          1, //min
          4, //max
          1);//step
@@ -509,7 +509,9 @@ public class CreateAppointmentGUI extends JFrame {
             int dryValueInt = (int) drySpinner.getValue();
             System.out.println("Number of Avail Loads: "+availWash+" "+availDry);
             if (washValueInt>availWash || dryValueInt>availDry) {
-                // JOptionPane.showMessageDialog(null, "Could not accommodate loads!!!", "Check", JOptionPane.INFORMATION_MESSAGE);
+                setAlwaysOnTop(false);
+                JOptionPane.showMessageDialog(thisAddGUI, "Could not accommodate loads!!!", "Check", JOptionPane.INFORMATION_MESSAGE);
+                setAlwaysOnTop(true);
                 System.out.println("Could not accommodate loads!!!");
             }else{
                 //int dayValueInt = (int) daySpinner.getValue();
@@ -527,7 +529,7 @@ public class CreateAppointmentGUI extends JFrame {
                 try{
                     createAppointment(washValueInt,dryValueInt,monthInt,dayValueInt,yearInt,hourInt);
                     setVisible(false);
-                    JOptionPane.showMessageDialog(null, "Appointment added!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(thisAddGUI, "Appointment added!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
                     thisRGUI.getApptTable().populateTable(aList);
                     System.out.println("Appointment Made!");
