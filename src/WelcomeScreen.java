@@ -356,8 +356,12 @@ public class WelcomeScreen extends JFrame {
                     forgEmail.setText("");
                     setErrorMessage("Incorrect Email. <br> Please Try Again.");
                 }
-            } else {
-
+            } else {                
+                forgID.setText("");
+                forgEmail.setText("");
+                forgNewPass.setText("");
+                forgConfPass.setText("");
+                
                 setErrorMessage("Username Not Found. <br> Please Try Again.");
             }
 
