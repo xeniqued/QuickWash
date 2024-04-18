@@ -336,7 +336,7 @@ public class WelcomeScreen extends JFrame {
 
 
     //=========================================================//
-    //=                   FUNCTIONALITIES                     =//
+    //=                  FUNCTIONALITIES                     =//
     //=========================================================//
 
 

@@ -6,6 +6,11 @@ import org.w3c.dom.ranges.Range;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +30,7 @@ public class CreateAppointmentGUI extends JFrame {
     private JLabel washLbl, dryLbl; 
     private JSpinner washSpinner, drySpinner, daySpinner; // accepts wash loads, dry loads, day of month
     private JLabel dateLbl, monLbl, dayLbl, yearLbl, timeLbl;
-    private JComboBox<String> monthDropBox,  yearDropBox, timeDropBox; // accepts month, year, time
+    private JComboBox<String> dayDropBox,monthDropBox,  yearDropBox, timeDropBox; // accepts month, year, time
 
     // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
@@ -38,7 +43,10 @@ public class CreateAppointmentGUI extends JFrame {
 
     private String idStringVar;
     private String nameVar;
+    private int availWash,availDry;
     private Database db;
+
+    private int minVal,maxVal;
 
     /**
      * This class creates a screen in which the user can schedule an appointment.
@@ -47,7 +55,6 @@ public class CreateAppointmentGUI extends JFrame {
         //instiantiate variables
         this.nameVar=name;
         this.idStringVar=idString;
-
 
         /**
          * This sets up attributes to ensure that the window instances are linked
@@ -115,13 +122,14 @@ public class CreateAppointmentGUI extends JFrame {
         disinner2i1Pnl.setOpaque(false);  
         washLbl = new JLabel("Wash Load #");
         washLbl.setHorizontalAlignment(JLabel.LEFT); 
+
         washLbl.setForeground(mainBlue); 
         washLbl.setFont(new Font(washLbl.getFont().getFontName(), Font.BOLD, 15));        
         
         disinner2i1Pnl.add(washLbl, BorderLayout.NORTH);
         SpinnerModel washSpinModel = new SpinnerNumberModel(1, //initial value
          1, //min
-         10, //max
+         4, //max
          1);//step
         washSpinner = new JSpinner(washSpinModel);
         washSpinner.setPreferredSize(new Dimension(110,35));
@@ -142,8 +150,8 @@ public class CreateAppointmentGUI extends JFrame {
         disinner2i2Pnl.add(dryLbl, BorderLayout.NORTH);
 
         SpinnerModel drySpinModel = new SpinnerNumberModel(0, //initial value
-         0, //min
-         10, //max
+         1, //min
+         4, //max
          1);//step
         drySpinner = new JSpinner(drySpinModel);
         drySpinner.setPreferredSize(new Dimension(110,35));
@@ -190,10 +198,17 @@ public class CreateAppointmentGUI extends JFrame {
         monLbl.setForeground(mainBlue); 
         monLbl.setFont(new Font(monLbl.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i2Pnl.add(monLbl, BorderLayout.NORTH);   
-        String[] months = {"1 -Jan", "2 -Feb", "3 -Mar", "4 -Apr", 
-                            "5 -May", "6 -June", "7 -July", "8 -Aug", "9 -Sept",
-                            "10 -Oct", "11 -Nov", "12 -Dec"};        
+        
+        List<String> monthStrings=getCurrentAndNextMonthNames();
+        String[] months= new String[monthStrings.size()];
+        for (int i = 0; i < monthStrings.size(); i++) {
+            String mth=monthStrings.get(i);
+            months[i] = convertMonthStringToInt(mth)+" - "+mth;
+        }
+        
+
         monthDropBox = new JComboBox<String>(months);
+        monthDropBox.addActionListener(new AvailListener());
         monthDropBox.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 15));        
         monthDropBox.setForeground(mainBlue);
         monthDropBox.setPreferredSize(new Dimension(120,35));
@@ -208,19 +223,17 @@ public class CreateAppointmentGUI extends JFrame {
         dayLbl = new JLabel("Day");  
         dayLbl.setForeground(mainBlue); 
         dayLbl.setFont(new Font(dayLbl.getFont().getFontName(), Font.BOLD, 15));        
-        disinner3i3Pnl.add(dayLbl, BorderLayout.NORTH);  
-        SpinnerModel daySpinModel = new SpinnerNumberModel(1, //initial value
-         1, //min
-         31, //max
-         1);//step
-        daySpinner = new JSpinner(daySpinModel);
-        daySpinner.setPreferredSize(new Dimension(119,35));
-        ((DefaultEditor)daySpinner.getEditor()).getTextField().setEditable(false);
-        ((DefaultEditor)daySpinner.getEditor()).getTextField().setForeground(mainBlue);  
-        ((DefaultEditor)daySpinner.getEditor()).getTextField().setFont(new Font(createAptLbl.getFont().getFontName(), Font.PLAIN, 14));   
-        
-        disinner3i3Pnl.add(daySpinner, BorderLayout.SOUTH); 
+        disinner3i3Pnl.add(dayLbl, BorderLayout.NORTH);
 
+        String[] days= getNextSevenDays();
+
+        dayDropBox = new JComboBox<String>(days);
+        dayDropBox.addActionListener(new AvailListener());
+        dayDropBox.setPreferredSize(new Dimension(119,35));
+        dayDropBox.setForeground(mainBlue);
+        dayDropBox.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 15));        
+        
+        disinner3i3Pnl.add(dayDropBox, BorderLayout.SOUTH);
         disinner3div1Pnl.add(disinner3i3Pnl, BorderLayout.LINE_END); 
 
         disinner3Pnl.add(disinner3div1Pnl); 
@@ -238,13 +251,16 @@ public class CreateAppointmentGUI extends JFrame {
         yearLbl.setForeground(mainBlue); 
         yearLbl.setFont(new Font(yearLbl.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i4Pnl.add(yearLbl, BorderLayout.NORTH);      
-        String[] years = new String[7];
-        int count = 0;    
-        for (int y = 2024; y < 2031; y++) {
-            years[count] = Integer.toString(y);  
-            count++;
-        };        
-        yearDropBox = new JComboBox<String>(years); 
+        
+        List<String> yearStrings=getCurrentAndNextYear();
+        String[] years= new String[yearStrings.size()];
+        for (int i = 0; i < yearStrings.size(); i++) {
+            String y=yearStrings.get(i);
+            years[i] = y;
+        }
+
+        yearDropBox = new JComboBox<String>(years);
+        yearDropBox.addActionListener(new AvailListener());
         yearDropBox.setPreferredSize(new Dimension(119,35));
         yearDropBox.setForeground(mainBlue);
         yearDropBox.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 15));        
@@ -260,30 +276,24 @@ public class CreateAppointmentGUI extends JFrame {
         timeLbl.setFont(new Font(timeLbl.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i5Pnl.add(timeLbl, BorderLayout.NORTH);  
         
-        // Create a list of integers
-        List<Integer> allTimes = new ArrayList<>();
-
-        // Add numbers 9 to 18 to the list
-        for (int i = 9; i <= 18; i++) {
-            allTimes .add(i);
-        }
-        //db.getBookedTimes();
-
         //end of new code
 
         String[] times = new String[10];    
-        count = 0;
+        int count = 0;
         for (int t = 9; t < 19; t++) {
             times[count] = Integer.toString(t) + ":00";
             count++;
         };               
-        timeDropBox = new JComboBox<String>(times); 
+        timeDropBox = new JComboBox<String>(times);
+        timeDropBox.addActionListener(new AvailListener());
         timeDropBox.setFont(new Font(createAptLbl.getFont().getFontName(), Font.BOLD, 15));        
         timeDropBox.setForeground(mainBlue);
         timeDropBox.setPreferredSize(new Dimension(118,35));
-        disinner3i5Pnl.add(timeDropBox, BorderLayout.SOUTH);    
+        disinner3i5Pnl.add(timeDropBox, BorderLayout.SOUTH);
         
-
+        //Show Load availability
+        showLoadAvail();
+        
         disinner3div2Pnl.add(disinner3i5Pnl, BorderLayout.LINE_END);    
 
         disinner3Pnl.add(disinner3div2Pnl);  
@@ -323,6 +333,7 @@ public class CreateAppointmentGUI extends JFrame {
         btnCancel.setBackground(mainBlue);
         btnCancel.setPreferredSize(new Dimension(120, 35));
         btnCancel.addActionListener(new CancelBtnListener());
+
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 20, 0, 20);
@@ -377,6 +388,106 @@ public class CreateAppointmentGUI extends JFrame {
         //thisRGUI.getApptTable().populateTable(aList);
     }
 
+    public List<Integer> getCurrentAndUpcomingDays() {
+        List<Integer> days = new ArrayList<>();
+
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        
+        // Add the current day to the list
+        days.add(currentDate.getDayOfMonth());
+        
+        // Add the next 7 days to the list
+        for (int i = 1; i <= 7; i++) {
+            LocalDate nextDay = currentDate.plusDays(i);
+            days.add(nextDay.getDayOfMonth());
+        }
+
+        return days;
+    }
+
+    public List<String> getCurrentAndNextMonthNames() {
+        List<String> months = new ArrayList<>();
+
+        // Get the current month
+        Month currentMonth = Month.values()[java.time.LocalDate.now().getMonthValue() - 1];
+        months.add(currentMonth.toString());
+
+        // Get the next month
+        Month nextMonth = currentMonth.plus(1);
+        months.add(nextMonth.toString());
+
+        return months;
+    }
+
+    public List<String> getCurrentAndNextYear() {
+        List<String> years = new ArrayList<>();
+
+        // Get the current year
+        int currentYear = Year.now().getValue();
+        years.add(String.valueOf(currentYear));
+
+        // Get the next year
+        int nextYear = currentYear + 1;
+        years.add(String.valueOf(nextYear));
+
+        return years;
+    }
+
+    public static String[] getNextSevenDays() {
+        String[] days = new String[7];
+
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Format for displaying the date as a number (day of the month)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d");
+
+        // Add the current date and the next seven days to the array
+        for (int i = 0; i < 7; i++) {
+            days[i] = formatter.format(currentDate.plusDays(i));
+        }
+
+        return days;
+    }
+
+
+    public  int convertMonthStringToInt(String monthString) {
+        Month month = Month.valueOf(monthString.toUpperCase()); // Convert to uppercase and get corresponding enum
+        return month.getValue(); // Get the integer value of the enum
+    }
+
+    public void changeAvailApptLabel(List<String> bookedLoads){
+        this.availWash= 4-Integer.parseInt(bookedLoads.get(1));
+        this.availDry= 4-Integer.parseInt(bookedLoads.get(2));
+        washLbl.setText("Wash Load # "+"("+availWash+" Left"+")");
+        dryLbl.setText("Dry Load # "+"("+availDry+" Left"+")");
+    }
+
+    public void showLoadAvail(){
+        // Show Loads Left
+        String dayValue =  (String) dayDropBox.getSelectedItem();
+        int dayValueInt=Integer.parseInt(dayValue);
+        System.out.println("Day Selected");
+        String monthValue = (String) monthDropBox.getSelectedItem();
+        String[] monthParts = monthValue.split(" -");
+        int monthInt=Integer.parseInt(monthParts[0]);
+        System.out.println("Month Selected");
+
+        String yearValue = (String) yearDropBox.getSelectedItem();
+        int yearInt=Integer.parseInt(yearValue);
+        System.out.println("Year Selected");
+        String timeValue = (String) timeDropBox.getSelectedItem();
+        String[] timeParts = timeValue.split(":");
+        int hourInt=Integer.parseInt(timeParts[0]);
+        System.out.println("Time Selected");    
+        //JOptionPane.showMessageDialog(null, "Checking Availability...", "Check", JOptionPane.INFORMATION_MESSAGE);
+        List<String>numAppointments=Database.getLoadNumsForAppts(monthInt,dayValueInt,yearInt,hourInt);
+        System.out.println("Available Appointments fetched");
+        changeAvailApptLabel(numAppointments);
+        System.out.println("Available Appointments Displayed");
+    }
+
 
     
 
@@ -394,32 +505,41 @@ public class CreateAppointmentGUI extends JFrame {
         public void actionPerformed(ActionEvent e)
         {
             //open dialog window with appointment details and ask for confirmation before adding to database
-            
             int washValueInt = (int) washSpinner.getValue();
             int dryValueInt = (int) drySpinner.getValue();
-            int dayValueInt = (int) daySpinner.getValue();
-            String monthValue = (String) monthDropBox.getSelectedItem();
-            String[] monthParts = monthValue.split(" -");
-            int monthInt=Integer.parseInt(monthParts[0]);
+            System.out.println("Number of Avail Loads: "+availWash+" "+availDry);
+            if (washValueInt>availWash || dryValueInt>availDry) {
+                // JOptionPane.showMessageDialog(null, "Could not accommodate loads!!!", "Check", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("Could not accommodate loads!!!");
+            }else{
+                //int dayValueInt = (int) daySpinner.getValue();
+                String dayValue =  (String) dayDropBox.getSelectedItem();
+                int dayValueInt=Integer.parseInt(dayValue);
+                String monthValue = (String) monthDropBox.getSelectedItem();
+                String[] monthParts = monthValue.split(" -");
+                int monthInt=Integer.parseInt(monthParts[0]);
 
-            String yearValue = (String) yearDropBox.getSelectedItem();
-            int yearInt=Integer.parseInt(yearValue);
-            String timeValue = (String) timeDropBox.getSelectedItem();
-            String[] timeParts = timeValue.split(":");
-            int hourInt=Integer.parseInt(timeParts[0]);
-            try{
-                createAppointment(washValueInt,dryValueInt,monthInt,dayValueInt,yearInt,hourInt);
-                setVisible(false);
-                JOptionPane.showMessageDialog(null, "Appointment added!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
-                thisRGUI.getApptTable().populateTable(aList);
-                System.out.println("Appointment Made!");
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);
-                System.out.println("Could not add to Appoinment to the database");
-                ex.printStackTrace();
-                setVisible(false);
+                String yearValue = (String) yearDropBox.getSelectedItem();
+                int yearInt=Integer.parseInt(yearValue);
+                String timeValue = (String) timeDropBox.getSelectedItem();
+                String[] timeParts = timeValue.split(":");
+                int hourInt=Integer.parseInt(timeParts[0]);
+                try{
+                    createAppointment(washValueInt,dryValueInt,monthInt,dayValueInt,yearInt,hourInt);
+                    setVisible(false);
+                    JOptionPane.showMessageDialog(null, "Appointment added!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                    thisRGUI.getApptTable().populateTable(aList);
+                    System.out.println("Appointment Made!");
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("Could not add to Appoinment to the database");
+                    ex.printStackTrace();
+                    setVisible(false);
+                }
+
             }
+            
         }    
     }
     
@@ -438,6 +558,17 @@ public class CreateAppointmentGUI extends JFrame {
         }
 
     }
+
+
+    private class AvailListener implements ActionListener
+    {
+        
+        public void actionPerformed(ActionEvent e) {
+            showLoadAvail();
+        }
+
+    }
+    
 
     
 
