@@ -519,14 +519,10 @@ public class AdminGUI extends JFrame {
 
     private LocalDate formatter(String dateString){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        System.out.println(dateString);
         String[]dateParts=dateString.split("-");
         String mth=dateParts[1];
         String day=dateParts[2];
         String year=dateParts[0];
-        System.out.println("Year:"+year);
-        System.out.println("Month:"+mth);
-        System.out.println("Day:"+day);
         if(mth.length()<2){
             mth="0"+mth;
             if(Integer.parseInt(day)<10){
@@ -535,8 +531,6 @@ public class AdminGUI extends JFrame {
         }else if(day.length()<2){
             day="0"+day;
         }
-        System.out.println("New Month:"+mth);
-        System.out.println("New Day:"+day);
         String updatedDateString=year+"-"+mth+"-"+day;
         // Parse the string into a LocalDate object
         LocalDate dateFormatted = LocalDate.parse(updatedDateString, formatter);

@@ -7,6 +7,7 @@ import org.w3c.dom.ranges.Range;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,7 +15,7 @@ import java.util.Date;
 /**
  * This class creates a screen in which the user can edit or delete an appointment.
  */
-public class EditAppointmentGUI extends JFrame {
+public class AppointmentEditor extends JFrame {
 
     /**
      * This class creates a screen in which the user can add a trip to the arraylist.
@@ -41,14 +42,14 @@ public class EditAppointmentGUI extends JFrame {
     private Color successGreen = new Color(68, 218, 103);
 
     private static ResidentGUI thisRGUI; //previous screen
-    private EditAppointmentGUI thisEditGUI; //current screen instance
+    private AppointmentEditor thisEditGUI; //current screen instance
 
     private String idStringVar;
     private String nameVar;
     private ArrayList<String> selectedRowDataArray;
 
 
-    public EditAppointmentGUI(ResidentGUI res,String name,String idString,ArrayList<String>selectedRowData){
+    public AppointmentEditor(ResidentGUI res,String name,String idString,ArrayList<String>selectedRowData){
 
         this.nameVar=name;
         this.idStringVar=idString;
@@ -415,8 +416,8 @@ public class EditAppointmentGUI extends JFrame {
     {
         public void actionPerformed(ActionEvent e)
         {            
-            setNotification("Updating Appointment...", null);
-
+            System.out.println("Line 418");
+            //setNotification("Updating Appointment...", "Update");
             //open dialog window with appointment details and ask for confirmation before updating database
             int washValueInt = (int) washSpinner.getValue();
             int dryValueInt = (int) drySpinner.getValue();
@@ -435,19 +436,25 @@ public class EditAppointmentGUI extends JFrame {
             String dryer_id=mList.assignDryerUpdate(Integer.parseInt(selectedRowDataArray.get(0)),washValueInt,yearInt,monthInt,dayValueInt,hourInt);
             Boolean attend =attendedCheck.isSelected();
             String app_date=yearValue+"-"+monthInt+"-"+dayValueInt;
-
+            System.out.println("Line 438");
             try{
+                System.out.println("Line 440");
                 Database.updateAppointment(Integer.parseInt(selectedRowDataArray.get(0)),washValueInt, dryValueInt,app_date, monthInt, dayValueInt, yearInt, hourInt,washer_id,dryer_id,attend);
-                //ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
-                //thisRGUI.getApptTable().populateTable(aList);
+                System.out.println("Line 441");
                 setVisible(false);
-
-                setNotification("Appointment Updated.", null);
+                JOptionPane.showMessageDialog(null, "Updating Appointment...", "Success", JOptionPane.INFORMATION_MESSAGE);
+                //setNotification("Appointment Updated.", "Update");
                 System.out.println("Appointment Edited");
+                ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                for (String[] strings : aList) {
+                    System.out.println(Arrays.toString(strings));
+                }
+                System.out.println("Line 446");
+                thisRGUI.getApptTable().populateTable2(aList);
+                System.out.println("Line 448");  
             }catch(Exception ex){
                 ex.printStackTrace();
-
-                System.out.println("Could not add to Appoinment to the database");
+                System.out.println("Could not add to Appointment to the database");
                 setVisible(false);
             }
         }
@@ -464,9 +471,12 @@ public class EditAppointmentGUI extends JFrame {
             //ask for confirmation here before deleting
             try {
                 Database.deleteAppointment(Integer.parseInt(selectedRowDataArray.get(0)));
+                setVisible(false);
                 JOptionPane.showMessageDialog(null, "Appointment deleted!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 System.out.println("Appointment Deleted!");
-                setVisible(false);
+                ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                System.out.println("Line 446");
+                thisRGUI.getApptTable().populateTable(aList);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "An Error occured.", "Error", JOptionPane.ERROR_MESSAGE);
                 System.out.println("Could not delete appointment");

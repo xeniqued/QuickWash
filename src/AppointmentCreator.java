@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateAppointmentGUI extends JFrame {
+public class AppointmentCreator extends JFrame {
 
     /**
      * This class creates a screen in which the user can add a trip to the arraylist.
@@ -34,7 +34,7 @@ public class CreateAppointmentGUI extends JFrame {
     private Color successGreen = new Color(68, 218, 103);
 
     private static ResidentGUI thisRGUI; //previous screen
-    private CreateAppointmentGUI thisAddGUI; //current screen instance
+    private AppointmentCreator thisAddGUI; //current screen instance
 
     private String idStringVar;
     private String nameVar;
@@ -43,7 +43,7 @@ public class CreateAppointmentGUI extends JFrame {
     /**
      * This class creates a screen in which the user can schedule an appointment.
      */
-    public CreateAppointmentGUI(ResidentGUI res,String name,String idString){
+    public AppointmentCreator(ResidentGUI res,String name,String idString){
         //instiantiate variables
         this.nameVar=name;
         this.idStringVar=idString;
@@ -409,8 +409,10 @@ public class CreateAppointmentGUI extends JFrame {
             int hourInt=Integer.parseInt(timeParts[0]);
             try{
                 createAppointment(washValueInt,dryValueInt,monthInt,dayValueInt,yearInt,hourInt);
-                JOptionPane.showMessageDialog(null, "Appointment added!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 setVisible(false);
+                JOptionPane.showMessageDialog(null, "Appointment added!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                thisRGUI.getApptTable().populateTable(aList);
                 System.out.println("Appointment Made!");
             }catch(Exception ex){
                 JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);

@@ -5,26 +5,25 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
+
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.*;
-import java.util.List;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.sql.Connection;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
 
 /**
  * This displays the main resident screen of the system where appointments are displayed 
  * and can be edited.
  */
-public class StaffGUI extends JFrame {
+public class ResidentGUI extends JFrame {
 
     private JPanel navPnl; // (navigate panel) entire panel on the left  
     // (display panel) entire panel on the right, (appointments panel) appointment table at top, 
@@ -38,7 +37,7 @@ public class StaffGUI extends JFrame {
     private JLabel detailsLbl;
 
     // Make Appointment, Edit Appointment, Mark Attend, Logout buttons
-    private JButton btnConfirm, btnMakeReport, btnLogout; 
+    private JButton btnMakeAppt, btnEditAppt, btnAttend, btnLogout; 
     
     // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
@@ -47,12 +46,15 @@ public class StaffGUI extends JFrame {
     private Color successGreen = new Color(68, 218, 103);
 
     private WelcomeScreen thisWS; //previous screen
-    private static StaffGUI thisStaffGUI; //current screen instance
+    private static ResidentGUI thisResGUI; //current screen instance
+    private AppointmentCreator thisMkAptGUI = null; //CreateAppointmentGUI popup screen instance
+    private AppointmentEditor thisEdAptGUI = null; //EditAppointmentGUI popup screen instance
 
     private String nameVar;
     private String idStringVar;
+    
 
-    public StaffGUI(WelcomeScreen ws,String idString,String name) {
+    public ResidentGUI(WelcomeScreen ws, String idString, String name) {
         //initialize variable
         this.nameVar=name;
         this.idStringVar=idString;
@@ -60,7 +62,7 @@ public class StaffGUI extends JFrame {
          * This sets up attributes to ensure that the window instances are linked
          */        
         thisWS = ws;
-        thisStaffGUI = this;
+        thisResGUI = this;
         
         /**
          * This turns off the welcome screen while the ResidentGUI screen is open.
@@ -111,7 +113,7 @@ public class StaffGUI extends JFrame {
         }
         //Get firstname
         String[]fullname=name.split(" ");
-        String fname=fullname[0];       
+        String fname=fullname[0];      
         // replace <Resident> with the variable storing the the user's name
         navLbl.setText("Hello, " + fname); 
         navLbl.setForeground(mainWhite);  
@@ -123,46 +125,65 @@ public class StaffGUI extends JFrame {
         //==============================================//
         //=      CREATING THE BUTTONS AT TOP LEFT      =//
         //==============================================//
-    
         
-        // CREATING AND ALLIGNING ONFIRM ATTEND APPOINTMENT BUTTON // 
-        ImageIcon ConfirmAptIcon = null;      
+        
+        // CREATING AND ALLIGNING MAKE APPOINTMENT BUTTON // 
+        ImageIcon MkAptIcon = null;      
         try {
-            ConfirmAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/confirmicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+            MkAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/createicon.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
         } catch (Exception ioe) {
             System.out.println("Create icon not found.");
         }      
-        btnConfirm = new JButton(ConfirmAptIcon);
-        btnConfirm.setText(" Confirm Attended");
-        btnConfirm.setFont(new Font(btnConfirm.getFont().getFontName(), Font.BOLD, 16));
-        btnConfirm.setForeground(mainWhite);
-        btnConfirm.setBackground(mainBlue);
-        btnConfirm.setHorizontalAlignment(SwingConstants.LEFT);
-        btnConfirm.setBorderPainted(false);
-        btnConfirm.setMargin(new Insets(7, 20, 7, 0));
-        btnConfirm.addActionListener(new ConfirmBtnListener());
+        btnMakeAppt = new JButton(MkAptIcon);
+        btnMakeAppt.setText(" Make Appointment");
+        btnMakeAppt.setFont(new Font(btnMakeAppt.getFont().getFontName(), Font.BOLD, 16));
+        btnMakeAppt.setForeground(mainWhite);
+        btnMakeAppt.setBackground(mainBlue);
+        btnMakeAppt.setHorizontalAlignment(SwingConstants.LEFT);
+        btnMakeAppt.setBorderPainted(false); 
+        btnMakeAppt.setMargin(new Insets(7, 20, 7, 0));
+        btnMakeAppt.addActionListener(new MkAptBtnListener());
 
-
+        
         // CREATING AND ALLIGNING EDIT APPOINTMENT BUTTON // 
-        ImageIcon MkReportIcon = null;      
+        ImageIcon EditAptIcon = null;      
         try {
-            MkReportIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/mkreporticon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+            EditAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/editicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
         } catch (Exception ioe) {
             System.out.println("Create icon not found.");
         }      
-        btnMakeReport = new JButton(MkReportIcon);
-        btnMakeReport.setText(" Make A Report");
-        btnMakeReport.setFont(new Font(btnMakeReport.getFont().getFontName(), Font.BOLD, 16));
-        btnMakeReport.setForeground(mainWhite);
-        btnMakeReport.setBackground(mainBlue);
-        btnMakeReport.setHorizontalAlignment(SwingConstants.LEFT);
-        btnMakeReport.setBorderPainted(false);
-        btnMakeReport.setMargin(new Insets(7, 20, 7, 0));
-        btnMakeReport.addActionListener(new MakeReportListener());
+        btnEditAppt = new JButton(EditAptIcon);
+        btnEditAppt.setText(" Edit Appointment");
+        btnEditAppt.setFont(new Font(btnEditAppt.getFont().getFontName(), Font.BOLD, 16));
+        btnEditAppt.setForeground(mainWhite);
+        btnEditAppt.setBackground(mainBlue);
+        btnEditAppt.setHorizontalAlignment(SwingConstants.LEFT);
+        btnEditAppt.setBorderPainted(false);
+        btnEditAppt.setMargin(new Insets(7, 20, 7, 0));
+        btnEditAppt.addActionListener(new EditAptBtnListener());
+        
+        
+        // CREATING AND ALLIGNING MARK ATTEND APPOINTMENT BUTTON // 
+        ImageIcon AttendAptIcon = null;      
+        try {
+            AttendAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/confirmicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+        } catch (Exception ioe) {
+        }      
+        btnAttend = new JButton(AttendAptIcon);
+        btnAttend.setText(" Mark As Attended");
+        btnAttend.setFont(new Font(btnAttend.getFont().getFontName(), Font.BOLD, 16));
+        btnAttend.setForeground(mainWhite);
+        btnAttend.setBackground(mainBlue);
+        btnAttend.setHorizontalAlignment(SwingConstants.LEFT);
+        btnAttend.setBorderPainted(false);
+        btnAttend.setMargin(new Insets(7, 20, 7, 0));
+        btnAttend.addActionListener(new ConfirmBtnListener());
+
                         
         navinner1Pnl.add(navLbl);
-        navinner1Pnl.add(btnConfirm);
-        navinner1Pnl.add(btnMakeReport);
+        navinner1Pnl.add(btnMakeAppt);
+        navinner1Pnl.add(btnEditAppt);
+        navinner1Pnl.add(btnAttend);
 
 
 
@@ -170,6 +191,7 @@ public class StaffGUI extends JFrame {
         navinner2Pnl.setOpaque(false);  
         navinner2Pnl.setBorder(new EmptyBorder(50, 50, 70, 50));
 
+        // CREATING AND ALLIGNING LOGOUT BUTTON // 
         btnLogout = new JButton("Logout");
         btnLogout.setFont(new Font(btnLogout.getFont().getFontName(), Font.BOLD, 16));
         btnLogout.setForeground(mainBlue);
@@ -192,7 +214,7 @@ public class StaffGUI extends JFrame {
         disPnl = new JPanel(new BorderLayout());    
         disPnl.setBackground(mainWhite);            
         //disPnl.setBackground(Color.GRAY);         
-        disPnl.setBorder(new EmptyBorder(18, 23, 27, 20));     
+        disPnl.setBorder(new EmptyBorder(18, 23, 23, 20));     
         disPnl.setPreferredSize(new Dimension(905, 768));
 
 
@@ -209,19 +231,15 @@ public class StaffGUI extends JFrame {
         apptinner1Pnl.setBorder(new EmptyBorder(8, 0, 6, 0));  
         apptinner1Pnl.setOpaque(false);      
 
-        apptLbl = new JLabel();   
-        List<Integer> currentDateList = getCurrentDateTimeInfo(); 
-        String currentDateFormat = getMonthName(currentDateList.get(1)) + " " +  
-                                String.valueOf(currentDateList.get(2)) + ", " +
-                                String.valueOf(currentDateList.get(0));
-        apptLbl.setText("All Wash Appointments for " + currentDateFormat);
+        apptLbl = new JLabel();        
+        apptLbl.setText("Your Scheduled Wash Appointments");
         apptLbl.setHorizontalAlignment(JLabel.CENTER);
         apptLbl.setForeground(mainBlue);
         apptLbl.setFont(new Font(apptLbl.getFont().getFontName(), Font.BOLD, 20));        
         apptinner1Pnl.add(apptLbl, BorderLayout.NORTH);        
         
         infoLbl = new JLabel();        
-        infoLbl.setText("<html>" + "Click on any Appointment to View" + "</html>");
+        infoLbl.setText("<html>" + "Click on any Appointment to Edit" + "</html>");
         infoLbl.setHorizontalAlignment(JLabel.CENTER);
         infoLbl.setForeground(mainBlue);
         infoLbl.setFont(new Font(infoLbl.getFont().getFontName(), Font.PLAIN, 16));        
@@ -235,40 +253,22 @@ public class StaffGUI extends JFrame {
         JPanel apptinner2Pnl = new JPanel();        
         apptinner2Pnl.setOpaque(false); 
         apptinner2Pnl.setBorder(new EmptyBorder(0, 0, 5, 0));
-
-        apptColumnNames = new String[]{ "Appt. ID #","Resident Name","Time", "Wash Load #", "Dry Load #","Attended?", "Confirmed?", "Resident ID", "Washer ID", "Dryer ID"};
+            
+        apptColumnNames = new String[]{ "Appt. ID #", "Date D/M/Y", "Time", "Wash Load #", "Dry Load #", "Attended?", "Confirmed?", "Washer ID #", "Dryer ID #"};
 
         //New Code
-        List<Integer> dateListInt = getCurrentDateTimeInfo();
-        List<Appointment> appointments = Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2));
-        apptData = new ArrayList<String[]>();
-        for (Appointment appointment : appointments) {
-            String appNumString=Integer.toString(appointment.getAppointmentNum());
-            String fullNameString=appointment.getName();
-            String hourString = appointment.getTime() + ":00";
-            String washNum = Integer.toString(appointment.getWashNum());
-            String dryNum = Integer.toString(appointment.getDryNum());
-            String confirmedByResident = appointment.isConfirmedByResident() ? "Yes" : "No";
-            String confirmedByStaff = appointment.isConfirmedByStaff() ? "Yes" : "No";
-            String idNumString=String.valueOf(appointment.getIdNum());
-            String washerID = appointment.getWasherId();
-            String dryerID = appointment.getDryerId();
-           
-            String [] row = {appNumString, fullNameString, hourString, washNum, dryNum, confirmedByResident, confirmedByStaff, idNumString, washerID,dryerID};
-            apptData.add(row);
-        }
-        
-
-
+        List<Appointment> appointments = Database.getAppointmentsById(Integer.parseInt(idString));
+        ArrayList<String[]>apptData=showResidentAppointments(appointments);
         //Rendering appointment table with data above
         apptTable = new TableRenderer(apptinner2Pnl, new Dimension(845, 425), apptColumnNames, apptData);
-        JTable appointmentsTable = apptTable.getTable();
-        appointmentsTable.getSelectionModel().addListSelectionListener(new TableSelectionListener());
+        //JTable appointmentsTable = apptTable.getTable();
+        apptTable.getTable().getSelectionModel().addListSelectionListener(new TableSelectionListener());
         apptTable.hideLastColumn(apptTable.getColumnNum());
         apptTable.hideLastColumn(apptTable.getColumnNum());
-        apptTable.hideLastColumn(apptTable.getColumnNum());  
-        apptTable.setColumnWidth(0, 50);    
-        apptTable.setColumnWidth(2, 20);     
+        apptTable.setColumnWidth(0, 55);        
+        apptTable.setColumnWidth(2, 40);
+
+
         apptPnl.add(apptinner2Pnl);
 
 
@@ -300,11 +300,11 @@ public class StaffGUI extends JFrame {
         detsinner2Pnl.setOpaque(false);    
         detsinner2Pnl.setSize(new Dimension(885, 30)); 
 
-        detsColumnNames = new String[]{ "Time", "Resident ID #", "Resident Name", "Wash #", "Dry #", "Washer ID", "Dryer ID"};
+        detsColumnNames = new String[]{ "Time", "Weekday", "Month", "Day",  "Year", "Washer ID #", "Dryer ID #"};
 
         //Update this value
-        ArrayList<String[]> detsData = new ArrayList<String[]>();
-        detsData.add(new String[]{ "", "", "", "", "","",""});
+        detsData = new ArrayList<String[]>();
+        detsData.add(new String[]{ "", "", "", "", ""});
 
         //Rendering details table with data above
         detsTable = new TableRenderer(detsinner2Pnl, new Dimension(845, 35), detsColumnNames, detsData);
@@ -335,32 +335,35 @@ public class StaffGUI extends JFrame {
         setResizable(false);
         setVisible(true);
 
-    }// public StaffGUI() end (constructor)
+    }// public ResidentGUI() end (constructor)
+
 
     //=========================================================//
     //=          BUTTON LISTENING FUNCTIONALITIES             =//
     //=========================================================//
 
     /**
+     * This implements Make Appointment Button functionalities
+     */
+    private class MkAptBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            thisMkAptGUI = new AppointmentCreator(thisResGUI,nameVar,idStringVar);
+        }
+
+    }
+
+    /**
      * This implements Edit Appointment Button functionalities
      */
-    private class MakeReportListener implements ActionListener {
+    private class EditAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            String url = "https://studentliving.managerpluscloud.com/v16/WorkOrders/WorkRequest/qRRequestPage.aspx?asset_key=p4zqNkLI8A1NVP0ELnXSig==&entity_key=9iuf4dpF3mCUsv2x4R2N4g==";
+            if (apptTable.getSelectedRow()==-1) {
+                JOptionPane.showMessageDialog(null, "Please select an Appointment!", "Error", JOptionPane.ERROR_MESSAGE); 
+            }else{
+                thisEdAptGUI = new AppointmentEditor(thisResGUI,nameVar,idStringVar,getRowSelectedData());
+            }
+        }
 
-            int ans = JOptionPane.showConfirmDialog(thisStaffGUI, "You will be redirected to your browser to \nfill out the report. Continue?");  
-            
-            if(ans == JOptionPane.YES_OPTION){   
-                if(Desktop.isDesktopSupported()){
-                    Desktop desktop = Desktop.getDesktop();
-                    try {
-                        desktop.browse(new URI(url));
-                    } catch (IOException | URISyntaxException ex) {
-                        ex.printStackTrace();
-                    }
-                }  
-            }  
-        } 
     }
 
 
@@ -370,25 +373,27 @@ public class StaffGUI extends JFrame {
     private class ConfirmBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             try {
-                Database.updateConfirmedByStaff(Integer.parseInt(getRowSelectedData().get(0)),true);
-                //ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
-                //getApptTable().populateTable(aList);
+                Database.updateConfirmedByResident(Integer.parseInt(getRowSelectedData().get(0)),true);
+                ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                System.out.println("Table List formed");
+                apptTable.populateTable(aList);
                 System.out.println("Confirmed by Resident");
-                JOptionPane.showMessageDialog(null, "Confirmed Appointment!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Confirmed Appointment!", "Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Error. Could not confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error. Could not Confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
                 System.out.println("Error. Could not confirm Appointment.");
             }
         }
 
     }
 
-
     /**
      * This exits the current screen and returns the user to the previous screen
      */
     private class LogoutBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            //closeConnection(Database.connection);
             setVisible(false); //stops displaying window/frame
             thisWS.setVisible(true); //makes welcome screen visible again
         }
@@ -400,44 +405,35 @@ public class StaffGUI extends JFrame {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 ArrayList<String> data = getRowSelectedData();
-                String time = data.get(2);
-                String name = data.get(1);
-                String id = data.get(7);
-                String washNum = data.get(3);
-                String dryNum  = data.get(4);
-                String washerid = data.get(8);
-                String dryerid = data.get(9);
+                //System.out.println(data);
+                String check = String.join("", data);
+                System.out.println("check: ["+ check +"]");
 
-                detsTable.updateRow(new String[]{time, id, name, washNum, dryNum, washerid, dryerid}, 0, detsTable.getColumnNum());
+                if (check.trim().length() > 0) {
+                    String time = data.get(2);
+                    String[] date = data.get(1).split("/");
+                    //System.out.println(Arrays.toString(date));
+                    System.out.println("Line 411");
+                    String weekday = getWeekday(Integer.parseInt(date[2]), Integer.parseInt(date[1]), Integer.parseInt(date[0]));
+                    //System.out.println(weekday);
+                    System.out.println("Line 414");
+                    String month = getMonthName(Integer.parseInt(date[1]));
+                    String day =  date[0];
+                    String year = date[2];
+                    String washerid = data.get(7);
+                    String dryerid = data.get(8);
+
+                    detsTable.updateRow(new String[]{time, weekday, month, day, year, washerid, dryerid}, 0, detsTable.getColumnNum());
+                }
             }
         }
     }
 
 
+    
     //======================================================//
     //=                  FUNCTIONALITIES                   =//
     //======================================================//
-
-    
-    public static List<Integer> getCurrentDateTimeInfo() {
-        // Create a Calendar instance
-        Calendar calendar = Calendar.getInstance();
-        
-        // Get current year, month, day, and hour
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1; // Months start from 0, so we add 1
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY); // 24-hour format
-        
-        // Create a list to store year, month, day, and hour
-        List<Integer> dateTimeInfo = new ArrayList<>();
-        dateTimeInfo.add(year);
-        dateTimeInfo.add(month);
-        dateTimeInfo.add(day);
-        dateTimeInfo.add(hour);
-        
-        return dateTimeInfo;
-    }
 
     private String getWeekday(int year, int month, int day) {
         LocalDate date = LocalDate.of(year, month, day);
@@ -454,32 +450,50 @@ public class StaffGUI extends JFrame {
     }
 
     public ArrayList<String> getRowSelectedData(){
-        return apptTable.getSelectedRowData(apptTable.getColumnNum());
-        
+        return apptTable.getSelectedRowData(apptTable.getColumnNum());        
     }
 
     public ArrayList<String[]> showResidentAppointments(List<Appointment> appList){
         apptData = new ArrayList<String[]>();
         for (Appointment appointment : appList) {
-            String appNumString=Integer.toString(appointment.getAppointmentNum());
-            String fullNameString=appointment.getName();
+            String appNumString = Integer.toString(appointment.getAppointmentNum());
+            String dateString = appointment.getDay() + "/" + appointment.getMonth() + "/" + appointment.getYear();
             String hourString = appointment.getTime() + ":00";
             String washNum = Integer.toString(appointment.getWashNum());
             String dryNum = Integer.toString(appointment.getDryNum());
             String confirmedByResident = appointment.isConfirmedByResident() ? "Yes" : "No";
             String confirmedByStaff = appointment.isConfirmedByStaff() ? "Yes" : "No";
-            String idNumString=String.valueOf(appointment.getIdNum());
             String washerID = appointment.getWasherId();
             String dryerID = appointment.getDryerId();
            
-            String [] row = {appNumString, fullNameString, hourString, washNum, dryNum, confirmedByResident, confirmedByStaff, idNumString, washerID,dryerID};
+            String [] row = {appNumString, dateString, hourString, washNum, dryNum, confirmedByResident, confirmedByStaff, washerID, dryerID};
             apptData.add(row);
         }
         return apptData;
     }
     public TableRenderer getApptTable(){
-        return this.apptTable;
+        return apptTable;
     }
 
+    public static List<String> getUpcomingDays() {
+        List<String> upcomingDays = new ArrayList<>();
+        
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        
+        // Format for output
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-} // public class StaffGUI() end 
+        // Add current day to the list
+        upcomingDays.add(currentDate.format(formatter));
+        
+        // Add the next 7 days to the list
+        for (int i = 1; i <= 7; i++) {
+            LocalDate nextDay = currentDate.plusDays(i);
+            upcomingDays.add(nextDay.format(formatter));
+        }
+
+        return upcomingDays;
+    }
+
+} // public class ResidentGUI() end 
