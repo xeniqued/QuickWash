@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Database {
@@ -23,6 +25,7 @@ public class Database {
             connection= DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
         } catch (Exception e) {
             e.printStackTrace();
+            //
         }
     }
 
@@ -64,7 +67,7 @@ public class Database {
     }
 
     // Method to search for a user by id_num and return a UserType object
-    public static UserType selectUserById(int id_num) {
+    public static User selectUserById(int id_num) {
         String sql = "SELECT * FROM user_information WHERE id_num = ?";
         try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -77,7 +80,7 @@ public class Database {
                 int room_num = resultSet.getInt("room_num");
                 String Block = resultSet.getString("Block");
                 String password = resultSet.getString("password");
-                return new UserType(type_user, name, id_num, email, room_num, Block, password);
+                return new User(type_user, name, id_num, email, room_num, Block, password);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -435,6 +438,92 @@ public class Database {
             e.printStackTrace();
         }
         return null;
+    }
+
+    // public static List<String> getLoadNumsForAppts(int month,int day,int year,int time) {
+    //     List<String> bookedTimes=new ArrayList<>();
+
+    //     String sql = "SELECT app_date, SUM(wash_num) AS totalWashNum, SUM(dry_num) AS totalDryNum FROM appointments WHERE MONTH(app_date) = ? AND DAY(app_date) = ? AND YEAR(app_date) = ? AND time = ?";
+    //     try (
+    //          PreparedStatement statement = connection.prepareStatement(sql)) {
+    //         statement.setInt(1, month);
+    //         statement.setInt(2, day);
+    //         statement.setInt(3, year);
+    //         statement.setInt(4, time);
+    //         ResultSet resultSet = statement.executeQuery();
+    //         // Get all booked machine IDs
+    //         while (resultSet.next()) {
+    //             LocalDate appDate = resultSet.getObject("app_date", LocalDate.class);
+    //             System.out.println("Database: Date "+appDate);
+    //             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    //             String appDateString= dateFormatter.format(appDate);
+    //             System.out.println("Database: Date Formatted"+appDateString);
+    //             int washNum = resultSet.getInt("wash_num");
+    //             int dryNum = resultSet.getInt("dry_num");
+    //             bookedTimes.add(appDateString); 
+    //             bookedTimes.add(String.valueOf(washNum)); 
+    //             bookedTimes.add(String.valueOf(dryNum));
+    //         } 
+    //         for (String str : bookedTimes) {
+    //             System.out.println(str);
+    //         }
+    //         return bookedTimes;
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    //     return bookedTimes;
+    // }
+    public static List<String> getLoadNumsForAppts(int month,int day,int year,int time) {
+        List<String> bookedTimes=new ArrayList<>();
+        String appDateString;
+        int washNum,dryNum;
+        String sql = "SELECT DATE_FORMAT(app_date, '%Y-%m-%d') AS app_date_string , SUM(wash_num) AS totalWashNum, SUM(dry_num) AS totalDryNum FROM appointments WHERE MONTH(app_date) = ? AND DAY(app_date) = ? AND YEAR(app_date) = ? AND time = ?";
+        try (
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, month);
+            statement.setInt(2, day);
+            statement.setInt(3, year);
+            statement.setInt(4, time);
+            ResultSet resultSet = statement.executeQuery();
+            // Get all booked machine IDs
+            while (resultSet.next()) {
+                System.out.println("Result Set "+resultSet.getString("app_date_string"));
+                if (resultSet.wasNull()) {
+                    appDateString="";
+                    washNum=0;
+                    dryNum=0;
+
+                }else{
+                    appDateString = resultSet.getString("app_date_string");
+                    washNum = resultSet.getInt("totalWashNum");
+                    dryNum = resultSet.getInt("totalDryNum");
+                }
+                
+                bookedTimes.add(appDateString); 
+                bookedTimes.add(String.valueOf(washNum)); 
+                bookedTimes.add(String.valueOf(dryNum));
+            } 
+            for (String str : bookedTimes) {
+                System.out.println(str);
+            }
+            return bookedTimes;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bookedTimes;
+    }
+
+
+
+    private static void closeConnection(Connection connection) {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Database connection closed.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

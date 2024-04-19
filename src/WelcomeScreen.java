@@ -174,7 +174,7 @@ public class WelcomeScreen extends JFrame {
                 } else if (Database.selectUserById(Integer.parseInt(txtName)) != null){
                         
         
-                        UserType user = Database.selectUserById(Integer.parseInt(txtName));
+                        User user = Database.selectUserById(Integer.parseInt(txtName));
                         String dbName = user.getName();
                         String dbPassword = user.getPassword();
                                 
@@ -224,7 +224,7 @@ public class WelcomeScreen extends JFrame {
      */
     private class SignUpBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            new CreateUserGUI(thisUserData).setVisible(true);
+            new UserCreationUI(thisUserData).setVisible(true);
         }
 
     }
@@ -342,7 +342,7 @@ public class WelcomeScreen extends JFrame {
             
             // Attempting to update password
             if (Database.selectUserById(idTest) != null){
-                UserType user = Database.selectUserById(idTest);
+                User user = Database.selectUserById(idTest);
                 if (user.getEmail().equals(email)){
                     Database.updatePassword(idTest, newPass); 
 

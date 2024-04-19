@@ -51,6 +51,7 @@ public class StaffGUI extends JFrame {
 
     private String nameVar;
     private String idStringVar;
+    private List<Integer> dateListInt;
 
     public StaffGUI(WelcomeScreen ws,String idString,String name) {
         //initialize variable
@@ -239,7 +240,7 @@ public class StaffGUI extends JFrame {
         apptColumnNames = new String[]{ "Appt. ID #","Resident Name","Time", "Wash Load #", "Dry Load #","Attended?", "Confirmed?", "Resident ID", "Washer ID", "Dryer ID"};
 
         //New Code
-        List<Integer> dateListInt = getCurrentDateTimeInfo();
+        this.dateListInt = getCurrentDateTimeInfo();
         List<Appointment> appointments = Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2));
         apptData = new ArrayList<String[]>();
         for (Appointment appointment : appointments) {
@@ -371,11 +372,12 @@ public class StaffGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 Database.updateConfirmedByStaff(Integer.parseInt(getRowSelectedData().get(0)),true);
-                ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
-                getApptTable().populateTable(aList);
-                System.out.println("Confirmed by Resident");
+                ArrayList<String[]>aList=showResidentAppointments(Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2)));
+                apptTable.populateTable(aList);
+                System.out.println("Confirmed by Staff");
                 JOptionPane.showMessageDialog(null, "Confirmed Appointment!!", "Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error. Could not confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
                 System.out.println("Error. Could not confirm Appointment.");
             }
