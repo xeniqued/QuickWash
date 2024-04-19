@@ -1,3 +1,8 @@
+/**
+ *
+ * @author Akele Benjamin
+ */
+
 public class Machine {
     public enum MachineType {
         WASHER,

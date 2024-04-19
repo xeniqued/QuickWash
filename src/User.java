@@ -7,6 +7,10 @@ public class User {
     private String Block;
     private String password;
 
+    /**
+     @author Akele Benjamin
+     */
+
     public User(String type_user, String name, int id_num, String email, int room_num, String Block, String password) {
         this.type_user = type_user;
         this.name = name;

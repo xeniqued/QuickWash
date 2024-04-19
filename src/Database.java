@@ -13,6 +13,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+/**
+ *
+ * @author Akele Benjamin
+ */
+
 public class Database {
     private static final String JDBC_URL = "jdbc:mysql://sql3.freesqldatabase.com:3306/sql3694739";
     private static final String USERNAME = "sql3694739";

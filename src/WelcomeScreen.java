@@ -45,6 +45,11 @@ public class WelcomeScreen extends JFrame {
     private StaffGUI staffGUI; //staff screen instance
     private AdminGUI adminGUI; //staff screen instance
 
+    /**
+ *
+ * @author Dana Clarke(Login) Aja Fergurson(Forgot Password)
+ */
+
     public WelcomeScreen() {
             
 

@@ -21,6 +21,11 @@ import java.util.*;
 import java.util.List;
 
 /**
+ *
+ * @author Dana Clarke(GUI)
+ */
+
+/**
  * This displays the main resident screen of the system where appointments are displayed 
  * and can be edited.
  */
@@ -344,6 +349,10 @@ public class ResidentGUI extends JFrame {
     //=========================================================//
 
     /**
+     @author Akele Benjamin
+     */
+    
+    /**
      * This implements Make Appointment Button functionalities
      */
     private class MkAptBtnListener implements ActionListener {
@@ -453,6 +462,10 @@ public class ResidentGUI extends JFrame {
     //======================================================//
     //=                  FUNCTIONALITIES                   =//
     //======================================================//
+
+    /**
+     @author Akele Benjamin
+     */
 
     private String getWeekday(int year, int month, int day) {
         LocalDate date = LocalDate.of(year, month, day);

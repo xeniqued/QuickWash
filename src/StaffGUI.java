@@ -21,6 +21,11 @@ import java.time.Month;
 import java.util.List;
 
 /**
+ *
+ * @author Dana Clarke(GUI)
+ */
+
+/**
  * This displays the main resident screen of the system where appointments are displayed 
  * and can be edited.
  */
@@ -362,6 +367,10 @@ public class StaffGUI extends JFrame {
     //=========================================================//
 
     /**
+     @author Akele Benjamin
+     */
+    
+    /**
      * This implements Edit Appointment Button functionalities
      */
     private class MakeReportListener implements ActionListener {
@@ -470,6 +479,10 @@ public class StaffGUI extends JFrame {
     //======================================================//
     //=                  FUNCTIONALITIES                   =//
     //======================================================//
+
+    /**
+     @author Akele Benjamin
+     */
 
     private  void connectionErrorPanel() {
         JOptionPane.showMessageDialog(null, "Check your connection and Restart application", "Error", JOptionPane.ERROR_MESSAGE);

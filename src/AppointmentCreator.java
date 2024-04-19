@@ -17,6 +17,11 @@ import java.util.List;
 public class AppointmentCreator extends JFrame {
 
     /**
+ *
+ * @author Dana Clarke(GUI)
+ */
+
+    /**
      * This class creates a screen in which the user can add a trip to the arraylist.
      */
 

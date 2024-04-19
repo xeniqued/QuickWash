@@ -15,7 +15,10 @@ import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.List;
 
-
+/**
+ *
+ * @author Dana Clarke(GUI)
+ */
 
 /**
  * Main Window upon loading the program. Allows Sign Up & Login of Accounts in system.
@@ -510,6 +513,10 @@ public class AdminGUI extends JFrame {
     //=                   FUNCTIONALITIES                     =//
     //=========================================================//
 
+    /**
+     *
+     * @author Akele Benjamin
+     */
    
     // Function to set notification message
     public void setNotification(String msg, String title) {        
@@ -623,6 +630,13 @@ public class AdminGUI extends JFrame {
     //=          BUTTON LISTENING FUNCTIONALITIES             =//
     //=========================================================//
 
+    /**
+ *
+ * @author Akele Benjamin
+ */
+    
+    
+    
     /**
      * This implements QuickWash Settings Button functionalities
      */

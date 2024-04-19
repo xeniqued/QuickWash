@@ -515,6 +515,11 @@ public class UserCreationUI extends JFrame {
                     setErrorMessage("Please fill out all fields.");
                 }
 
+                // ID Number in use
+                else if (Database.idNumberPresent(Integer.parseInt(idNumber))){
+                    setErrorMessage("ID Number already in use.");
+                }
+
                 //Name validation
                 else if (!name.matches("[a-zA-Z\\s]+")) {
                     setErrorMessage("Name must only have <br> alphabetic characters.");                
