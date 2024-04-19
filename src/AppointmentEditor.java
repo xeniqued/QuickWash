@@ -569,7 +569,7 @@ public class AppointmentEditor extends JFrame {
             System.out.println("Number of Avail Loads: "+availWash+" "+availDry);
             if (washValueInt>availWash || dryValueInt>availDry) {
                 setAlwaysOnTop(false);
-                JOptionPane.showMessageDialog(null, "Could not accommodate loads!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Could not accommodate loads!", "Error", JOptionPane.ERROR_MESSAGE);
                 setAlwaysOnTop(true);
                 System.out.println("Could not accommodate loads!!!");
             }else{
@@ -627,7 +627,7 @@ public class AppointmentEditor extends JFrame {
             try {
                 Database.deleteAppointment(Integer.parseInt(selectedRowDataArray.get(0)));
                 setVisible(false);
-                JOptionPane.showMessageDialog(null, "Appointment deleted!!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Appointment deleted!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 System.out.println("Appointment Deleted!");
                 ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
                 System.out.println("Line 446");
