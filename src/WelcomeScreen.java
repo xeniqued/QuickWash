@@ -459,7 +459,7 @@ public class WelcomeScreen extends JFrame {
 
         //GridLayout(int rows, int columns, int hgap, int vgap)
         innerPnl.setLayout(new GridLayout(3, 1, 20, 30));
-        innerPnl.setBorder(new EmptyBorder(135, 0, 0, 0));
+        innerPnl.setBorder(new EmptyBorder(130, 0, 0, 0));
         innerPnl.setOpaque(false);
 
 
@@ -504,10 +504,15 @@ public class WelcomeScreen extends JFrame {
         passLbl.setFont(new Font(passLbl.getFont().getFontName(), Font.BOLD, 15));
         
         JPanel i2innerPnl = new JPanel();
-        i2innerPnl.setLayout(new BorderLayout());
+        //i2innerPnl.setLayout(new BorderLayout());
+        i2innerPnl.setLayout(new GridBagLayout());
         i2innerPnl.setOpaque(false);
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.WEST;
+
         pass = new JPasswordField(11); //Username Field    
+        pass.setHorizontalAlignment(SwingConstants.LEFT);
         ImageIcon ShowPassIcon = null;      
         try {
             ShowPassIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/showpassicon.png").getImage().getScaledInstance(23, 23, Image.SCALE_SMOOTH)));
@@ -516,11 +521,26 @@ public class WelcomeScreen extends JFrame {
         }      
         btnShowPass = new JButton(ShowPassIcon);
         btnShowPass.setBackground(mainBlue);
-        btnShowPass.setPreferredSize(new Dimension(25, 30));
+        //btnShowPass.setPreferredSize(new Dimension(25, 30));
+        btnShowPass.setHorizontalAlignment(SwingConstants.RIGHT);
         btnShowPass.setBorderPainted(false);
         btnShowPass.addActionListener(new ShowPassListener());
-        i2innerPnl.add(pass, BorderLayout.WEST);
-        i2innerPnl.add(btnShowPass, BorderLayout.EAST);
+       
+        // insets for x component
+        //gbc.insets = new Insets(0, 0, 0, 5);
+        gbc.gridx = 0; // column   
+        gbc.weightx = 0.2;     
+        gbc.gridy = 0; // row 0
+        gbc.ipadx = 158; // increases components width by x pixels      
+        gbc.ipady = i2innerPnl.getHeight() + 3; // increases components height by x pixels
+        i2innerPnl.add(pass, gbc);
+        
+        // insets for x component
+        //gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.weightx = 0.0;     
+        gbc.gridx = 1; // column 1        
+        gbc.ipadx = 1; // increases components width by x pixels        
+        i2innerPnl.add(btnShowPass, gbc);
         
         // adding the label and textfield to innerpanel2
         i2Pnl.add(passLbl);
@@ -697,9 +717,15 @@ public class WelcomeScreen extends JFrame {
         forgNewPassLbl.setFont(new Font(forgNewPassLbl.getFont().getFontName(), Font.BOLD, 15));
         
         JPanel i3innerPnl = new JPanel();
-        i3innerPnl.setLayout(new BorderLayout());
+        //i3innerPnl.setLayout(new BorderLayout());
+        i3innerPnl.setLayout(new GridBagLayout());
         i3innerPnl.setOpaque(false);
-        forgNewPass = new JPasswordField(11); //New Password Field 
+
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.anchor = GridBagConstraints.WEST; 
+
+        forgNewPass = new JPasswordField(11); //New Password Field           
+        forgNewPass.setHorizontalAlignment(SwingConstants.LEFT);
         ImageIcon ShowPassIcon1 = null;      
         try {
             ShowPassIcon1 = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/showpassicon.png").getImage().getScaledInstance(23, 22, Image.SCALE_SMOOTH)));
@@ -707,13 +733,28 @@ public class WelcomeScreen extends JFrame {
             System.out.println("Show pass icon not found.");
         }      
         //
-        btnShowNPass = new JButton(ShowPassIcon1);
+        btnShowNPass = new JButton(ShowPassIcon1);          
+        btnShowNPass.setHorizontalAlignment(SwingConstants.RIGHT);
         btnShowNPass.setBackground(mainBlue);
-        btnShowNPass.setPreferredSize(new Dimension(25, 30));
+        //btnShowNPass.setPreferredSize(new Dimension(25, 30));
         btnShowNPass.setBorderPainted(false);
         btnShowNPass.addActionListener(new ShowNPassListener());
-        i3innerPnl.add(forgNewPass, BorderLayout.WEST);
-        i3innerPnl.add(btnShowNPass, BorderLayout.EAST);
+
+        // insets for x component
+        //gbc.insets = new Insets(0, 0, 0, 5);
+        gbc1.gridx = 0; // column   
+        gbc1.weightx = 0.2;     
+        gbc1.gridy = 0; // row 0
+        gbc1.ipadx = 158; // increases components width by x pixels      
+        gbc1.ipady = i3innerPnl.getHeight() + 3; // increases components height by x pixels
+        i3innerPnl.add(forgNewPass, gbc1);
+
+        // insets for x component
+        //gbc.insets = new Insets(0, 0, 0, 0);
+        gbc1.weightx = 0.0;     
+        gbc1.gridx = 1; // column 1        
+        gbc1.ipadx = 1; // increases components width by x pixels   
+        i3innerPnl.add(btnShowNPass, gbc1);
 
         // adding the label and textfield to innerpanel2
         i3Pnl.add(forgNewPassLbl);
@@ -739,9 +780,15 @@ public class WelcomeScreen extends JFrame {
         forgConfPassLbl.setFont(new Font(forgConfPassLbl.getFont().getFontName(), Font.BOLD, 15));
         
         JPanel i4innerPnl = new JPanel();
-        i4innerPnl.setLayout(new BorderLayout());
+        //i4innerPnl.setLayout(new BorderLayout());
+        i4innerPnl.setLayout(new GridBagLayout());
         i4innerPnl.setOpaque(false);
-        forgConfPass = new JPasswordField(11); //Confirm Password Field        
+
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.anchor = GridBagConstraints.WEST;
+
+        forgConfPass = new JPasswordField(11); //Confirm Password Field
+        forgConfPass.setHorizontalAlignment(SwingConstants.RIGHT);        
         ImageIcon ShowPassIcon2 = null;      
         try {
             ShowPassIcon2 = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/showpassicon.png").getImage().getScaledInstance(23, 22, Image.SCALE_SMOOTH)));
@@ -749,12 +796,27 @@ public class WelcomeScreen extends JFrame {
             System.out.println("Show pass icon not found.");
         }      
         btnShowCPass = new JButton(ShowPassIcon2);
+        btnShowCPass.setHorizontalAlignment(SwingConstants.RIGHT);
         btnShowCPass.setBackground(mainBlue);
-        btnShowCPass.setPreferredSize(new Dimension(25, 30));
+        //btnShowCPass.setPreferredSize(new Dimension(25, 30));
         btnShowCPass.setBorderPainted(false);
         btnShowCPass.addActionListener(new ShowCPassListener());
-        i4innerPnl.add(forgConfPass, BorderLayout.WEST);
-        i4innerPnl.add(btnShowCPass, BorderLayout.EAST);
+
+        // insets for x component
+        //gbc.insets = new Insets(0, 0, 0, 5);
+        gbc2.gridx = 0; // column   
+        gbc2.weightx = 0.2;     
+        gbc2.gridy = 0; // row 0
+        gbc2.ipadx = 158; // increases components width by x pixels      
+        gbc2.ipady = i4innerPnl.getHeight() + 3; // increases components height by x pixels
+        i4innerPnl.add(forgConfPass, gbc2);
+
+        // insets for x component
+        //gbc.insets = new Insets(0, 0, 0, 0);
+        gbc2.weightx = 0.0;     
+        gbc2.gridx = 1; // column 1        
+        gbc2.ipadx = 1; // increases components width by x pixels   
+        i4innerPnl.add(btnShowCPass, gbc2);
         
         // adding the label and textfield to innerpanel4
         i4Pnl.add(forgConfPassLbl);
