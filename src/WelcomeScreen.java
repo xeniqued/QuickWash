@@ -136,6 +136,7 @@ public class WelcomeScreen extends JFrame {
         //Check Connection
         if(!Database.isConnected()){
             connectionErrorPanel();
+            System.exit(0);
         };
 
     }// public WelcomeScreen() end (constructor)
