@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -18,6 +19,11 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+
+/**
+ *
+ * @author Dana Clarke(GUI)
+ */
 
 /**
  * This displays the main resident screen of the system where appointments are displayed 
@@ -343,11 +349,21 @@ public class ResidentGUI extends JFrame {
     //=========================================================//
 
     /**
+     @author Akele Benjamin
+     */
+    
+    /**
      * This implements Make Appointment Button functionalities
      */
     private class MkAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            thisMkAptGUI = new AppointmentCreator(thisResGUI,nameVar,idStringVar);
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                thisMkAptGUI = new AppointmentCreator(thisResGUI,nameVar,idStringVar);
+            }
+            
         }
 
     }
@@ -357,11 +373,17 @@ public class ResidentGUI extends JFrame {
      */
     private class EditAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (apptTable.getSelectedRow()==-1) {
-                JOptionPane.showMessageDialog(null, "Please select an Appointment!", "Error", JOptionPane.ERROR_MESSAGE); 
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
             }else{
-                thisEdAptGUI = new AppointmentEditor(thisResGUI,nameVar,idStringVar,getRowSelectedData());
+                if (apptTable.getSelectedRow()==-1) {
+                    JOptionPane.showMessageDialog(null, "Please select an Appointment!", "Error", JOptionPane.ERROR_MESSAGE); 
+                }else{
+                    thisEdAptGUI = new AppointmentEditor(thisResGUI,nameVar,idStringVar,getRowSelectedData());
+                }
             }
+            
         }
 
     }
@@ -372,18 +394,24 @@ public class ResidentGUI extends JFrame {
      */
     private class ConfirmBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            try {
-                Database.updateConfirmedByResident(Integer.parseInt(getRowSelectedData().get(0)),true);
-                ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
-                System.out.println("Table List formed");
-                apptTable.populateTable(aList);
-                System.out.println("Confirmed by Resident");
-                JOptionPane.showMessageDialog(null, "Confirmed Appointment!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error. Could not Confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
-                System.out.println("Error. Could not confirm Appointment.");
-            }
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                try {
+                    Database.updateConfirmedByResident(Integer.parseInt(getRowSelectedData().get(0)),true);
+                    ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                    System.out.println("Table List formed");
+                    apptTable.populateTable(aList);
+                    System.out.println("Confirmed by Resident");
+                    JOptionPane.showMessageDialog(null, "Confirmed Appointment!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error. Could not Confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
+                    System.out.println("Error. Could not confirm Appointment.");
+                }
+            };
+            
         }
 
     }
@@ -434,6 +462,10 @@ public class ResidentGUI extends JFrame {
     //======================================================//
     //=                  FUNCTIONALITIES                   =//
     //======================================================//
+
+    /**
+     @author Akele Benjamin
+     */
 
     private String getWeekday(int year, int month, int day) {
         LocalDate date = LocalDate.of(year, month, day);
@@ -494,6 +526,10 @@ public class ResidentGUI extends JFrame {
         }
 
         return upcomingDays;
+    }
+
+    private  void connectionErrorPanel() {
+        JOptionPane.showMessageDialog(null, "Check your connection and Restart application", "Error", JOptionPane.ERROR_MESSAGE);
     }
 
 } // public class ResidentGUI() end 

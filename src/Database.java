@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,6 +12,11 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+
+/**
+ *
+ * @author Akele Benjamin
+ */
 
 public class Database {
     private static final String JDBC_URL = "jdbc:mysql://sql3.freesqldatabase.com:3306/sql3694739";
@@ -24,7 +31,8 @@ public class Database {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection= DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("No internet Connection");
+            //e.printStackTrace();
             //
         }
     }
@@ -46,6 +54,27 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    // Method to check id number in database
+    public static Boolean idNumberPresent(int id_num) {
+        Boolean present=false;
+        String sql = "SELECT id_num FROM user_information WHERE id_num = ?";
+        try (
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id_num);
+            ResultSet result = preparedStatement.executeQuery();
+            if (!result.next()) {
+                System.out.println("No Id number present");
+                present=false;
+            } else {
+                System.out.println("Id number present");
+                present=true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return present;
     }
 
     // Method to update the password for a user
@@ -440,39 +469,6 @@ public class Database {
         return null;
     }
 
-    // public static List<String> getLoadNumsForAppts(int month,int day,int year,int time) {
-    //     List<String> bookedTimes=new ArrayList<>();
-
-    //     String sql = "SELECT app_date, SUM(wash_num) AS totalWashNum, SUM(dry_num) AS totalDryNum FROM appointments WHERE MONTH(app_date) = ? AND DAY(app_date) = ? AND YEAR(app_date) = ? AND time = ?";
-    //     try (
-    //          PreparedStatement statement = connection.prepareStatement(sql)) {
-    //         statement.setInt(1, month);
-    //         statement.setInt(2, day);
-    //         statement.setInt(3, year);
-    //         statement.setInt(4, time);
-    //         ResultSet resultSet = statement.executeQuery();
-    //         // Get all booked machine IDs
-    //         while (resultSet.next()) {
-    //             LocalDate appDate = resultSet.getObject("app_date", LocalDate.class);
-    //             System.out.println("Database: Date "+appDate);
-    //             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    //             String appDateString= dateFormatter.format(appDate);
-    //             System.out.println("Database: Date Formatted"+appDateString);
-    //             int washNum = resultSet.getInt("wash_num");
-    //             int dryNum = resultSet.getInt("dry_num");
-    //             bookedTimes.add(appDateString); 
-    //             bookedTimes.add(String.valueOf(washNum)); 
-    //             bookedTimes.add(String.valueOf(dryNum));
-    //         } 
-    //         for (String str : bookedTimes) {
-    //             System.out.println(str);
-    //         }
-    //         return bookedTimes;
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    //     return bookedTimes;
-    // }
     public static List<String> getLoadNumsForAppts(int month,int day,int year,int time) {
         List<String> bookedTimes=new ArrayList<>();
         String appDateString;
@@ -513,18 +509,19 @@ public class Database {
         return bookedTimes;
     }
 
-
-
-    private static void closeConnection(Connection connection) {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-                System.out.println("Database connection closed.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static Boolean isConnected() {
+        try{
+            // Ping a well-known server to check for internet connectivity
+            InetAddress address = InetAddress.getByName("www.google.com");
+            return address.isReachable(5000); // Timeout of 5 seconds
+        } catch (IOException exception) {
+            return false; // Unable to reach the server, so no internet connection
         }
     }
+
+
+
+    
 
 
 }

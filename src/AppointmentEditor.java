@@ -19,9 +19,16 @@ import java.util.ArrayList;
 
 
 /**
+ *
+ * @author Dana Clarke(GUI)
+ */
+
+/**
  * This class creates a screen in which the user can edit or delete an appointment.
  */
 public class AppointmentEditor extends JFrame {
+
+    
 
     /**
      * This class creates a screen in which the user can add a trip to the arraylist.

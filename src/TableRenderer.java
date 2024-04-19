@@ -8,6 +8,11 @@ import javax.swing.event.ListSelectionListener;
 import java.util.List;
 
 /**
+ *
+ * @author Dana Clarke
+ */
+
+/**
  * This class generates a table for displaying the trip data.
  */
 
