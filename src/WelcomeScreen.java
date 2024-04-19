@@ -208,7 +208,7 @@ public class WelcomeScreen extends JFrame {
                                 if(user.getType_user().equals("Resident")){
                                     resGUI = new ResidentGUI(thisUserData, txtName, dbName);
                                 } else if(user.getType_user().equals("Staff")){
-                                staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
+                                    staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
                                 } else if(user.getType_user().equals("admin")){
                                     adminGUI = new AdminGUI(thisUserData); 
                                 }                                                        
