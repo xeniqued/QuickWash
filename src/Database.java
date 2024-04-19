@@ -91,7 +91,7 @@ public class Database {
     // Method to select all appointments for a specific ID number
     public static List<Appointment> getAppointmentsById(int id_num) {
         List<Appointment> appointments = new ArrayList<>();
-        String sql = "SELECT * FROM appointments WHERE id_num = ?";
+        String sql = "SELECT * FROM appointments WHERE id_num = ? ORDER BY app_date DESC,time";
         try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id_num);
@@ -125,7 +125,7 @@ public class Database {
         List<Appointment> appointments = new ArrayList<>();
 
         try  {
-            String query = "SELECT * FROM appointments WHERE month = ? AND day = ? AND year = ?";
+            String query = "SELECT * FROM appointments WHERE month = ? AND day = ? AND year = ? ORDER BY app_date DESC,time";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, month);
             statement.setInt(2, day);
@@ -280,7 +280,7 @@ public class Database {
     // Method to search appointments by month and year[Income Report]
     public static List<Appointment> selectTotCylesWithinRange(String frDateString, String toDateString) {
         List<Appointment> appointments = new ArrayList<>();
-        String sql = "SELECT wash_num,dry_num,app_date FROM appointments WHERE app_date >= ? AND app_date <= ? ORDER BY app_date;";
+        String sql = "SELECT wash_num,dry_num,app_date FROM appointments WHERE app_date >= ? AND app_date <= ? AND confirmed_by_staff = 1 ORDER BY app_date;";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date frDateParse,toDateParse;
         try{

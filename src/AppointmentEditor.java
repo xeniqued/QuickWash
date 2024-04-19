@@ -204,12 +204,9 @@ public class AppointmentEditor extends JFrame {
         monLbl.setFont(new Font(monLbl.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i2Pnl.add(monLbl, BorderLayout.NORTH);
            
-        List<String> monthStrings=getCurrentAndNextMonthNames();
-        String[] months= new String[monthStrings.size()];
-        for (int i = 0; i < monthStrings.size(); i++) {
-            String mth=monthStrings.get(i);
-            months[i] = convertMonthStringToInt(mth)+" - "+mth;
-        }
+        String[] months = {"1 - Jan", "2 - Feb", "3 - Mar", "4 - Apr", 
+                            "5 - May", "6 - June", "7 - July", "8 - Aug", "9 - Sept",
+                            "10 - Oct", "11 - Nov", "12 - Dec"};
 
         monthDropBox = new JComboBox<String>(months);
 
@@ -244,7 +241,10 @@ public class AppointmentEditor extends JFrame {
         dayLbl.setForeground(mainBlue); 
         dayLbl.setFont(new Font(dayLbl.getFont().getFontName(), Font.BOLD, 15));        
         disinner3i3Pnl.add(dayLbl, BorderLayout.NORTH);  
-        String[] days= getNextSevenDays();
+        
+        String[] days = {"1", "2", "3", "4", "5", "6", "7", "8", "9","10", "11",
+                            "12", "13", "14","15","16","17","18","19","20","21",
+                            "22", "23", "24","25","26","27","28","29","30","31"};
 
         dayDropBox = new JComboBox<String>(days);
 
@@ -561,7 +561,9 @@ public class AppointmentEditor extends JFrame {
             int dryValueInt = (int) drySpinner.getValue();
             System.out.println("Number of Avail Loads: "+availWash+" "+availDry);
             if (washValueInt>availWash || dryValueInt>availDry) {
-                // JOptionPane.showMessageDialog(null, "Could not accommodate loads!!!", "Check", JOptionPane.INFORMATION_MESSAGE);
+                setAlwaysOnTop(false);
+                JOptionPane.showMessageDialog(null, "Could not accommodate loads!!!", "Error", JOptionPane.ERROR_MESSAGE);
+                setAlwaysOnTop(true);
                 System.out.println("Could not accommodate loads!!!");
             }else{
                 //setNotification("Updating Appointment...", "Update");

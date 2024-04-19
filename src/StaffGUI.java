@@ -38,7 +38,7 @@ public class StaffGUI extends JFrame {
     private JLabel detailsLbl;
 
     // Make Appointment, Edit Appointment, Mark Attend, Logout buttons
-    private JButton btnConfirm, btnMakeReport, btnLogout; 
+    private JButton btnConfirm, btnMakeReport, btnLogout,btnRefresh; 
     
     // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
@@ -126,7 +126,7 @@ public class StaffGUI extends JFrame {
         //==============================================//
     
         
-        // CREATING AND ALLIGNING ONFIRM ATTEND APPOINTMENT BUTTON // 
+        // CREATING AND ALLIGNING CONFIRM ATTEND APPOINTMENT BUTTON // 
         ImageIcon ConfirmAptIcon = null;      
         try {
             ConfirmAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/confirmicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
@@ -160,10 +160,29 @@ public class StaffGUI extends JFrame {
         btnMakeReport.setBorderPainted(false);
         btnMakeReport.setMargin(new Insets(7, 20, 7, 0));
         btnMakeReport.addActionListener(new MakeReportListener());
+
+        // Refresh Button // 
+        ImageIcon RefreshIcon = null;      
+        try {
+            RefreshIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/starticon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+        } catch (Exception ioe) {
+            System.out.println("Create icon not found.");
+        }      
+        btnRefresh = new JButton(RefreshIcon);
+        btnRefresh.setText(" Refresh");
+        btnRefresh.setFont(new Font(btnRefresh.getFont().getFontName(), Font.BOLD, 16));
+        btnRefresh.setForeground(mainWhite);
+        btnRefresh.setBackground(mainBlue);
+        btnRefresh.setHorizontalAlignment(SwingConstants.LEFT);
+        btnRefresh.setBorderPainted(false);
+        btnRefresh.setMargin(new Insets(7, 20, 7, 0));
+        btnRefresh.addActionListener(new RefreshListener());
                         
         navinner1Pnl.add(navLbl);
         navinner1Pnl.add(btnConfirm);
+        navinner1Pnl.add(btnRefresh);
         navinner1Pnl.add(btnMakeReport);
+        
 
 
 
@@ -362,6 +381,16 @@ public class StaffGUI extends JFrame {
                 }  
             }  
         } 
+    }
+
+    private class RefreshListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            ArrayList<String[]>aList=showResidentAppointments(Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2)));
+            apptTable.populateTable(aList);
+            System.out.println("Table Refreshed!!!");
+            JOptionPane.showMessageDialog(null, "Table Refreshed", "Refresh", JOptionPane.INFORMATION_MESSAGE);
+        }
+
     }
 
 

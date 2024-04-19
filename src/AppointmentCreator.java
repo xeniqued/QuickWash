@@ -382,7 +382,6 @@ public class AppointmentCreator extends JFrame {
         String washer_id=mList.assignWasher(washValueInt,yearInt,monthInt,dayValueInt,hourInt);
         String dryer_id=mList.assignDryer(washValueInt,yearInt,monthInt,dayValueInt,hourInt);
         String date=yearInt+"-"+monthInt+"-"+dayValueInt;
-        Database db=new Database();
         db.addAppointment(id, fullName, washValueInt, dryValueInt,date, monthInt, dayValueInt, yearInt, hourInt, confimedResident, confimedStaff,washer_id,dryer_id);
         //ArrayList<String[]>aList=thisRGUI.showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
         //thisRGUI.getApptTable().populateTable(aList);
