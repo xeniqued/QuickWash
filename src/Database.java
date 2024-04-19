@@ -64,7 +64,7 @@ public class Database {
     }
 
     // Method to search for a user by id_num and return a UserType object
-    public static User selectUserById(int id_num) {
+    public static UserType selectUserById(int id_num) {
         String sql = "SELECT * FROM user_information WHERE id_num = ?";
         try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -77,7 +77,7 @@ public class Database {
                 int room_num = resultSet.getInt("room_num");
                 String Block = resultSet.getString("Block");
                 String password = resultSet.getString("password");
-                return new User(type_user, name, id_num, email, room_num, Block, password);
+                return new UserType(type_user, name, id_num, email, room_num, Block, password);
             }
         } catch (SQLException e) {
             e.printStackTrace();

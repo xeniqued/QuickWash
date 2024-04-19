@@ -47,8 +47,8 @@ public class ResidentGUI extends JFrame {
 
     private WelcomeScreen thisWS; //previous screen
     private static ResidentGUI thisResGUI; //current screen instance
-    private AppointmentCreator thisMkAptGUI = null; //CreateAppointmentGUI popup screen instance
-    private AppointmentEditor thisEdAptGUI = null; //EditAppointmentGUI popup screen instance
+    private CreateAppointmentGUI thisMkAptGUI = null; //CreateAppointmentGUI popup screen instance
+    private EditAppointmentGUI thisEdAptGUI = null; //EditAppointmentGUI popup screen instance
 
     private String nameVar;
     private String idStringVar;
@@ -347,7 +347,7 @@ public class ResidentGUI extends JFrame {
      */
     private class MkAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            thisMkAptGUI = new AppointmentCreator(thisResGUI,nameVar,idStringVar);
+            thisMkAptGUI = new CreateAppointmentGUI(thisResGUI,nameVar,idStringVar);
         }
 
     }
@@ -360,7 +360,7 @@ public class ResidentGUI extends JFrame {
             if (apptTable.getSelectedRow()==-1) {
                 JOptionPane.showMessageDialog(null, "Please select an Appointment!", "Error", JOptionPane.ERROR_MESSAGE); 
             }else{
-                thisEdAptGUI = new AppointmentEditor(thisResGUI,nameVar,idStringVar,getRowSelectedData());
+                thisEdAptGUI = new EditAppointmentGUI(thisResGUI,nameVar,idStringVar,getRowSelectedData());
             }
         }
 

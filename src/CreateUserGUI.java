@@ -20,14 +20,14 @@ import java.nio.file.Files;
  * @author xenique
  */
 
-public class UserCreationUI extends JFrame {
+public class CreateUserGUI extends JFrame {
 
     private WelcomeScreen thisWS; //previous screen
 
     /**
      * Creates new form CreateUser
      */
-    public UserCreationUI(WelcomeScreen ws) {
+    public CreateUserGUI(WelcomeScreen ws) {
         /**
          * This sets up attributes to ensure that the window instances are linked
          */        

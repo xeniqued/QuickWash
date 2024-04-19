@@ -400,15 +400,21 @@ public class StaffGUI extends JFrame {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 ArrayList<String> data = getRowSelectedData();
-                String time = data.get(2);
-                String name = data.get(1);
-                String id = data.get(7);
-                String washNum = data.get(3);
-                String dryNum  = data.get(4);
-                String washerid = data.get(8);
-                String dryerid = data.get(9);
+                //System.out.println(data);
+                String check = String.join("", data);
+                System.out.println("check: ["+ check +"]");
+                
+                if (check.trim().length() > 0) {
+                    String time = data.get(2);
+                    String name = data.get(1);
+                    String id = data.get(7);
+                    String washNum = data.get(3);
+                    String dryNum  = data.get(4);
+                    String washerid = data.get(8);
+                    String dryerid = data.get(9);
 
-                detsTable.updateRow(new String[]{time, id, name, washNum, dryNum, washerid, dryerid}, 0, detsTable.getColumnNum());
+                    detsTable.updateRow(new String[]{time, id, name, washNum, dryNum, washerid, dryerid}, 0, detsTable.getColumnNum());
+                }
             }
         }
     }
