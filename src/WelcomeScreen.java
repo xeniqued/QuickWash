@@ -136,6 +136,7 @@ public class WelcomeScreen extends JFrame {
         //Check Connection
         if(!Database.isConnected()){
             connectionErrorPanel();
+            System.exit(0);
         };
 
     }// public WelcomeScreen() end (constructor)
@@ -207,10 +208,13 @@ public class WelcomeScreen extends JFrame {
                                 //If password is correct, open one of below screens
                                 if(user.getType_user().equals("Resident")){
                                     resGUI = new ResidentGUI(thisUserData, txtName, dbName);
+                                     hideVerifyMessage(false);
                                 } else if(user.getType_user().equals("Staff")){
                                     staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
+                                     hideVerifyMessage(false);
                                 } else if(user.getType_user().equals("admin")){
                                     adminGUI = new AdminGUI(thisUserData); 
+                                     hideVerifyMessage(false);
                                 }                                                        
 
                             } else {
