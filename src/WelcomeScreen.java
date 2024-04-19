@@ -459,7 +459,7 @@ public class WelcomeScreen extends JFrame {
 
         //GridLayout(int rows, int columns, int hgap, int vgap)
         innerPnl.setLayout(new GridLayout(3, 1, 20, 30));
-        innerPnl.setBorder(new EmptyBorder(130, 0, 0, 0));
+        innerPnl.setBorder(new EmptyBorder(123, 0, 0, 0));
         innerPnl.setOpaque(false);
 
 
@@ -506,10 +506,12 @@ public class WelcomeScreen extends JFrame {
         JPanel i2innerPnl = new JPanel();
         //i2innerPnl.setLayout(new BorderLayout());
         i2innerPnl.setLayout(new GridBagLayout());
+        i2innerPnl.setPreferredSize(new Dimension(i2innerPnl.getWidth(), username.getHeight()));
         i2innerPnl.setOpaque(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.VERTICAL;
 
         pass = new JPasswordField(11); //Username Field    
         pass.setHorizontalAlignment(SwingConstants.LEFT);
@@ -528,11 +530,12 @@ public class WelcomeScreen extends JFrame {
        
         // insets for x component
         //gbc.insets = new Insets(0, 0, 0, 5);
-        gbc.gridx = 0; // column   
-        gbc.weightx = 0.2;     
+        gbc.gridx = 0; // column 0  
+        gbc.weightx = 0.2;    
+        gbc.weighty = 1.0;   
         gbc.gridy = 0; // row 0
         gbc.ipadx = 158; // increases components width by x pixels      
-        gbc.ipady = i2innerPnl.getHeight() + 3; // increases components height by x pixels
+        //gbc.ipady = username.getHeight(); // increases components height by x pixels
         i2innerPnl.add(pass, gbc);
         
         // insets for x component
@@ -592,6 +595,7 @@ public class WelcomeScreen extends JFrame {
         }      
         btnForgotPass = new JButton(ForgPassIcon);
         btnForgotPass.setText("Forgot Password?");
+        btnForgotPass.setVerticalTextPosition(SwingConstants.BOTTOM);
         btnForgotPass.setFont(new Font(btnForgotPass.getFont().getFontName(), Font.PLAIN, 16));
         btnForgotPass.setForeground(mainWhite);
         btnForgotPass.setBackground(mainBlue);
@@ -719,10 +723,12 @@ public class WelcomeScreen extends JFrame {
         JPanel i3innerPnl = new JPanel();
         //i3innerPnl.setLayout(new BorderLayout());
         i3innerPnl.setLayout(new GridBagLayout());
+        i3innerPnl.setPreferredSize(new Dimension(i3innerPnl.getWidth(), forgID.getHeight()));
         i3innerPnl.setOpaque(false);
 
         GridBagConstraints gbc1 = new GridBagConstraints();
         gbc1.anchor = GridBagConstraints.WEST; 
+        gbc1.fill = GridBagConstraints.VERTICAL;
 
         forgNewPass = new JPasswordField(11); //New Password Field           
         forgNewPass.setHorizontalAlignment(SwingConstants.LEFT);
@@ -743,10 +749,11 @@ public class WelcomeScreen extends JFrame {
         // insets for x component
         //gbc.insets = new Insets(0, 0, 0, 5);
         gbc1.gridx = 0; // column   
-        gbc1.weightx = 0.2;     
+        gbc1.weightx = 0.2;    
+        gbc1.weighty = 1.0;   
         gbc1.gridy = 0; // row 0
         gbc1.ipadx = 158; // increases components width by x pixels      
-        gbc1.ipady = i3innerPnl.getHeight() + 3; // increases components height by x pixels
+        //gbc1.ipady = i3innerPnl.getHeight() + 3; // increases components height by x pixels
         i3innerPnl.add(forgNewPass, gbc1);
 
         // insets for x component
@@ -782,10 +789,12 @@ public class WelcomeScreen extends JFrame {
         JPanel i4innerPnl = new JPanel();
         //i4innerPnl.setLayout(new BorderLayout());
         i4innerPnl.setLayout(new GridBagLayout());
+        i4innerPnl.setPreferredSize(new Dimension(i4innerPnl.getWidth(), forgID.getHeight()));
         i4innerPnl.setOpaque(false);
 
         GridBagConstraints gbc2 = new GridBagConstraints();
         gbc2.anchor = GridBagConstraints.WEST;
+        gbc2.fill = GridBagConstraints.VERTICAL;
 
         forgConfPass = new JPasswordField(11); //Confirm Password Field
         forgConfPass.setHorizontalAlignment(SwingConstants.RIGHT);        
@@ -805,10 +814,11 @@ public class WelcomeScreen extends JFrame {
         // insets for x component
         //gbc.insets = new Insets(0, 0, 0, 5);
         gbc2.gridx = 0; // column   
-        gbc2.weightx = 0.2;     
+        gbc2.weightx = 0.2;            
+        gbc2.weighty = 1.0; 
         gbc2.gridy = 0; // row 0
         gbc2.ipadx = 158; // increases components width by x pixels      
-        gbc2.ipady = i4innerPnl.getHeight() + 3; // increases components height by x pixels
+        //gbc2.ipady = i4innerPnl.getHeight() + 3; // increases components height by x pixels
         i4innerPnl.add(forgConfPass, gbc2);
 
         // insets for x component
