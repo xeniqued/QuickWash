@@ -836,7 +836,7 @@ public class WelcomeScreen extends JFrame {
         gbc2.fill = GridBagConstraints.VERTICAL;
 
         forgConfPass = new JPasswordField(11); //Confirm Password Field
-        forgConfPass.setHorizontalAlignment(SwingConstants.RIGHT);        
+        forgConfPass.setHorizontalAlignment(SwingConstants.LEFT);        
         ImageIcon ShowPassIcon2 = null;      
         try {
             ShowPassIcon2 = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/showpassicon.png").getImage().getScaledInstance(23, 22, Image.SCALE_SMOOTH)));
