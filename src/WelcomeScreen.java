@@ -208,13 +208,13 @@ public class WelcomeScreen extends JFrame {
                                 //If password is correct, open one of below screens
                                 if(user.getType_user().equals("Resident")){
                                     resGUI = new ResidentGUI(thisUserData, txtName, dbName);
-                                     hideVerifyMessage(false);
+                                    toggleVerifyMessage(false);
                                 } else if(user.getType_user().equals("Staff")){
                                     staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
-                                     hideVerifyMessage(false);
+                                    toggleVerifyMessage(false);
                                 } else if(user.getType_user().equals("admin")){
                                     adminGUI = new AdminGUI(thisUserData); 
-                                     hideVerifyMessage(false);
+                                    toggleVerifyMessage(false);
                                 }                                                        
 
                             } else {
