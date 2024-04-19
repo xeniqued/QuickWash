@@ -498,7 +498,7 @@ public class WelcomeScreen extends JFrame {
 
         //GridLayout(int rows, int columns, int hgap, int vgap)
         innerPnl.setLayout(new GridLayout(3, 1, 20, 30));
-        innerPnl.setBorder(new EmptyBorder(110, 0, 0, 0));
+        innerPnl.setBorder(new EmptyBorder(123, 0, 0, 0));
         innerPnl.setOpaque(false);
 
 
@@ -691,7 +691,7 @@ public class WelcomeScreen extends JFrame {
 
         //GridLayout(int rows, int columns, int hgap, int vgap)
         innerPnl.setLayout(new GridLayout(5, 1, 20, 20));
-        innerPnl.setBorder(new EmptyBorder(60, 0, 0, 0));
+        innerPnl.setBorder(new EmptyBorder(80, 0, 0, 0));
         innerPnl.setOpaque(false);
 
         
