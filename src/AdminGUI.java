@@ -612,6 +612,10 @@ public class AdminGUI extends JFrame {
         this.sumLbl.setText("<html>" + "Total Income in Range: $" + tot + "</html>");
     }
 
+    private  void connectionErrorPanel() {
+        JOptionPane.showMessageDialog(null, "Check your connection and Restart application", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     
 
 
@@ -633,33 +637,38 @@ public class AdminGUI extends JFrame {
      */
     private class GenReportBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            //List<String> appDatesandCycles = new ArrayList<>();
-            setNotification("Generating Report...", null);
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                //List<String> appDatesandCycles = new ArrayList<>();
+                setNotification("Generating Report...", null);
 
-            int frDayValue=(int)frDaySpinner.getValue();
-            int toDayValue=(int)toDaySpinner.getValue();
-            String toMonthValue = (String) toMonthDropBox.getSelectedItem();
-            String[] toMonthParts = toMonthValue.split(" -");
-            int toMonthInt=Integer.parseInt(toMonthParts[0]);
-            String frMonthValue = (String) frMonthDropBox.getSelectedItem();
-            String[] frMonthParts = frMonthValue.split(" -");
-            int frMonthInt=Integer.parseInt(frMonthParts[0]);
-            String toYearValue = (String) toYearDropBox.getSelectedItem();
-            String frYearValue = (String) frYearDropBox.getSelectedItem();
-            String frDate=frYearValue+"-"+frMonthInt+"-"+frDayValue;
-            String toDate=toYearValue+"-"+toMonthInt+"-"+toDayValue;
+                int frDayValue=(int)frDaySpinner.getValue();
+                int toDayValue=(int)toDaySpinner.getValue();
+                String toMonthValue = (String) toMonthDropBox.getSelectedItem();
+                String[] toMonthParts = toMonthValue.split(" -");
+                int toMonthInt=Integer.parseInt(toMonthParts[0]);
+                String frMonthValue = (String) frMonthDropBox.getSelectedItem();
+                String[] frMonthParts = frMonthValue.split(" -");
+                int frMonthInt=Integer.parseInt(frMonthParts[0]);
+                String toYearValue = (String) toYearDropBox.getSelectedItem();
+                String frYearValue = (String) frYearDropBox.getSelectedItem();
+                String frDate=frYearValue+"-"+frMonthInt+"-"+frDayValue;
+                String toDate=toYearValue+"-"+toMonthInt+"-"+toDayValue;
 
-            try{
-                System.out.println("Admin GUI: "+frDate+" to "+toDate);
-                System.out.println("AdminGUI: Before Method excuted");
-                genReport(Database.selectTotCylesWithinRange(frDate, toDate),frDate,toDate);
-                
-                System.out.println("Report Made!");
-                setNotification("Report Generated.", null);
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);
-                System.out.println("Could not make Report");
-                ex.printStackTrace();
+                try{
+                    System.out.println("Admin GUI: "+frDate+" to "+toDate);
+                    System.out.println("AdminGUI: Before Method excuted");
+                    genReport(Database.selectTotCylesWithinRange(frDate, toDate),frDate,toDate);
+                    
+                    System.out.println("Report Made!");
+                    setNotification("Report Generated.", null);
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(null, "Check Inputs and Try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("Could not make Report");
+                    ex.printStackTrace();
+                }
             }
         }
 

@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,7 +26,8 @@ public class Database {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection= DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("No internet Connection");
+            //e.printStackTrace();
             //
         }
     }
@@ -513,18 +516,19 @@ public class Database {
         return bookedTimes;
     }
 
-
-
-    private static void closeConnection(Connection connection) {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-                System.out.println("Database connection closed.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static Boolean isConnected() {
+        try{
+            // Ping a well-known server to check for internet connectivity
+            InetAddress address = InetAddress.getByName("www.google.com");
+            return address.isReachable(5000); // Timeout of 5 seconds
+        } catch (IOException exception) {
+            return false; // Unable to reach the server, so no internet connection
         }
     }
+
+
+
+    
 
 
 }

@@ -5,6 +5,7 @@ import javax.swing.border.*;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
 
 /**
  * Main Window upon loading the program. Allows Sign Up & Login of Accounts in system.
@@ -44,7 +45,8 @@ public class WelcomeScreen extends JFrame {
     private StaffGUI staffGUI; //staff screen instance
     private AdminGUI adminGUI; //staff screen instance
 
-    public WelcomeScreen() {    
+    public WelcomeScreen() {
+            
 
         /*Setting up window*/
         setTitle("Welcome To QuickWash");
@@ -125,6 +127,11 @@ public class WelcomeScreen extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
+        
+        //Check Connection
+        if(!Database.isConnected()){
+            connectionErrorPanel();
+        };
 
     }// public WelcomeScreen() end (constructor)
 
@@ -155,64 +162,69 @@ public class WelcomeScreen extends JFrame {
      * This implements Login Button functionalities
      */
     private class LoginBtnListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {            
+        public void actionPerformed(ActionEvent e) {
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{           
 
-            String txtName = username.getText();                            
-            String txtPass = String.valueOf(pass.getPassword());
-            
-            try {
-                setWaitingMessage("Verifying...");
-                verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+                String txtName = username.getText();                            
+                String txtPass = String.valueOf(pass.getPassword());
                 
-                setNotification("Beginning Verification.", null);
-
-                if ((txtName.length() == 0 || txtPass.length() == 0)) {
-                    username.setText("");
-                    pass.setText("");
-                    setErrorMessage("Please fill out all fields.");
+                try {
+                    setWaitingMessage("Verifying...");
+                    verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
                     
-                } else if (Database.selectUserById(Integer.parseInt(txtName)) != null){
+                    setNotification("Beginning Verification.", null);
+
+                    if ((txtName.length() == 0 || txtPass.length() == 0)) {
+                        username.setText("");
+                        pass.setText("");
+                        setErrorMessage("Please fill out all fields.");
                         
-        
-                        User user = Database.selectUserById(Integer.parseInt(txtName));
-                        String dbName = user.getName();
-                        String dbPassword = user.getPassword();
-                                
-                        //Error message on invalid inputs
-                        if(txtPass.equals(dbPassword)){                            
-                            setSuccessMessage("Login Successful.");
-                            verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+                    } else if (Database.selectUserById(Integer.parseInt(txtName)) != null){
+                            
+            
+                            User user = Database.selectUserById(Integer.parseInt(txtName));
+                            String dbName = user.getName();
+                            String dbPassword = user.getPassword();
+                                    
+                            //Error message on invalid inputs
+                            if(txtPass.equals(dbPassword)){                            
+                                setSuccessMessage("Login Successful.");
+                                verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
 
-                            setNotification("Launching QuickWash.", null);
+                                setNotification("Launching QuickWash.", null);
 
-                            username.setText("");
-                            pass.setText("");
+                                username.setText("");
+                                pass.setText("");
 
-                            //If password is correct, open one of below screens
-                            if(user.getType_user().equals("Resident")){
-                                resGUI = new ResidentGUI(thisUserData, txtName, dbName);
-                            } else if(user.getType_user().equals("Staff")){
-                               staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
-                            } else if(user.getType_user().equals("admin")){
-                                adminGUI = new AdminGUI(thisUserData); 
-                            }                                                        
+                                //If password is correct, open one of below screens
+                                if(user.getType_user().equals("Resident")){
+                                    resGUI = new ResidentGUI(thisUserData, txtName, dbName);
+                                } else if(user.getType_user().equals("Staff")){
+                                staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
+                                } else if(user.getType_user().equals("admin")){
+                                    adminGUI = new AdminGUI(thisUserData); 
+                                }                                                        
 
-                        } else {
-                            pass.setText("");
-                            setErrorMessage("Incorrect Password. <br> Please Try Again.");
-                        }
+                            } else {
+                                pass.setText("");
+                                setErrorMessage("Incorrect Password. <br> Please Try Again.");
+                            }
 
-                } else {                    
+                    } else {                    
+                        username.setText("");
+                        pass.setText("");
+
+                        setErrorMessage("Username Not Found. <br> Please Try Again.");
+                    }
+                } catch (Exception ex) {
                     username.setText("");
                     pass.setText("");
-
-                    setErrorMessage("Username Not Found. <br> Please Try Again.");
+                    
+                    setErrorMessage("Invalid Username. <br> Please Try Again.");
                 }
-            } catch (Exception ex) {
-                username.setText("");
-                pass.setText("");
-                
-                setErrorMessage("Invalid Username. <br> Please Try Again.");
             }
             
         }
@@ -224,7 +236,12 @@ public class WelcomeScreen extends JFrame {
      */
     private class SignUpBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            new UserCreationUI(thisUserData).setVisible(true);
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                new UserCreationUI(thisUserData).setVisible(true);
+            }
         }
 
     }
@@ -234,8 +251,13 @@ public class WelcomeScreen extends JFrame {
      */
     private class ForgotBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            //setNotification("Opening Password Reset Form.", "Password Reset");
-            setForgotPasswordFields();
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                //setNotification("Opening Password Reset Form.", "Password Reset");
+                setForgotPasswordFields();
+            }
         }
 
     }
@@ -300,69 +322,74 @@ public class WelcomeScreen extends JFrame {
      */
     private class SavePassBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            //setNotification("This works", null);
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+                }else{
+                //setNotification("This works", null);
 
-            String ID = forgID.getText();     
-            String email = forgEmail.getText();     
+                String ID = forgID.getText();     
+                String email = forgEmail.getText();     
 
-            char [] newPassArray = forgNewPass.getPassword();
-            char [] confirmPassArray = forgConfPass.getPassword();        
-            String newPass = new String(newPassArray);
-            String confirmPass = new String(confirmPassArray);
-            int idTest = -1;
+                char [] newPassArray = forgNewPass.getPassword();
+                char [] confirmPassArray = forgConfPass.getPassword();        
+                String newPass = new String(newPassArray);
+                String confirmPass = new String(confirmPassArray);
+                int idTest = -1;
 
-            // Blank field validation
-            if ((email.isEmpty() || ID.isEmpty() || newPass.isEmpty()|| confirmPass.isEmpty())){
-                setErrorMessage("Please fill out all fields.");
-                return;
-            }
-            // Email validation
-            else if (!email.matches("^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*$")) {
-                setErrorMessage("Invalid Email Address. <br> Please Try Again.");
-                return;
-            }
-            // Checking if passwords match
-            else if(!newPass.equals(confirmPass)){                
-                setErrorMessage("Passwords Don't Match. <br> Please Try Again.");
-                return;
-            }
-            // ID number validation
-            try {
-                idTest = Integer.parseInt(ID);
-            } catch (NumberFormatException ex){
-                setErrorMessage("Invalid Username. <br> Please Try Again.");
-                return;
-            }
+                // Blank field validation
+                if ((email.isEmpty() || ID.isEmpty() || newPass.isEmpty()|| confirmPass.isEmpty())){
+                    setErrorMessage("Please fill out all fields.");
+                    return;
+                }
+                // Email validation
+                else if (!email.matches("^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*$")) {
+                    setErrorMessage("Invalid Email Address. <br> Please Try Again.");
+                    return;
+                }
+                // Checking if passwords match
+                else if(!newPass.equals(confirmPass)){                
+                    setErrorMessage("Passwords Don't Match. <br> Please Try Again.");
+                    return;
+                }
+                // ID number validation
+                try {
+                    idTest = Integer.parseInt(ID);
+                } catch (NumberFormatException ex){
+                    setErrorMessage("Invalid Username. <br> Please Try Again.");
+                    return;
+                }
 
 
-            // Display Verification Message
-            setWaitingMessage("Verifying...");
-            verifyLbl.paintImmediately(verifyLbl.getVisibleRect());            
-            setNotification("Beginning Verification.", null); 
-            
-            // Attempting to update password
-            if (Database.selectUserById(idTest) != null){
-                User user = Database.selectUserById(idTest);
-                if (user.getEmail().equals(email)){
-                    Database.updatePassword(idTest, newPass); 
+                // Display Verification Message
+                setWaitingMessage("Verifying...");
+                verifyLbl.paintImmediately(verifyLbl.getVisibleRect());            
+                setNotification("Beginning Verification.", null); 
+                
+                // Attempting to update password
+                if (Database.selectUserById(idTest) != null){
+                    User user = Database.selectUserById(idTest);
+                    if (user.getEmail().equals(email)){
+                        Database.updatePassword(idTest, newPass); 
 
+                        forgID.setText("");
+                        forgEmail.setText("");
+                        forgNewPass.setText("");
+                        forgConfPass.setText("");
+
+                        setSuccessMessage("Password Reset. <br> Please Login.");   
+                    } else {
+                        forgEmail.setText("");
+                        setErrorMessage("Incorrect Email. <br> Please Try Again.");
+                    }
+                } else {                
                     forgID.setText("");
                     forgEmail.setText("");
                     forgNewPass.setText("");
                     forgConfPass.setText("");
-
-                    setSuccessMessage("Password Reset. <br> Please Login.");   
-                } else {
-                    forgEmail.setText("");
-                    setErrorMessage("Incorrect Email. <br> Please Try Again.");
+                    
+                    setErrorMessage("Username Not Found. <br> Please Try Again.");
                 }
-            } else {                
-                forgID.setText("");
-                forgEmail.setText("");
-                forgNewPass.setText("");
-                forgConfPass.setText("");
-                
-                setErrorMessage("Username Not Found. <br> Please Try Again.");
             }
 
         }
@@ -433,6 +460,13 @@ public class WelcomeScreen extends JFrame {
         verifyLbl.setText("<html>" + successMsg + "</html>"); //success message
         verifyLbl.setForeground(successGreen);  //success green   
     }
+
+
+    private  void connectionErrorPanel() {
+        JOptionPane.showMessageDialog(null, "Check your connection and Restart application", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+
 
 
     
@@ -825,6 +859,8 @@ public class WelcomeScreen extends JFrame {
         innerPnl.repaint();
         btnPnl.revalidate();
         btnPnl.repaint();
+        System.out.println("Checking Connection");
+        
     }
 
 

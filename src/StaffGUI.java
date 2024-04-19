@@ -366,29 +366,40 @@ public class StaffGUI extends JFrame {
      */
     private class MakeReportListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            String url = "https://studentliving.managerpluscloud.com/v16/WorkOrders/WorkRequest/qRRequestPage.aspx?asset_key=p4zqNkLI8A1NVP0ELnXSig==&entity_key=9iuf4dpF3mCUsv2x4R2N4g==";
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                String url = "https://studentliving.managerpluscloud.com/v16/WorkOrders/WorkRequest/qRRequestPage.aspx?asset_key=p4zqNkLI8A1NVP0ELnXSig==&entity_key=9iuf4dpF3mCUsv2x4R2N4g==";
 
-            int ans = JOptionPane.showConfirmDialog(thisStaffGUI, "You will be redirected to your browser to \nfill out the report. Continue?");  
-            
-            if(ans == JOptionPane.YES_OPTION){   
-                if(Desktop.isDesktopSupported()){
-                    Desktop desktop = Desktop.getDesktop();
-                    try {
-                        desktop.browse(new URI(url));
-                    } catch (IOException | URISyntaxException ex) {
-                        ex.printStackTrace();
-                    }
-                }  
+                int ans = JOptionPane.showConfirmDialog(thisStaffGUI, "You will be redirected to your browser to \nfill out the report. Continue?");  
+                
+                if(ans == JOptionPane.YES_OPTION){   
+                    if(Desktop.isDesktopSupported()){
+                        Desktop desktop = Desktop.getDesktop();
+                        try {
+                            desktop.browse(new URI(url));
+                        } catch (IOException | URISyntaxException ex) {
+                            ex.printStackTrace();
+                        }
+                    }  
+                }
             }  
         } 
     }
 
     private class RefreshListener implements ActionListener {
+        
         public void actionPerformed(ActionEvent e) {
-            ArrayList<String[]>aList=showResidentAppointments(Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2)));
-            apptTable.populateTable(aList);
-            System.out.println("Table Refreshed!!!");
-            JOptionPane.showMessageDialog(null, "Table Refreshed", "Refresh", JOptionPane.INFORMATION_MESSAGE);
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                ArrayList<String[]>aList=showResidentAppointments(Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2)));
+                apptTable.populateTable(aList);
+                System.out.println("Table Refreshed!!!");
+                JOptionPane.showMessageDialog(null, "Table Refreshed", "Refresh", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
 
     }
@@ -399,16 +410,21 @@ public class StaffGUI extends JFrame {
      */
     private class ConfirmBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            try {
-                Database.updateConfirmedByStaff(Integer.parseInt(getRowSelectedData().get(0)),true);
-                ArrayList<String[]>aList=showResidentAppointments(Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2)));
-                apptTable.populateTable(aList);
-                System.out.println("Confirmed by Staff");
-                JOptionPane.showMessageDialog(null, "Confirmed Appointment!!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error. Could not confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
-                System.out.println("Error. Could not confirm Appointment.");
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                try {
+                    Database.updateConfirmedByStaff(Integer.parseInt(getRowSelectedData().get(0)),true);
+                    ArrayList<String[]>aList=showResidentAppointments(Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2)));
+                    apptTable.populateTable(aList);
+                    System.out.println("Confirmed by Staff");
+                    JOptionPane.showMessageDialog(null, "Confirmed Appointment!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error. Could not confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
+                    System.out.println("Error. Could not confirm Appointment.");
+                }
             }
         }
 
@@ -455,6 +471,9 @@ public class StaffGUI extends JFrame {
     //=                  FUNCTIONALITIES                   =//
     //======================================================//
 
+    private  void connectionErrorPanel() {
+        JOptionPane.showMessageDialog(null, "Check your connection and Restart application", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     
     public static List<Integer> getCurrentDateTimeInfo() {
         // Create a Calendar instance
