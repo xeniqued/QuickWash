@@ -20,14 +20,14 @@ import java.nio.file.Files;
  * @author xenique
  */
 
-public class CreateUserGUI extends JFrame {
+public class UserCreationUI extends JFrame {
 
     private WelcomeScreen thisWS; //previous screen
 
     /**
      * Creates new form CreateUser
      */
-    public CreateUserGUI(WelcomeScreen ws) {
+    public UserCreationUI(WelcomeScreen ws) {
         /**
          * This sets up attributes to ensure that the window instances are linked
          */        
@@ -502,8 +502,8 @@ public class CreateUserGUI extends JFrame {
             String password = new String(passwordfield.getPassword());
             String selectedBlock = (String) BlockSelection.getSelectedItem();
             String selectedRoom = (String) RoomNumber.getSelectedItem();
-           
             
+                        
             // User Type selected validation
             if (selectedType.equals("Select User Type")) {
                 setErrorMessage("Please select User Type.");
@@ -513,6 +513,11 @@ public class CreateUserGUI extends JFrame {
                 // Blank field validation
                 if (name.isEmpty() || email.isEmpty() || idNumber.isEmpty() || password.isEmpty()){
                     setErrorMessage("Please fill out all fields.");
+                }
+
+                // ID Number in use
+                else if (Database.idNumberPresent(Integer.parseInt(idNumber))){
+                    setErrorMessage("ID Number already in use.");
                 }
 
                 //Name validation
@@ -584,14 +589,23 @@ public class CreateUserGUI extends JFrame {
 
     // Function to launch quickwash if all fields are valid
     public void launchQuickWash(String selectedType,String name,String email,int idNumber,String password,String selectedBlock,int selectedRoom) {        
-        setSuccessMessage("Creating Account...");
-        verifyLbl.paintImmediately(verifyLbl.getVisibleRect());
+        setWaitingMessage("Creating Account...");
+        verifyLbl.paintImmediately(verifyLbl.getVisibleRect());  
+        setNotification("Beginning Creation.", null);    
+
         if (selectedType.equals("Resident")){
             try {
                 Database.addUser(selectedType,name,idNumber,email,selectedRoom,selectedBlock,password);
                 System.out.println("Resident added to the Databse.");
+
+                setSuccessMessage("Account Created. <br> Please Login.");
+                verifyLbl.paintImmediately(verifyLbl.getVisibleRect()); 
+                setNotification("Redirecting to Login.", null); 
+
+                setVisible(false);
+                thisWS.setVisible(true);
             } catch (Exception e) {
-                System.out.println("Error adding resident to the Databse.");
+                System.out.println("Error adding resident to the Database.");
                 e.printStackTrace();
             }
         }else{
@@ -600,13 +614,19 @@ public class CreateUserGUI extends JFrame {
                 String block="";
                 Database.addUser(selectedType,name,idNumber,email,room_num,block,password);
                 System.out.println("Staff added to the Databse.");
+
+                setSuccessMessage("Account Created. <br> Please Login.");
+                verifyLbl.paintImmediately(verifyLbl.getVisibleRect());  
+                setNotification("Redirecting to Login.", null); 
+
+                setVisible(false);
+                thisWS.setVisible(true);
             } catch (Exception e) {
-                System.out.println("Error adding staff to the Databse.");
+                System.out.println("Error adding staff to the Database.");
                 e.printStackTrace();
             }
         }
 
-        setNotification("Launching QuickWash.", null);
                     
         /* Resetting fields */
         Name.setText("");
@@ -616,15 +636,7 @@ public class CreateUserGUI extends JFrame {
         Email.setText("");
         passwordfield.setText("");
 
-        setVisible(false);
-        thisWS=new WelcomeScreen();
-
-        // Navigate to the Resident/Employee Main screen below based on account type //
-        /*if(user.getType_user().equals("resident")){
-            resGUI = new ResidentGUI(thisUserData, txtName, dbName);
-        } else if(user.getType_user().equals("staff")){
-            staffGUI = new StaffGUI(thisUserData, txtName, dbName); 
-        }*/
+    
     }
 
 

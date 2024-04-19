@@ -1,4 +1,4 @@
-public class UserType {
+public class User {
     private String type_user;
     private String name;
     private int id_num;
@@ -7,7 +7,11 @@ public class UserType {
     private String Block;
     private String password;
 
-    public UserType(String type_user, String name, int id_num, String email, int room_num, String Block, String password) {
+    /**
+     @author Akele Benjamin
+     */
+
+    public User(String type_user, String name, int id_num, String email, int room_num, String Block, String password) {
         this.type_user = type_user;
         this.name = name;
         this.id_num = id_num;

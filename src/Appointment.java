@@ -18,6 +18,11 @@ public class Appointment {
     private String dryer_id;
     private String date;
 
+    /**
+ *
+ * @author Akele Benjamin
+ */
+
     // Constructor
     public Appointment( int appointment_num,int idNum, String name, int washNum, int dryNum, String date, int month, int day, int year, int time, boolean confirmedByResident, boolean confirmedByStaff, String washer_id,String dryer_id) {
         this.idNum = idNum;

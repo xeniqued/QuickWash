@@ -1,3 +1,8 @@
+/**
+ *
+ * @author Akele Benjamin
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -141,7 +146,7 @@ public class MachineList {
         List<String> filteredList = new ArrayList<>();
         Database db=new Database();
         List<String>machinesInUse=db.getDryerMachineIdsUpdate(apptNum,year,month,day,time);
-        List<String>allMachines=getAllWasherIds();
+        List<String>allMachines=getAllDryerIds();
         for (String machine : allMachines) {
             if (!machinesInUse.contains(machine)) {
                 filteredList.add(machine);

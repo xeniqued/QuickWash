@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,28 +9,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+
+/**
+ *
+ * @author Akele Benjamin
+ */
 
 public class Database {
     private static final String JDBC_URL = "jdbc:mysql://sql3.freesqldatabase.com:3306/sql3694739";
     private static final String USERNAME = "sql3694739";
     private static final String PASSWORD = "sEZ1JFRBF9";
+    public static  Connection connection;
 
     
     static {
         try {
             // Load the MySQL JDBC driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            connection= DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        } catch (Exception e) {
+            System.out.println("No internet Connection");
+            //e.printStackTrace();
+            //
         }
     }
 
     // Method to add a user
     public static void addUser(String type_user, String name, int id_num, String email, int room_num, String Block, String password) {
         String sql = "INSERT INTO user_information (type_user, name, id_num, email, room_num, Block, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, type_user);
             preparedStatement.setString(2, name);
             preparedStatement.setInt(3, id_num);
@@ -43,10 +56,31 @@ public class Database {
         }
     }
 
+    // Method to check id number in database
+    public static Boolean idNumberPresent(int id_num) {
+        Boolean present=false;
+        String sql = "SELECT id_num FROM user_information WHERE id_num = ?";
+        try (
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id_num);
+            ResultSet result = preparedStatement.executeQuery();
+            if (!result.next()) {
+                System.out.println("No Id number present");
+                present=false;
+            } else {
+                System.out.println("Id number present");
+                present=true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return present;
+    }
+
     // Method to update the password for a user
     public static void updatePassword(int id_num, String newPassword) {
         String sql = "UPDATE user_information SET password = ? WHERE id_num = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, newPassword);
             preparedStatement.setInt(2, id_num);
@@ -62,9 +96,9 @@ public class Database {
     }
 
     // Method to search for a user by id_num and return a UserType object
-    public static UserType selectUserById(int id_num) {
+    public static User selectUserById(int id_num) {
         String sql = "SELECT * FROM user_information WHERE id_num = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id_num);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -75,7 +109,7 @@ public class Database {
                 int room_num = resultSet.getInt("room_num");
                 String Block = resultSet.getString("Block");
                 String password = resultSet.getString("password");
-                return new UserType(type_user, name, id_num, email, room_num, Block, password);
+                return new User(type_user, name, id_num, email, room_num, Block, password);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,8 +120,8 @@ public class Database {
     // Method to select all appointments for a specific ID number
     public static List<Appointment> getAppointmentsById(int id_num) {
         List<Appointment> appointments = new ArrayList<>();
-        String sql = "SELECT * FROM appointments WHERE id_num = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        String sql = "SELECT * FROM appointments WHERE id_num = ? ORDER BY app_date DESC,time";
+        try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id_num);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -119,8 +153,8 @@ public class Database {
     public static List<Appointment> getAppointments(int year,int month, int day) {
         List<Appointment> appointments = new ArrayList<>();
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
-            String query = "SELECT * FROM appointments WHERE month = ? AND day = ? AND year = ?";
+        try  {
+            String query = "SELECT * FROM appointments WHERE month = ? AND day = ? AND year = ? ORDER BY app_date DESC,time";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, month);
             statement.setInt(2, day);
@@ -163,7 +197,6 @@ public class Database {
             date = dateFormat.parse(dateString);
             // Convert java.util.Date to java.sql.Date
             java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id_num);
             preparedStatement.setString(2, name);
@@ -188,7 +221,7 @@ public class Database {
     // Method to delete an appointment
     public static void deleteAppointment(int appointment_num) {
         String sql = "DELETE FROM appointments WHERE appointment_num = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, appointment_num);
             int deletedRows = preparedStatement.executeUpdate();
@@ -212,7 +245,6 @@ public class Database {
             date = dateFormat.parse(dateString);
             // Convert java.util.Date to java.sql.Date
             java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, wash_num);
             preparedStatement.setInt(2, dry_num);
@@ -242,7 +274,7 @@ public class Database {
     // Method to update the confirmed_by_resident column
     public static void updateConfirmedByResident(int appointment_num, boolean confirmedByResident) {
         String sql = "UPDATE appointments SET confirmed_by_resident = ? WHERE appointment_num = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setBoolean(1, confirmedByResident);
             preparedStatement.setInt(2, appointment_num);
@@ -260,7 +292,7 @@ public class Database {
     // Method to update the confirmed_by_staff column
     public static void updateConfirmedByStaff(int appointment_num, boolean confirmedByStaff) {
         String sql = "UPDATE appointments SET confirmed_by_staff = ? WHERE appointment_num = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setBoolean(1, confirmedByStaff);
             preparedStatement.setInt(2, appointment_num);
@@ -277,7 +309,7 @@ public class Database {
     // Method to search appointments by month and year[Income Report]
     public static List<Appointment> selectTotCylesWithinRange(String frDateString, String toDateString) {
         List<Appointment> appointments = new ArrayList<>();
-        String sql = "SELECT wash_num,dry_num,app_date FROM appointments WHERE app_date >= ? AND app_date <= ? ORDER BY app_date;";
+        String sql = "SELECT wash_num,dry_num,app_date FROM appointments WHERE app_date >= ? AND app_date <= ? AND confirmed_by_staff = 1 ORDER BY app_date;";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date frDateParse,toDateParse;
         try{
@@ -287,7 +319,6 @@ public class Database {
             // Convert java.util.Date to java.sql.Date
             java.sql.Date frDate = new java.sql.Date(frDateParse.getTime());
             java.sql.Date toDate = new java.sql.Date(toDateParse.getTime());
-            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setDate(1, frDate);
             preparedStatement.setDate(2, toDate);
@@ -309,7 +340,7 @@ public class Database {
     // Method to select all machine IDs that are not booked during the same year, month, day, and time
     public static List<String> getWasherMachineIds(int year, int month, int day, int time) {
         String sql = "SELECT washer_id FROM appointments WHERE year = ? AND month = ? AND day = ? AND time = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, year);
             preparedStatement.setInt(2, month);
@@ -337,7 +368,7 @@ public class Database {
 
     public static List<String> getDryerMachineIds(int year, int month, int day, int time) {
         String sql = "SELECT dryer_id FROM appointments WHERE year = ? AND month = ? AND day = ? AND time = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, year);
             preparedStatement.setInt(2, month);
@@ -362,7 +393,7 @@ public class Database {
 
     public static List<String> getDryerMachineIdsUpdate(int appointment_num,int year, int month, int day, int time) {
         String sql = "SELECT dryer_id FROM appointments WHERE appointment_num <>? AND year = ? AND month = ? AND day = ? AND time = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, appointment_num);
             preparedStatement.setInt(2, year);
@@ -390,7 +421,7 @@ public class Database {
     // Method to select all machine IDs that are not booked during the same year, month, day, and time
     public static List<String> getWasherMachineIdsUpdate(int appointment_num,int year, int month, int day, int time) {
         String sql = "SELECT washer_id FROM appointments WHERE appointment_num <>? AND year = ? AND month = ? AND day = ? AND time = ?";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, appointment_num);
             preparedStatement.setInt(2, year);
@@ -416,7 +447,7 @@ public class Database {
 
     public static List<String> getBookedTimes(int year, int month, int day, int time) {
         String sql="SELECT time FROM appointments WHERE month=? AND day=? GROUP BY month, day,time";
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, month);
             preparedStatement.setInt(2, day);
@@ -437,6 +468,60 @@ public class Database {
         }
         return null;
     }
+
+    public static List<String> getLoadNumsForAppts(int month,int day,int year,int time) {
+        List<String> bookedTimes=new ArrayList<>();
+        String appDateString;
+        int washNum,dryNum;
+        String sql = "SELECT DATE_FORMAT(app_date, '%Y-%m-%d') AS app_date_string , SUM(wash_num) AS totalWashNum, SUM(dry_num) AS totalDryNum FROM appointments WHERE MONTH(app_date) = ? AND DAY(app_date) = ? AND YEAR(app_date) = ? AND time = ?";
+        try (
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, month);
+            statement.setInt(2, day);
+            statement.setInt(3, year);
+            statement.setInt(4, time);
+            ResultSet resultSet = statement.executeQuery();
+            // Get all booked machine IDs
+            while (resultSet.next()) {
+                System.out.println("Result Set "+resultSet.getString("app_date_string"));
+                if (resultSet.wasNull()) {
+                    appDateString="";
+                    washNum=0;
+                    dryNum=0;
+
+                }else{
+                    appDateString = resultSet.getString("app_date_string");
+                    washNum = resultSet.getInt("totalWashNum");
+                    dryNum = resultSet.getInt("totalDryNum");
+                }
+                
+                bookedTimes.add(appDateString); 
+                bookedTimes.add(String.valueOf(washNum)); 
+                bookedTimes.add(String.valueOf(dryNum));
+            } 
+            for (String str : bookedTimes) {
+                System.out.println(str);
+            }
+            return bookedTimes;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bookedTimes;
+    }
+
+    public static Boolean isConnected() {
+        try{
+            // Ping a well-known server to check for internet connectivity
+            InetAddress address = InetAddress.getByName("www.google.com");
+            return address.isReachable(5000); // Timeout of 5 seconds
+        } catch (IOException exception) {
+            return false; // Unable to reach the server, so no internet connection
+        }
+    }
+
+
+
+    
 
 
 }

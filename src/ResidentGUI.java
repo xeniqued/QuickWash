@@ -11,11 +11,19 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.InetAddress;
+import java.sql.Connection;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+
+/**
+ *
+ * @author Dana Clarke(GUI)
+ */
 
 /**
  * This displays the main resident screen of the system where appointments are displayed 
@@ -45,8 +53,8 @@ public class ResidentGUI extends JFrame {
 
     private WelcomeScreen thisWS; //previous screen
     private static ResidentGUI thisResGUI; //current screen instance
-    private CreateAppointmentGUI thisMkAptGUI = null; //CreateAppointmentGUI popup screen instance
-    private EditAppointmentGUI thisEdAptGUI = null; //EditAppointmentGUI popup screen instance
+    private AppointmentCreator thisMkAptGUI = null; //CreateAppointmentGUI popup screen instance
+    private AppointmentEditor thisEdAptGUI = null; //EditAppointmentGUI popup screen instance
 
     private String nameVar;
     private String idStringVar;
@@ -259,8 +267,8 @@ public class ResidentGUI extends JFrame {
         ArrayList<String[]>apptData=showResidentAppointments(appointments);
         //Rendering appointment table with data above
         apptTable = new TableRenderer(apptinner2Pnl, new Dimension(845, 425), apptColumnNames, apptData);
-        JTable appointmentsTable = apptTable.getTable();
-        appointmentsTable.getSelectionModel().addListSelectionListener(new TableSelectionListener());
+        //JTable appointmentsTable = apptTable.getTable();
+        apptTable.getTable().getSelectionModel().addListSelectionListener(new TableSelectionListener());
         apptTable.hideLastColumn(apptTable.getColumnNum());
         apptTable.hideLastColumn(apptTable.getColumnNum());
         apptTable.setColumnWidth(0, 55);        
@@ -341,11 +349,21 @@ public class ResidentGUI extends JFrame {
     //=========================================================//
 
     /**
+     @author Akele Benjamin
+     */
+    
+    /**
      * This implements Make Appointment Button functionalities
      */
     private class MkAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            thisMkAptGUI = new CreateAppointmentGUI(thisResGUI,nameVar,idStringVar);
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                thisMkAptGUI = new AppointmentCreator(thisResGUI,nameVar,idStringVar);
+            }
+            
         }
 
     }
@@ -355,11 +373,17 @@ public class ResidentGUI extends JFrame {
      */
     private class EditAptBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (apptTable.getSelectedRow()==-1) {
-                JOptionPane.showMessageDialog(null, "Please select an Appointment!", "Error", JOptionPane.ERROR_MESSAGE); 
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
             }else{
-                thisEdAptGUI = new EditAppointmentGUI(thisResGUI,nameVar,idStringVar,getRowSelectedData());
+                if (apptTable.getSelectedRow()==-1) {
+                    JOptionPane.showMessageDialog(null, "Please select an Appointment!", "Error", JOptionPane.ERROR_MESSAGE); 
+                }else{
+                    thisEdAptGUI = new AppointmentEditor(thisResGUI,nameVar,idStringVar,getRowSelectedData());
+                }
             }
+            
         }
 
     }
@@ -370,17 +394,24 @@ public class ResidentGUI extends JFrame {
      */
     private class ConfirmBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            try {
-                Database.updateConfirmedByResident(Integer.parseInt(getRowSelectedData().get(0)),true);
-                //List<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
-                //System.out.println("Table List formed");
-                //apptTable.populateTable2(aList);
-                System.out.println("Confirmed by Resident");
-                JOptionPane.showMessageDialog(null, "Confirmed Appointment!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Error. Could not Confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
-                System.out.println("Error. Could not confirm Appointment.");
-            }
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                try {
+                    Database.updateConfirmedByResident(Integer.parseInt(getRowSelectedData().get(0)),true);
+                    ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
+                    System.out.println("Table List formed");
+                    apptTable.populateTable(aList);
+                    System.out.println("Confirmed by Resident");
+                    JOptionPane.showMessageDialog(null, "Confirmed Appointment!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error. Could not Confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
+                    System.out.println("Error. Could not confirm Appointment.");
+                }
+            };
+            
         }
 
     }
@@ -390,6 +421,7 @@ public class ResidentGUI extends JFrame {
      */
     private class LogoutBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            //closeConnection(Database.connection);
             setVisible(false); //stops displaying window/frame
             thisWS.setVisible(true); //makes welcome screen visible again
         }
@@ -401,16 +433,26 @@ public class ResidentGUI extends JFrame {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 ArrayList<String> data = getRowSelectedData();
-                String time = data.get(2);
-                String[] date = data.get(1).split("/");
-                String weekday = getWeekday(Integer.parseInt(date[2]), Integer.parseInt(date[1]), Integer.parseInt(date[0]));
-                String month = getMonthName(Integer.parseInt(date[1]));
-                String day =  date[0];
-                String year = date[2];
-                String washerid = data.get(7);
-                String dryerid = data.get(8);
+                //System.out.println(data);
+                String check = String.join("", data);
+                System.out.println("check: ["+ check +"]");
 
-                detsTable.updateRow(new String[]{time, weekday, month, day, year, washerid, dryerid}, 0, detsTable.getColumnNum());
+                if (check.trim().length() > 0) {
+                    String time = data.get(2);
+                    String[] date = data.get(1).split("/");
+                    //System.out.println(Arrays.toString(date));
+                    System.out.println("Line 411");
+                    String weekday = getWeekday(Integer.parseInt(date[2]), Integer.parseInt(date[1]), Integer.parseInt(date[0]));
+                    //System.out.println(weekday);
+                    System.out.println("Line 414");
+                    String month = getMonthName(Integer.parseInt(date[1]));
+                    String day =  date[0];
+                    String year = date[2];
+                    String washerid = data.get(7);
+                    String dryerid = data.get(8);
+
+                    detsTable.updateRow(new String[]{time, weekday, month, day, year, washerid, dryerid}, 0, detsTable.getColumnNum());
+                }
             }
         }
     }
@@ -420,6 +462,10 @@ public class ResidentGUI extends JFrame {
     //======================================================//
     //=                  FUNCTIONALITIES                   =//
     //======================================================//
+
+    /**
+     @author Akele Benjamin
+     */
 
     private String getWeekday(int year, int month, int day) {
         LocalDate date = LocalDate.of(year, month, day);
@@ -459,6 +505,33 @@ public class ResidentGUI extends JFrame {
     }
     public TableRenderer getApptTable(){
         return apptTable;
+    }
+
+    public static List<String> getUpcomingDays() {
+        List<String> upcomingDays = new ArrayList<>();
+        
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        
+        // Format for output
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // Add current day to the list
+        upcomingDays.add(currentDate.format(formatter));
+        
+        // Add the next 7 days to the list
+        for (int i = 1; i <= 7; i++) {
+            LocalDate nextDay = currentDate.plusDays(i);
+            upcomingDays.add(nextDay.format(formatter));
+        }
+
+        return upcomingDays;
+    }
+
+    private  void connectionErrorPanel() {        
+        JOptionPane.showMessageDialog(null, 
+        "Internet Connection Required. \nPlease Restart and Try Again.", 
+        "No Internet Connection", JOptionPane.ERROR_MESSAGE);
     }
 
 } // public class ResidentGUI() end 

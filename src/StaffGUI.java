@@ -21,6 +21,11 @@ import java.time.Month;
 import java.util.List;
 
 /**
+ *
+ * @author Dana Clarke(GUI)
+ */
+
+/**
  * This displays the main resident screen of the system where appointments are displayed 
  * and can be edited.
  */
@@ -38,7 +43,7 @@ public class StaffGUI extends JFrame {
     private JLabel detailsLbl;
 
     // Make Appointment, Edit Appointment, Mark Attend, Logout buttons
-    private JButton btnConfirm, btnMakeReport, btnLogout; 
+    private JButton btnConfirm, btnMakeReport, btnLogout,btnRefresh; 
     
     // commonly used colors
     private Color mainBlue = new Color(10, 87, 162);
@@ -51,6 +56,7 @@ public class StaffGUI extends JFrame {
 
     private String nameVar;
     private String idStringVar;
+    private List<Integer> dateListInt;
 
     public StaffGUI(WelcomeScreen ws,String idString,String name) {
         //initialize variable
@@ -125,7 +131,7 @@ public class StaffGUI extends JFrame {
         //==============================================//
     
         
-        // CREATING AND ALLIGNING ONFIRM ATTEND APPOINTMENT BUTTON // 
+        // CREATING AND ALLIGNING CONFIRM ATTEND APPOINTMENT BUTTON // 
         ImageIcon ConfirmAptIcon = null;      
         try {
             ConfirmAptIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/confirmicon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
@@ -159,10 +165,29 @@ public class StaffGUI extends JFrame {
         btnMakeReport.setBorderPainted(false);
         btnMakeReport.setMargin(new Insets(7, 20, 7, 0));
         btnMakeReport.addActionListener(new MakeReportListener());
+
+        // Refresh Button // 
+        ImageIcon RefreshIcon = null;      
+        try {
+            RefreshIcon = (new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/starticon.png").getImage().getScaledInstance(26, 26, Image.SCALE_SMOOTH)));
+        } catch (Exception ioe) {
+            System.out.println("Create icon not found.");
+        }      
+        btnRefresh = new JButton(RefreshIcon);
+        btnRefresh.setText(" Refresh");
+        btnRefresh.setFont(new Font(btnRefresh.getFont().getFontName(), Font.BOLD, 16));
+        btnRefresh.setForeground(mainWhite);
+        btnRefresh.setBackground(mainBlue);
+        btnRefresh.setHorizontalAlignment(SwingConstants.LEFT);
+        btnRefresh.setBorderPainted(false);
+        btnRefresh.setMargin(new Insets(7, 20, 7, 0));
+        btnRefresh.addActionListener(new RefreshListener());
                         
         navinner1Pnl.add(navLbl);
         navinner1Pnl.add(btnConfirm);
+        navinner1Pnl.add(btnRefresh);
         navinner1Pnl.add(btnMakeReport);
+        
 
 
 
@@ -239,7 +264,7 @@ public class StaffGUI extends JFrame {
         apptColumnNames = new String[]{ "Appt. ID #","Resident Name","Time", "Wash Load #", "Dry Load #","Attended?", "Confirmed?", "Resident ID", "Washer ID", "Dryer ID"};
 
         //New Code
-        List<Integer> dateListInt = getCurrentDateTimeInfo();
+        this.dateListInt = getCurrentDateTimeInfo();
         List<Appointment> appointments = Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2));
         apptData = new ArrayList<String[]>();
         for (Appointment appointment : appointments) {
@@ -342,25 +367,50 @@ public class StaffGUI extends JFrame {
     //=========================================================//
 
     /**
+     @author Akele Benjamin
+     */
+    
+    /**
      * This implements Edit Appointment Button functionalities
      */
     private class MakeReportListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            String url = "https://studentliving.managerpluscloud.com/v16/WorkOrders/WorkRequest/qRRequestPage.aspx?asset_key=p4zqNkLI8A1NVP0ELnXSig==&entity_key=9iuf4dpF3mCUsv2x4R2N4g==";
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                String url = "https://studentliving.managerpluscloud.com/v16/WorkOrders/WorkRequest/qRRequestPage.aspx?asset_key=p4zqNkLI8A1NVP0ELnXSig==&entity_key=9iuf4dpF3mCUsv2x4R2N4g==";
 
-            int ans = JOptionPane.showConfirmDialog(thisStaffGUI, "You will be redirected to your browser to \nfill out the report. Continue?");  
-            
-            if(ans == JOptionPane.YES_OPTION){   
-                if(Desktop.isDesktopSupported()){
-                    Desktop desktop = Desktop.getDesktop();
-                    try {
-                        desktop.browse(new URI(url));
-                    } catch (IOException | URISyntaxException ex) {
-                        ex.printStackTrace();
-                    }
-                }  
+                int ans = JOptionPane.showConfirmDialog(thisStaffGUI, "You will be redirected to your browser to \nfill out the report. Continue?");  
+                
+                if(ans == JOptionPane.YES_OPTION){   
+                    if(Desktop.isDesktopSupported()){
+                        Desktop desktop = Desktop.getDesktop();
+                        try {
+                            desktop.browse(new URI(url));
+                        } catch (IOException | URISyntaxException ex) {
+                            ex.printStackTrace();
+                        }
+                    }  
+                }
             }  
         } 
+    }
+
+    private class RefreshListener implements ActionListener {
+        
+        public void actionPerformed(ActionEvent e) {
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                ArrayList<String[]>aList=showResidentAppointments(Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2)));
+                apptTable.populateTable(aList);
+                System.out.println("Table Refreshed!!!");
+                JOptionPane.showMessageDialog(null, "Table Refreshed", "Refresh", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+
     }
 
 
@@ -369,15 +419,21 @@ public class StaffGUI extends JFrame {
      */
     private class ConfirmBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            try {
-                Database.updateConfirmedByStaff(Integer.parseInt(getRowSelectedData().get(0)),true);
-                //ArrayList<String[]>aList=showResidentAppointments(Database.getAppointmentsById(Integer.parseInt(idStringVar)));
-                //getApptTable().populateTable(aList);
-                System.out.println("Confirmed by Resident");
-                JOptionPane.showMessageDialog(null, "Confirmed Appointment!!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Error. Could not confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
-                System.out.println("Error. Could not confirm Appointment.");
+            if(!Database.isConnected()){
+                connectionErrorPanel();
+                System.exit(0);
+            }else{
+                try {
+                    Database.updateConfirmedByStaff(Integer.parseInt(getRowSelectedData().get(0)),true);
+                    ArrayList<String[]>aList=showResidentAppointments(Database.getAppointments(dateListInt.get(0),dateListInt.get(1),dateListInt.get(2)));
+                    apptTable.populateTable(aList);
+                    System.out.println("Confirmed by Staff");
+                    JOptionPane.showMessageDialog(null, "Confirmed Appointment!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error. Could not confirm Appointment.", "Error", JOptionPane.ERROR_MESSAGE); 
+                    System.out.println("Error. Could not confirm Appointment.");
+                }
             }
         }
 
@@ -400,15 +456,21 @@ public class StaffGUI extends JFrame {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 ArrayList<String> data = getRowSelectedData();
-                String time = data.get(2);
-                String name = data.get(1);
-                String id = data.get(7);
-                String washNum = data.get(3);
-                String dryNum  = data.get(4);
-                String washerid = data.get(8);
-                String dryerid = data.get(9);
+                //System.out.println(data);
+                String check = String.join("", data);
+                System.out.println("check: ["+ check +"]");
+                
+                if (check.trim().length() > 0) {
+                    String time = data.get(2);
+                    String name = data.get(1);
+                    String id = data.get(7);
+                    String washNum = data.get(3);
+                    String dryNum  = data.get(4);
+                    String washerid = data.get(8);
+                    String dryerid = data.get(9);
 
-                detsTable.updateRow(new String[]{time, id, name, washNum, dryNum, washerid, dryerid}, 0, detsTable.getColumnNum());
+                    detsTable.updateRow(new String[]{time, id, name, washNum, dryNum, washerid, dryerid}, 0, detsTable.getColumnNum());
+                }
             }
         }
     }
@@ -418,6 +480,15 @@ public class StaffGUI extends JFrame {
     //=                  FUNCTIONALITIES                   =//
     //======================================================//
 
+    /**
+     @author Akele Benjamin
+     */
+
+    private  void connectionErrorPanel() {        
+        JOptionPane.showMessageDialog(null, 
+        "Internet Connection Required. \nPlease Restart and Try Again.", 
+        "No Internet Connection", JOptionPane.ERROR_MESSAGE);
+    }
     
     public static List<Integer> getCurrentDateTimeInfo() {
         // Create a Calendar instance
