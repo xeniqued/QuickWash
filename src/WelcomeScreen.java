@@ -420,13 +420,13 @@ public class WelcomeScreen extends JFrame {
     }
 
     // Function to toggle hiding message
-    public void hideVerifyMessage(Boolean hide) {
+    public void toggleVerifyMessage(Boolean hide) {
         verifyLbl.setVisible(hide);
     }
 
     // Function to set wait message
     public void setWaitingMessage(String waitMsg) {
-        hideVerifyMessage(true);
+        toggleVerifyMessage(true);
         try {
             //wait icon
             verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/waiticon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
@@ -440,7 +440,7 @@ public class WelcomeScreen extends JFrame {
     
     // Function to set error message
     public void setErrorMessage(String errorMsg) {
-        hideVerifyMessage(true);
+        toggleVerifyMessage(true);
         try {
             //error icon
             verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/erroricon.png").getImage().getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING)));
@@ -454,7 +454,7 @@ public class WelcomeScreen extends JFrame {
 
     // Function to set error message
     public void setSuccessMessage(String successMsg) {
-        hideVerifyMessage(true);
+        toggleVerifyMessage(true);
         try {
             //success icon
             verifyLbl.setIcon(new ImageIcon(new ImageIcon(System.getProperty("user.dir") + "/pics/successicon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
@@ -468,7 +468,9 @@ public class WelcomeScreen extends JFrame {
 
 
     private  void connectionErrorPanel() {
-        JOptionPane.showMessageDialog(null, "Check your connection and Restart application", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, 
+        "Internet Connection Required. \nPlease Restart and Try Again.", 
+        "No Internet Connection", JOptionPane.ERROR_MESSAGE);
     }
 
 

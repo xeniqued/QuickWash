@@ -619,8 +619,10 @@ public class AdminGUI extends JFrame {
         this.sumLbl.setText("<html>" + "Total Income in Range: $" + tot + "</html>");
     }
 
-    private  void connectionErrorPanel() {
-        JOptionPane.showMessageDialog(null, "Check your connection and Restart application", "Error", JOptionPane.ERROR_MESSAGE);
+    private  void connectionErrorPanel() {        
+        JOptionPane.showMessageDialog(null, 
+        "Internet Connection Required. \nPlease Restart and Try Again.", 
+        "No Internet Connection", JOptionPane.ERROR_MESSAGE);
     }
 
     

@@ -484,8 +484,10 @@ public class StaffGUI extends JFrame {
      @author Akele Benjamin
      */
 
-    private  void connectionErrorPanel() {
-        JOptionPane.showMessageDialog(null, "Check your connection and Restart application", "Error", JOptionPane.ERROR_MESSAGE);
+    private  void connectionErrorPanel() {        
+        JOptionPane.showMessageDialog(null, 
+        "Internet Connection Required. \nPlease Restart and Try Again.", 
+        "No Internet Connection", JOptionPane.ERROR_MESSAGE);
     }
     
     public static List<Integer> getCurrentDateTimeInfo() {
